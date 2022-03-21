@@ -63,11 +63,12 @@ const Sidebar = ({
               Prior service requests
             </div>
           </div>
-          <div className='h-32'>
+          <div className='h-32 mb-3'>
             <RollupChart data={oldServiceRequests} />
           </div>
         </>
       )}
+      <div className='text-xs'>Hover over the markers on the map to view details. Some markers may represent more than one 311 complaint.</div>
     </div>
   )
 }

@@ -63,7 +63,7 @@ const DrawSidebar = ({
       <div className='font-medium text-lg mb-2'>
         2. Draw it!
       </div>
-      <div className=''>Click on the map to draw a polygon.</div>
+      <div className=''>Click on the map to draw a polygon. Tip: Many 311 requests are geocoded to the center of a street.  Polygons that end mid-block are optimal for capturing all activity ona given street.</div>
       <div className='text-xs mb-4' onClick={handleClearDrawing}>Clear Drawing</div>
 
       <div className='flex justify-end'>
