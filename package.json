@@ -3,36 +3,73 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
+    "@mapbox/mapbox-gl-draw": "^1.3.0",
+    "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^13.5.0",
+    "@turf/bbox": "^6.5.0",
+    "@turf/points-within-polygon": "^6.5.0",
+    "add": "^2.0.6",
+    "geojson-validation": "^1.0.2",
+    "mapbox-gl": "^2.7.0",
+    "moment": "^2.29.1",
+    "netlify-lambda": "^2.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
-    "web-vitals": "^2.1.4"
+    "recharts": "^2.1.9",
+    "shortid": "^2.2.16",
+    "underscore": "^1.13.2",
+    "web-vitals": "^2.1.4",
+    "yarn": "^1.22.17"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "netlify-lambda install"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+      "standard",
+      "standard-jsx",
+      "standard-react"
+    ],
+    "globals": {
+      "fetch": true
+    }
   },
   "browserslist": {
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not ie 11",
+      "not chrome < 51",
+      "not safari < 10"
     ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.2",
+    "dotenv": "^14.3.0",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard-jsx": "^10.0.0",
+    "eslint-config-standard-react": "^11.0.1",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "postcss": "^8.4.6",
+    "tailwindcss": "^3.0.23"
   }
 }
