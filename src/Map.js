@@ -14,14 +14,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmY
 
 export const agencyColors = [
   'match',
-  ['get', 'agency'],
-  'DPR', '#208a3e',
-  'TLC', '#edf50f',
-  'NYPD', '#3054f2',
-  'DSNY', '#002e02',
-  'DEP', '#6bf8ff',
-  'DOHMH', '#af25c4',
-  'HPD', '#de8921',
+  ['get', 'rollupCategory'],
+  'Noise & Nuisance', '#fbb4ae',
+  'Streets & Sidewalks', '#b3cde3',
+  'Sanitation & Cleanliness', '#ccebc5',
+  'Business/Consumer', '#decbe4',
+  'Housing & Buildings', '#fed9a6',
+  'Homeless/Assistance', '#fddaec',
+  'Vehicular/Parking', '#e5d8bd',
   /* other */ 'gray'
 ]
 
@@ -33,13 +33,14 @@ const Map = ({
   style = 'light-v9',
   sources = {},
   layers = [],
-  minZoom = 0,
-  maxZoom = 24,
+  minZoom = 10,
+  maxZoom = 18,
   bounds = [],
   padding = 0.1,
   location,
   areaOfInterest,
   serviceRequests,
+  startDateMoment,
   allGeometries,
   drawMode,
   onDraw,
@@ -137,20 +138,20 @@ const Map = ({
         data: dummyGeojson
       })
 
-      map.addLayer({
-        id: 'serviceRequests-circle-old',
-        type: 'circle',
-        source: 'serviceRequests',
-        paint: {
-          'circle-color': agencyColors,
-          'circle-radius': 3,
-          'circle-stroke-color': 'black',
-          'circle-stroke-width': 2,
-          'circle-opacity': 0.3,
-          'circle-stroke-opacity': 0.3
-        },
-        filter: ['<', ['get', 'created_date'], 1644721398]
-      })
+      // map.addLayer({
+      //   id: 'serviceRequests-circle-old',
+      //   type: 'circle',
+      //   source: 'serviceRequests',
+      //   paint: {
+      //     'circle-color': agencyColors,
+      //     'circle-radius': 3,
+      //     'circle-stroke-color': 'black',
+      //     'circle-stroke-width': 2,
+      //     'circle-opacity': 0.3,
+      //     'circle-stroke-opacity': 0.3
+      //   },
+      //   filter: ['<', ['get', 'created_date'], 1644721398]
+      // })
 
       map.addLayer({
         id: 'serviceRequests-circle',
@@ -162,7 +163,7 @@ const Map = ({
           'circle-stroke-color': 'black',
           'circle-stroke-width': 2
         },
-        filter: ['>=', ['get', 'created_date'], 1644721398]
+        filter: ['>=', ['get', 'created_date'], startDateMoment.unix()]
       })
 
       map.addSource('area-of-interest', {
@@ -315,6 +316,7 @@ Map.propTypes = {
     type: PropTypes.string,
     features: PropTypes.arrayOf(PropTypes.object)
   }),
+  startDateMoment: PropTypes.object,
   allGeometries: PropTypes.shape({
     type: PropTypes.string,
     features: PropTypes.arrayOf(PropTypes.object)

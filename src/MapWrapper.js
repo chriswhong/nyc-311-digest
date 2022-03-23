@@ -9,6 +9,7 @@ import Map from './Map.js'
 import Sidebar from './Sidebar.js'
 import MainSidebar from './MainSidebar.js'
 import DrawSidebar from './DrawSidebar.js'
+import getRollupCategory from './util/getRollupCategory'
 
 const fetchGeometries = async () => {
   const getGeometriesUrl = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-geometries`
@@ -70,7 +71,8 @@ function MapWrapper () {
                 ...d.properties,
                 created_date: moment(d.properties.created_date).unix(),
                 closed_date: moment(d.properties.closed_date).unix(),
-                resolution_action_updated_date: moment(d.properties.resolution_action_updated_date).unix()
+                resolution_action_updated_date: moment(d.properties.resolution_action_updated_date).unix(),
+                rollupCategory: getRollupCategory(d.properties.complaint_type)
               }
             }
           })
@@ -130,6 +132,7 @@ function MapWrapper () {
         allGeometries={allGeometries}
         areaOfInterest={areaOfInterest}
         serviceRequests={serviceRequests}
+        startDateMoment={startDateMoment}
         location={location}
         drawMode={isDrawMode}
         onMapLoad={(d) => { setMapInstance(d) }}

@@ -38,37 +38,29 @@ const Sidebar = ({
       {areaOfInterest && serviceRequests && (
         <>
           <div onClick={handleBackClick} className='flex items-center underline hover:text-blue-800 visited:text-purple-600 cursor-pointer text-xs text-gray-500 mb-2'><ChevronLeftIcon className='h-3 w-3 mr-0.5' /><div>Back to City View</div></div>
-          <div className='font-semibold text-xl mb-1'>{areaOfInterest.properties.name}</div>
+          <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
           <div className='flex items-center mb-3'>
             <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
-            <div className='text-sm'>Last 7 days ({startDateMoment.format('D MMM YYYY')})</div>
+            <div className='text-sm'>Last 7 days <span className='text-xs'>({startDateMoment.format('D MMM YYYY')} to yesterday)</span></div>
           </div>
 
           <div className='flex items-center'>
-            <div className='font-bold text-3xl w-12'>
+            <div className='font-bold text-3xl mr-2'>
               {newServiceRequests.length}
             </div>
             <div className='flex-grow text-lg'>
-              New service requests
+              New Service Requests
             </div>
           </div>
-          <div className='h-32'>
+          <div className='h-64 mb-3'>
             <RollupChart data={newServiceRequests} />
-          </div>
-          <div className='flex items-center'>
-            <div className='font-bold text-3xl w-12'>
-              {oldServiceRequests.length}
-            </div>
-            <div className='flex-grow text-lg'>
-              Prior service requests
-            </div>
-          </div>
-          <div className='h-32 mb-3'>
-            <RollupChart data={oldServiceRequests} />
           </div>
         </>
       )}
-      <div className='text-xs'>Hover over the markers on the map to view details. Some markers may represent more than one 311 complaint.</div>
+      <div className='text-xs mb-3'>Hover over the markers on the map to view details. Some markers may represent more than one 311 complaint.</div>
+
+      <hr />
+      <div className='text-xs mt-3'>This area of interest also has <span className='font-bold'>{oldServiceRequests.length}</span> prior service requests that are still open.</div>
     </div>
   )
 }

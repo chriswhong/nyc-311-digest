@@ -3,22 +3,22 @@ import PropTypes from 'prop-types'
 import _ from 'underscore'
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, LabelList, Cell } from 'recharts'
 
-const getColor = (agency) => {
-  switch (agency) {
-    case 'DPR':
-      return '#208a3e'
-    case 'TLC':
-      return '#edf50f'
-    case 'NYPD':
-      return '#3054f2'
-    case 'DSNY':
-      return '#002e02'
-    case 'DEP':
-      return '#6bf8ff'
-    case 'DOHMH':
-      return '#af25c4'
-    case 'HPD':
-      return '#de8921'
+const getColor = (rollupCategory) => {
+  switch (rollupCategory) {
+    case 'Noise & Nuisance':
+      return '#fbb4ae'
+    case 'Streets & Sidewalks':
+      return '#b3cde3'
+    case 'Sanitation & Cleanliness':
+      return '#ccebc5'
+    case 'Business/Consumer':
+      return '#decbe4'
+    case 'Housing & Buildings':
+      return '#fed9a6'
+    case 'Homeless/Assistance':
+      return '#fddaec'
+    case 'Vehicular/Parking':
+      return '#e5d8bd'
     default:
       return 'gray'
   }
@@ -26,7 +26,7 @@ const getColor = (agency) => {
 
 const RollupChart = ({ data }) => {
   // group and count
-  let grouped = _.countBy(data, d => d.properties.agency)
+  let grouped = _.countBy(data, d => d.properties.rollupCategory)
 
   grouped = Object.keys(grouped).map((key) => {
     return {
@@ -44,7 +44,7 @@ const RollupChart = ({ data }) => {
         layout='vertical'
         margin={{ left: 0, right: 20 }}
       >
-        <YAxis type='category' width={60} dataKey='name' fontSize={11} interval={0} axisLine={false} dx={-5} tickLine={false} />
+        <YAxis type='category' width={150} dataKey='name' fontSize={11} interval={0} axisLine={false} dx={-5} tickLine={false} />
         <XAxis type='number' hide />
         <Bar dataKey='count' fill='#285A64' label='count'>
           {grouped.map((entry, index) => (
