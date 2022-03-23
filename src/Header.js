@@ -23,7 +23,7 @@ export default function Header () {
           <div className='flex justify-start lg:w-0 lg:flex-1'>
             <a className='flex items-center' href='#'>
               <TicketIcon className='h-8 w-8 text-indigo-600' aria-hidden='true' />
-              <div className='font-semibold ml-3' style={{ fontSize: 17 }}>311 Reports</div>
+              <div className='font-semibold ml-3' style={{ fontSize: 17 }}>NYC 311 Reports</div>
             </a>
           </div>
           <div className='-mr-2 -my-2 md:hidden'>
@@ -39,10 +39,11 @@ export default function Header () {
             </a>
           </Popover.Group>
           {location.pathname !== '/new' && (
-            <div className='hidden md:flex items-center justify-end md:flex-1 lg:w-0' onClick={handleAddClick}>
+            <div className='hidden md:flex items-center justify-end md:flex-1 lg:w-0'>
               <a
                 href='#'
                 className='ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700'
+                onClick={handleAddClick}
               >
                 <PlusIcon className='h-6 w-6 mr-2' />
                 Add an Area of Interest
@@ -67,7 +68,7 @@ export default function Header () {
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
                   <TicketIcon className='h-8 w-8 text-indigo-600' aria-hidden='true' />
-                  <div className='font-semibold ml-3' style={{ fontSize: 17 }}>311 Reports</div>
+                  <div className='font-semibold ml-3' style={{ fontSize: 17 }}>NYC 311 Reports</div>
                 </div>
                 <div className='-mr-2'>
                   <Popover.Button className='bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
