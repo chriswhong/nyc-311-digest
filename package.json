@@ -23,6 +23,7 @@
     "react-scripts": "5.0.0",
     "recharts": "^2.1.9",
     "shortid": "^2.2.16",
+    "tw-elements": "^1.0.0-alpha11",
     "underscore": "^1.13.2",
     "web-vitals": "^2.1.4",
     "yarn": "^1.22.17"

@@ -35,26 +35,39 @@ const Sidebar = ({
 
   return (
     <div className='absolute top-5 left-5 z-10 bg-white p-4 rounded-lg w-96 shadow-md'>
-      {areaOfInterest && serviceRequests && (
+      {areaOfInterest && (
         <>
           <div onClick={handleBackClick} className='flex items-center underline hover:text-blue-800 visited:text-purple-600 cursor-pointer text-xs text-gray-500 mb-2'><ChevronLeftIcon className='h-3 w-3 mr-0.5' /><div>Back to City View</div></div>
           <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
-          <div className='flex items-center mb-3'>
-            <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
-            <div className='text-sm'>Last 7 days <span className='text-xs'>({startDateMoment.format('D MMM YYYY')} to yesterday)</span></div>
-          </div>
 
-          <div className='flex items-center'>
-            <div className='font-bold text-3xl mr-2'>
-              {newServiceRequests.length}
+          {serviceRequests && (
+            <>
+              <div className='flex items-center mb-3'>
+                <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
+                <div className='text-sm'>Last 7 days <span className='text-xs'>({startDateMoment.format('D MMM YYYY')} to yesterday)</span></div>
+              </div>
+              <div className='flex items-center'>
+                <div className='font-bold text-3xl mr-2'>
+                  {newServiceRequests.length}
+                </div>
+                <div className='flex-grow text-lg'>
+                  New Service Requests
+                </div>
+              </div>
+              <div className='h-64 mb-3'>
+                <RollupChart data={newServiceRequests} />
+              </div>
+            </>
+          )}
+
+          {!serviceRequests && (
+            <div className='flex flex-col justify-center items-center h-64'>
+              <div className='spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-indigo-600' role='status'>
+                <span className='visually-hidden'>Loading...</span>
+              </div>
+              <div className='mt-2 text-sm text-gray-500'>Loading 311 data...</div>
             </div>
-            <div className='flex-grow text-lg'>
-              New Service Requests
-            </div>
-          </div>
-          <div className='h-64 mb-3'>
-            <RollupChart data={newServiceRequests} />
-          </div>
+          )}
         </>
       )}
       <div className='text-xs mb-3'>Hover over the markers on the map to view details. Some markers may represent more than one 311 complaint.</div>
