@@ -37,11 +37,14 @@ function MapWrapper () {
       const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
         const dateFrom = startDateMoment.format('YYYY-MM-DD')
 
-        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND (created_date>'${dateFrom}' OR status='Open')`
+        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND (created_date>'${dateFrom}' OR status='Open')&$order=created_date DESC`
         return await fetch(serviceRequestsApiUrl).then(d => d.json())
       }
 
       const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
+      // set areaOfInterest as soon as we have it so that the map can fitBounds
+      // while waiting for the 311 data request
+      setAreaOfInterest(areaOfInterest)
 
       const areaOfInterestGeometry = areaOfInterest.geometry
 
@@ -76,7 +79,6 @@ function MapWrapper () {
               }
             }
           })
-          setAreaOfInterest(areaOfInterest)
           setServiceRequests(clippedServiceRequests)
         })
     } else {
