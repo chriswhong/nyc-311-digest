@@ -1,18 +1,16 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 const MainSidebar = () => {
+  const history = useNavigate()
+
   return (
     <div className='absolute top-5 left-5 z-10 bg-white p-4 rounded-lg w-96 shadow-md text-sm'>
-      <p className='mb-3'>This map shows custom polygons of interest created by users of this site to show localized 311 data.</p>
-      <p className=''>Click any polygon to explore recent 311 activity along with older complaints that are still pending resolution.</p>
+      <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
+      <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { history('/new') }} className='text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4 cursor-pointer'>add it!</a></p>
 
     </div>
   )
-}
-
-MainSidebar.propTypes = {
-
 }
 
 export default MainSidebar

@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build"
+  command = "CI=false yarn build"
   functions = "lambda"
   publish = "build"
 [[redirects]]
