@@ -5,7 +5,9 @@ const getRollupCategory = (complaintType) => {
   if ([
     'Smoking',
     'Tattooing',
-    'Drinking'
+    'Drinking',
+    'Drug Activity',
+    'Illegal Fireworks'
   ].includes(complaintType)) {
     rollupCategory = 'Noise & Nuisance'
   }
@@ -26,7 +28,10 @@ const getRollupCategory = (complaintType) => {
     'Curb Condition',
     'Traffic',
     'Illegal Tree Damage',
-    'Obstruction'
+    'Obstruction',
+    'New Tree Request',
+    'Overgrown Tree/Branches',
+    'Dead/Dying Tree'
   ].includes(complaintType)) {
     rollupCategory = 'Streets & Sidewalks'
   }
@@ -38,7 +43,9 @@ const getRollupCategory = (complaintType) => {
     'Rodent',
     'UNSANITARY CONDITION',
     'Street Sweeping Complaint',
-    'Dead Animal'
+    'Dead Animal',
+    'Commercial Disposal Complaint',
+    'Residential Disposal Complaint'
   ].includes(complaintType)) {
     rollupCategory = 'Sanitation & Cleanliness'
   }
@@ -49,7 +56,6 @@ const getRollupCategory = (complaintType) => {
     'Day Care',
     'Outdoor Dining',
     'Food Poisoning'
-
   ].includes(complaintType)) {
     rollupCategory = 'Business/Consumer'
   }
@@ -62,7 +68,14 @@ const getRollupCategory = (complaintType) => {
     'Water System',
     'Maintenance or Facility',
     'Building/Use',
-    'WATER LEAK'
+    'WATER LEAK',
+    'DOOR/WINDOW',
+    'PAINT/PLASTER',
+    'ELECTRIC',
+    'GENERAL',
+    'APPLIANCE',
+    'ELEVATOR',
+    'SAFETY'
 
   ].includes(complaintType)) {
     rollupCategory = 'Housing & Buildings'
@@ -81,7 +94,9 @@ const getRollupCategory = (complaintType) => {
     'For Hire Vehicle Complaint',
     'Broken Parking Meter',
     'Abandoned Vehicle',
-    'Taxi Complaint'
+    'Taxi Complaint',
+    'Derelict Vehicles',
+    'Abandoned Bike'
   ].includes(complaintType)) {
     rollupCategory = 'Vehicular/Parking'
   }
