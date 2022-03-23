@@ -86,7 +86,7 @@ const Map = ({
     if (areaOfInterest) {
       map.getSource('area-of-interest').setData(areaOfInterest)
       map.fitBounds(areaOfInterest.properties.bbox, {
-        padding: 30
+        padding: { top: 30, bottom: 30, left: 400, right: 30 }
       })
     }
 
@@ -117,7 +117,7 @@ const Map = ({
 
     map.setLayoutProperty('area-of-interest-line', 'visibility', areaOfInterestVisibility)
     map.setLayoutProperty('serviceRequests-circle', 'visibility', areaOfInterestVisibility)
-    map.setLayoutProperty('serviceRequests-circle-old', 'visibility', areaOfInterestVisibility)
+    // map.setLayoutProperty('serviceRequests-circle-old', 'visibility', areaOfInterestVisibility)
   }, [location])
 
   // this useEffect fires once and instantiates the map
@@ -263,10 +263,10 @@ const Map = ({
       }
 
       map.on('mouseenter', 'serviceRequests-circle', showPopup)
-      map.on('mouseenter', 'serviceRequests-circle-old', showPopup)
+      // map.on('mouseenter', 'serviceRequests-circle-old', showPopup)
 
       map.on('mouseleave', 'serviceRequests-circle', hidePopup)
-      map.on('mouseleave', 'serviceRequests-circle-old', hidePopup)
+      // map.on('mouseleave', 'serviceRequests-circle-old', hidePopup)
 
       setMap(map)
       onMapLoad(map)
