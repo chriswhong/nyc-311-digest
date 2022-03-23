@@ -31,6 +31,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "functions-serve": "netlify-lambda serve ./src/functions",
     "eject": "react-scripts eject",
     "postinstall": "netlify-lambda install"
   },
