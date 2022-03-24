@@ -292,10 +292,7 @@ const Map = ({
 
   return (
     <div
-      className='relative' style={{
-        height: height,
-        width: width
-      }}
+      className='relative h-1/3 md:h-full w-full'
     >
       <div className='w-full h-full' ref={mapNode} style={{ width: '100%', height: '100%' }} />
     </div>

@@ -14,7 +14,7 @@ function App () {
       <BrowserRouter>
 
         <Header />
-        <div className='flex-grow relative'>
+        <div className='flex-grow relative min-h-0'>
           <Routes>
             <Route
               path='/'
