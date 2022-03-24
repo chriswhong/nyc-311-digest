@@ -31,7 +31,9 @@ const getRollupCategory = (complaintType) => {
     'Obstruction',
     'New Tree Request',
     'Overgrown Tree/Branches',
-    'Dead/Dying Tree'
+    'Dead/Dying Tree',
+    'Root/Sewer/Sidewalk Condition',
+    'Bus Stop Shelter Complaint'
   ].includes(complaintType)) {
     rollupCategory = 'Streets & Sidewalks'
   }
@@ -75,8 +77,10 @@ const getRollupCategory = (complaintType) => {
     'GENERAL',
     'APPLIANCE',
     'ELEVATOR',
-    'SAFETY'
-
+    'SAFETY',
+    'School Maintenance',
+    'Elevator',
+    'Real Time Enforcement'
   ].includes(complaintType)) {
     rollupCategory = 'Housing & Buildings'
   }
@@ -96,7 +100,8 @@ const getRollupCategory = (complaintType) => {
     'Abandoned Vehicle',
     'Taxi Complaint',
     'Derelict Vehicles',
-    'Abandoned Bike'
+    'Abandoned Bike',
+    'Lost Property'
   ].includes(complaintType)) {
     rollupCategory = 'Vehicular/Parking'
   }
