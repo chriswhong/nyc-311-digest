@@ -50,7 +50,7 @@ const DrawSidebar = ({
   }
 
   return (
-    <div className='absolute top-5 left-5 z-10 bg-white p-4 rounded-lg w-96 shadow-md text-sm'>
+    <div>
       <div className='font-semibold text-xl mb-2'>Add an Area of Interest</div>
       <div className='font-medium text-lg mb-2'> 1. Name it!</div>
       <input

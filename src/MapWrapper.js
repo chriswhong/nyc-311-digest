@@ -6,9 +6,11 @@ import bbox from '@turf/bbox'
 import gjv from 'geojson-validation'
 
 import Map from './Map.js'
-import Sidebar from './Sidebar.js'
+import AOISidebar from './AOISidebar.js'
 import MainSidebar from './MainSidebar.js'
 import DrawSidebar from './DrawSidebar.js'
+import PopupSidebar from './PopupSidebar.js'
+
 import getRollupCategory from './util/getRollupCategory'
 
 const fetchGeometries = async () => {
@@ -32,6 +34,10 @@ function MapWrapper () {
   const [drawnFeature, setDrawnFeature] = useState()
   const [drawnFeatureName, setDrawnFeatureName] = useState()
 
+  // object with address and complaints properties
+  const [popupData, setPopupData] = useState()
+
+  // data fetching based on the current route
   useEffect(() => {
     if (location.pathname.includes('report') && allGeometries) {
       const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
@@ -137,28 +143,41 @@ function MapWrapper () {
         startDateMoment={startDateMoment}
         location={location}
         drawMode={isDrawMode}
+        highlightedFeature={popupData && popupData[0]}
         onMapLoad={(d) => { setMapInstance(d) }}
+        onMapClick={(d) => { setPopupData(d) }}
       />
-      {isDrawMode && (
-        <DrawSidebar
-          name={drawnFeatureName}
-          isValid={drawIsValid}
-          mapInstance={mapInstance}
-          onNameChange={(d) => { setDrawnFeatureName(d) }}
-          onDraw={(d) => { setDrawnFeature(d) }}
-          onSaveClick={handleSave}
-        />
-      )}
-      {location.pathname.includes('report') && (
-        <Sidebar
-          startDateMoment={startDateMoment}
-          areaOfInterest={areaOfInterest}
-          serviceRequests={serviceRequests}
-        />
-      )}
-      {location.pathname === '/' && (
-        <MainSidebar />
-      )}
+      <div className='absolute top-0 left-0 z-10 w-96 h-full flex flex-col min-h-0'>
+        <div className='m-5 p-4 rounded-lg bg-white shadow-md overflow-hidden'>
+          <div className='relative h-full'>
+            {isDrawMode && (
+              <DrawSidebar
+                name={drawnFeatureName}
+                isValid={drawIsValid}
+                mapInstance={mapInstance}
+                onNameChange={(d) => { setDrawnFeatureName(d) }}
+                onDraw={(d) => { setDrawnFeature(d) }}
+                onSaveClick={handleSave}
+              />
+            )}
+            {location.pathname.includes('report') && !popupData && (
+              <AOISidebar
+                startDateMoment={startDateMoment}
+                areaOfInterest={areaOfInterest}
+                serviceRequests={serviceRequests}
+              />
+            )}
+            {location.pathname === '/' && (
+              <MainSidebar />
+            )}
+            {
+          popupData && (
+            <PopupSidebar complaints={popupData} onClose={() => { setPopupData(null) }} />
+          )
+        }
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

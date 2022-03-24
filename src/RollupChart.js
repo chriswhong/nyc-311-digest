@@ -3,26 +3,7 @@ import PropTypes from 'prop-types'
 import _ from 'underscore'
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, LabelList, Cell } from 'recharts'
 
-const getColor = (rollupCategory) => {
-  switch (rollupCategory) {
-    case 'Noise & Nuisance':
-      return '#fbb4ae'
-    case 'Streets & Sidewalks':
-      return '#b3cde3'
-    case 'Sanitation & Cleanliness':
-      return '#ccebc5'
-    case 'Business/Consumer':
-      return '#decbe4'
-    case 'Housing & Buildings':
-      return '#fed9a6'
-    case 'Homeless/Assistance':
-      return '#fddaec'
-    case 'Vehicular/Parking':
-      return '#e5d8bd'
-    default:
-      return 'gray'
-  }
-}
+import getColorFromRollupCategory from './util/getColorFromRollupCategory'
 
 const RollupChart = ({ data }) => {
   // group and count
@@ -48,7 +29,7 @@ const RollupChart = ({ data }) => {
         <XAxis type='number' hide />
         <Bar dataKey='count' fill='#285A64' label='count'>
           {grouped.map((entry, index) => (
-            <Cell key={index} fill={getColor(entry.name)} />
+            <Cell key={index} fill={getColorFromRollupCategory(entry.name)} />
           ))}
           <LabelList dataKey='count' position='right' />
         </Bar>

@@ -3,14 +3,20 @@
 @tailwind utilities;
 
 html, body, #root, .App {
+  font-family: 'Poppins', sans-serif;
   height: 100%;
   width: 100%;
 }
 
 .mapboxgl-popup {
   font-family: 'Poppins', sans-serif;
+  max-width: none !important;
 }
 
 .mapboxgl-popup-content {
   padding: 0 !important;
+}
+
+.mapboxgl-map {
+  font: inherit !important;
 }

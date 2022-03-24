@@ -5,8 +5,7 @@ import { renderToString } from 'react-dom/server'
 import mapboxgl from '!mapbox-gl'
 import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
-
-import PopupInfo from './PopupInfo'
+import moment from 'moment'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -42,9 +41,11 @@ const Map = ({
   serviceRequests,
   startDateMoment,
   allGeometries,
+  highlightedFeature,
   drawMode,
   onDraw,
-  onMapLoad
+  onMapLoad,
+  onMapClick
 }) => {
   // this ref holds the map DOM node so that we can pass it into Mapbox GL
   const mapNode = useRef(null)
@@ -93,7 +94,13 @@ const Map = ({
     if (serviceRequests) {
       map.getSource('serviceRequests').setData(serviceRequests)
     }
-  }, [map, allGeometries, areaOfInterest, serviceRequests, location])
+
+    if (highlightedFeature) {
+      map.getSource('highlighted-circle').setData(highlightedFeature)
+    } else {
+      map.getSource('highlighted-circle').setData(dummyGeojson)
+    }
+  }, [map, allGeometries, areaOfInterest, serviceRequests, highlightedFeature, location])
 
   // react to location changes by showing/hiding layers
   useEffect(() => {
@@ -120,7 +127,12 @@ const Map = ({
     // map.setLayoutProperty('serviceRequests-circle-old', 'visibility', areaOfInterestVisibility)
   }, [location])
 
-  // this useEffect fires once and instantiates the map
+  const handleMapClick = (e) => {
+    const { features } = e
+    onMapClick(features)
+  }
+
+  // instantiate the map, add sources and layers, event listeners, tooltips
   useEffect(() => {
     const nycBounds = [[-74.333496, 40.469935], [-73.653717, 40.932190]]
 
@@ -138,20 +150,20 @@ const Map = ({
         data: dummyGeojson
       })
 
-      // map.addLayer({
-      //   id: 'serviceRequests-circle-old',
-      //   type: 'circle',
-      //   source: 'serviceRequests',
-      //   paint: {
-      //     'circle-color': agencyColors,
-      //     'circle-radius': 3,
-      //     'circle-stroke-color': 'black',
-      //     'circle-stroke-width': 2,
-      //     'circle-opacity': 0.3,
-      //     'circle-stroke-opacity': 0.3
-      //   },
-      //   filter: ['<', ['get', 'created_date'], 1644721398]
-      // })
+      map.addSource('area-of-interest', {
+        type: 'geojson',
+        data: dummyGeojson
+      })
+
+      map.addSource('all-geometries', {
+        type: 'geojson',
+        data: dummyGeojson
+      })
+
+      map.addSource('highlighted-circle', {
+        type: 'geojson',
+        data: dummyGeojson
+      })
 
       map.addLayer({
         id: 'serviceRequests-circle',
@@ -166,10 +178,17 @@ const Map = ({
         filter: ['>=', ['get', 'created_date'], startDateMoment.unix()]
       })
 
-      map.addSource('area-of-interest', {
-        type: 'geojson',
-        data: dummyGeojson
-      })
+      map.addLayer({
+        id: 'highlighted-circle',
+        type: 'circle',
+        source: 'highlighted-circle',
+        paint: {
+          'circle-radius': 30,
+          'circle-color': 'lightblue',
+          'circle-opacity': 0.6
+        },
+        filter: ['>=', ['get', 'created_date'], startDateMoment.unix()]
+      }, 'serviceRequests-circle')
 
       map.addLayer({
         id: 'area-of-interest-line',
@@ -179,11 +198,6 @@ const Map = ({
           'line-width': 3,
           'line-dasharray': [2, 2]
         }
-      })
-
-      map.addSource('all-geometries', {
-        type: 'geojson',
-        data: dummyGeojson
       })
 
       map.addLayer({
@@ -232,41 +246,39 @@ const Map = ({
       map.on('mouseleave', 'all-geometries-fill', () => {
         map.getCanvas().style.cursor = ''
       })
-      // Create a popup, but don't add it to the map yet.
-      const popup = new mapboxgl.Popup({
+
+      const tooltip = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false
       })
 
-      const showPopup = (e) => {
+      const showTooltip = (e) => {
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer'
 
-        // Copy coordinates array.
         const coordinates = e.features[0].geometry.coordinates.slice()
-        const popupHtml = (
-          <>
-            {e.features.map((d) => (
-              <PopupInfo key={d.properties.unique_key} complaint={d} />
+        const tooltipHtml = (
+          <div className='px-2 py-1'>
+            {e.features.map((feature) => (
+              <div key={feature.properties.unique_key}>
+                <span className='text-sm'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
+              </div>
             ))}
-          </>
+          </div>
         )
 
-        // Populate the popup and set its coordinates
-        // based on the feature found.
-        popup.setLngLat(coordinates).setHTML(renderToString(popupHtml)).addTo(map)
+        tooltip.setLngLat(coordinates).setHTML(renderToString(tooltipHtml)).addTo(map)
       }
 
-      const hidePopup = () => {
+      const hideTooltip = () => {
         map.getCanvas().style.cursor = ''
-        popup.remove()
+        tooltip.remove()
       }
 
-      map.on('mouseenter', 'serviceRequests-circle', showPopup)
-      // map.on('mouseenter', 'serviceRequests-circle-old', showPopup)
+      map.on('mouseenter', 'serviceRequests-circle', showTooltip)
+      map.on('click', 'serviceRequests-circle', handleMapClick)
 
-      map.on('mouseleave', 'serviceRequests-circle', hidePopup)
-      // map.on('mouseleave', 'serviceRequests-circle-old', hidePopup)
+      map.on('mouseleave', 'serviceRequests-circle', hideTooltip)
 
       setMap(map)
       onMapLoad(map)
@@ -316,6 +328,7 @@ Map.propTypes = {
     type: PropTypes.string,
     features: PropTypes.arrayOf(PropTypes.object)
   }),
+  highlightedFeature: PropTypes.object,
   startDateMoment: PropTypes.object,
   allGeometries: PropTypes.shape({
     type: PropTypes.string,
@@ -323,7 +336,8 @@ Map.propTypes = {
   }),
   drawMode: PropTypes.bool,
   onDraw: PropTypes.func,
-  onMapLoad: PropTypes.func
+  onMapLoad: PropTypes.func,
+  onMapClick: PropTypes.func
 }
 
 export default Map

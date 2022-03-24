@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-
-import RollupChart from './RollupChart'
-
 import {
   CalendarIcon,
   ChevronLeftIcon
 } from '@heroicons/react/outline'
+
+import RollupChart from './RollupChart'
+import Link from './Link'
 
 const Sidebar = ({
   startDateMoment,
@@ -19,6 +19,7 @@ const Sidebar = ({
   let newServiceRequests = []
   let oldServiceRequests = []
 
+  // TODO: prep data elsewhere
   if (serviceRequests) {
     newServiceRequests = serviceRequests.features.filter((d) => {
       return d.properties.created_date >= startDateMoment.unix()
@@ -34,20 +35,24 @@ const Sidebar = ({
   }
 
   return (
-    <div className='absolute top-5 left-5 z-10 bg-white p-4 rounded-lg w-96 shadow-md'>
+    <div>
       {areaOfInterest && (
         <>
-          <div onClick={handleBackClick} className='flex items-center underline hover:text-blue-800 visited:text-purple-600 cursor-pointer text-xs text-gray-500 mb-2'><ChevronLeftIcon className='h-3 w-3 mr-0.5' /><div>Back to City View</div></div>
+          <div className='mb-1'>
+            <Link onClick={handleBackClick}>
+              <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
+            </Link>
+          </div>
           <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
 
           {serviceRequests && (
             <>
-              <div className='flex items-center mb-3'>
+              <div className='flex items-center mb-2'>
                 <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
                 <div className='text-sm'>Last 7 days <span className='text-xs'>({startDateMoment.format('D MMM YYYY')} to yesterday)</span></div>
               </div>
               <div className='flex items-center'>
-                <div className='font-bold text-3xl mr-2'>
+                <div className='font-bold text-2xl mr-2'>
                   {newServiceRequests.length}
                 </div>
                 <div className='flex-grow text-lg'>
@@ -70,7 +75,7 @@ const Sidebar = ({
           )}
         </>
       )}
-      <div className='text-xs mb-3'>Hover over the markers on the map to view details. Some markers may represent more than one 311 complaint.</div>
+      <div className='text-xs mb-3'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
 
       <hr />
       <div className='text-xs mt-3'>This area of interest also has <span className='font-bold'>{oldServiceRequests.length}</span> prior service requests that are still open.</div>
