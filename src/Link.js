@@ -6,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom'
 const Link = ({
   to,
   className,
-  colorClassName = 'hover:text-blue-800 visited:text-purple-600',
+  colorClassName = 'hover:text-blue-800',
   onClick,
   children,
   id
