@@ -55,7 +55,7 @@ Link.propTypes = {
   className: PropTypes.string,
   colorClassName: PropTypes.string,
   onClick: PropTypes.func,
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   id: PropTypes.string
 }
 

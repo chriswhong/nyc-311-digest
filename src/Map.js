@@ -38,6 +38,7 @@ const Map = ({
   padding = 0.1,
   location,
   areaOfInterest,
+  drawnFeature,
   serviceRequests,
   startDateMoment,
   allGeometries,
@@ -91,6 +92,12 @@ const Map = ({
       })
     }
 
+    if (drawnFeature) {
+      map.getSource('drawn-feature').setData(drawnFeature)
+    } else {
+      map.getSource('drawn-feature').setData(dummyGeojson)
+    }
+
     if (serviceRequests) {
       map.getSource('serviceRequests').setData(serviceRequests)
     }
@@ -100,7 +107,15 @@ const Map = ({
     } else {
       map.getSource('highlighted-circle').setData(dummyGeojson)
     }
-  }, [map, allGeometries, areaOfInterest, serviceRequests, highlightedFeature, location])
+  }, [
+    map,
+    allGeometries,
+    areaOfInterest,
+    drawnFeature,
+    serviceRequests,
+    highlightedFeature,
+    location
+  ])
 
   // react to location changes by showing/hiding layers
   useEffect(() => {
@@ -114,7 +129,10 @@ const Map = ({
     map.getSource('serviceRequests').setData(dummyGeojson)
     map.getSource('area-of-interest').setData(dummyGeojson)
 
-    if (location.pathname.includes('report')) {
+    if (
+      location.pathname.includes('report') ||
+      location.pathname.includes('new')
+    ) {
       allGeometriesVisibility = 'none'
       areaOfInterestVisibility = 'visible'
     }
@@ -156,6 +174,11 @@ const Map = ({
       })
 
       map.addSource('all-geometries', {
+        type: 'geojson',
+        data: dummyGeojson
+      })
+
+      map.addSource('drawn-feature', {
         type: 'geojson',
         data: dummyGeojson
       })
@@ -210,6 +233,16 @@ const Map = ({
         },
         layout: {
           visibility: location.pathname === '/' ? 'visible' : 'none'
+        }
+      })
+
+      map.addLayer({
+        id: 'drawn-feature-fill',
+        type: 'fill',
+        source: 'drawn-feature',
+        paint: {
+          'fill-color': 'steelblue',
+          'fill-opacity': 0.6
         }
       })
 
@@ -321,6 +354,7 @@ Map.propTypes = {
     }),
     geometry: PropTypes.object
   }),
+  drawnFeature: PropTypes.object,
   serviceRequests: PropTypes.shape({
     type: PropTypes.string,
     features: PropTypes.arrayOf(PropTypes.object)

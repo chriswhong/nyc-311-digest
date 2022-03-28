@@ -32,7 +32,7 @@ function MapWrapper () {
   const [mapInstance, setMapInstance] = useState()
 
   const [drawnFeature, setDrawnFeature] = useState()
-  const [drawnFeatureName, setDrawnFeatureName] = useState()
+  const [drawnFeatureName, setDrawnFeatureName] = useState('')
 
   // object with address and complaints properties
   const [popupData, setPopupData] = useState()
@@ -107,7 +107,7 @@ function MapWrapper () {
   const validate = (feature, name) => {
     const nameIsValid = name && name.length > 3
     const featureIsValid = feature && gjv.valid(feature)
-    return nameIsValid && featureIsValid
+    return !!nameIsValid && featureIsValid
   }
 
   const drawIsValid = validate(drawnFeature, drawnFeatureName)
@@ -129,6 +129,8 @@ function MapWrapper () {
             setAllGeometries(allGeometries)
           })
           .then(() => {
+            setDrawnFeature(null)
+            setDrawnFeatureName('')
             history(`/report/${id}`)
           })
       })
@@ -139,6 +141,7 @@ function MapWrapper () {
       <Map
         allGeometries={allGeometries}
         areaOfInterest={areaOfInterest}
+        drawnFeature={drawnFeature}
         serviceRequests={serviceRequests}
         startDateMoment={startDateMoment}
         location={location}
@@ -155,6 +158,8 @@ function MapWrapper () {
                 name={drawnFeatureName}
                 isValid={drawIsValid}
                 mapInstance={mapInstance}
+                drawnFeature={drawnFeature}
+                onClearDrawnFeature={(d) => { setDrawnFeature(null) }}
                 onNameChange={(d) => { setDrawnFeatureName(d) }}
                 onDraw={(d) => { setDrawnFeature(d) }}
                 onSaveClick={handleSave}

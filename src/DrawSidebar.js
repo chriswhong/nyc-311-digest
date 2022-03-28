@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import {
+  XCircleIcon
+} from '@heroicons/react/outline'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -8,45 +11,64 @@ const DrawSidebar = ({
   name,
   isValid,
   mapInstance,
+  drawnFeature,
   onDraw,
   onNameChange,
+  onClearDrawnFeature,
   onSaveClick
 }) => {
   const [drawInstance, setDrawInstance] = useState()
 
-  useEffect(() => {
-    if (!mapInstance) return
-    // Create a Draw control
+  // creates a draw control and returns it, does not add it to the map
+  const initializeDraw = () => {
     const draw = new MapboxDraw({
       displayControlsDefault: false,
-      // Select which mapbox-gl-draw control buttons to add to the map.
-      controls: {
-        polygon: true,
-        trash: true
-      },
-      keybindings: false,
-      // Set mapbox-gl-draw to draw by default.
-      // The user does not have to click the polygon control button first.
       defaultMode: 'draw_polygon'
     })
 
-    // Add the Draw control to your map
-    mapInstance.addControl(draw)
+    mapInstance.on('draw.modechange', (d) => {
+      if (draw.getMode() === 'simple_select') {
+        draw.changeMode('draw_polygon')
+      }
+    })
 
+    return draw
+  }
+
+  useEffect(() => {
+    if (!mapInstance) return
+
+    const draw = initializeDraw(mapInstance)
+
+    mapInstance.addControl(draw)
+    setDrawInstance(draw)
+
+    // TODO: this handler doesn't work when moved to initializeDraw()
+    // but it works fine here.  Not sure why.
     mapInstance.on('draw.create', (d) => {
       onDraw(d.features[0])
     })
-
-    setDrawInstance(draw)
-
-    return () => {
-      mapInstance.removeControl(draw)
-    }
   }, [mapInstance])
 
+  // when the a drawn feature exists, remove the draw control
+  useEffect(() => {
+    if (drawnFeature) {
+      // draw will attempt to change mode on draw.create
+      // but we also want to remove the draw control on draw.create
+      // this timeout gives it a chance to change modes first to avoid
+      // an error
+      setTimeout(() => {
+        mapInstance.removeControl(drawInstance)
+        setDrawInstance(null)
+      }, 500)
+    }
+  }, [drawnFeature])
+
   const handleClearDrawing = () => {
-    drawInstance.deleteAll()
-    drawInstance.changeMode('draw_polygon')
+    const draw = initializeDraw()
+    mapInstance.addControl(draw)
+    setDrawInstance(draw)
+    onClearDrawnFeature()
   }
 
   return (
@@ -63,8 +85,19 @@ const DrawSidebar = ({
       <div className='font-medium text-lg mb-2'>
         2. Draw it!
       </div>
-      <div className=''>Click on the map to draw a polygon. Tip: Many 311 requests are geocoded to the center of a street.  Polygons that end mid-block are optimal for capturing all activity ona given street.</div>
-      <div className='text-xs mb-4' onClick={handleClearDrawing}>Clear Drawing</div>
+      <div className='mb-4'>
+        {
+          !drawnFeature && <div className='mb-2 text-sm'>Click on the map to draw a polygon. Be sure to click the starting point to complete the drawing. </div>
+        }
+        {
+          drawnFeature && (
+            <div className='mb-2'>
+              <button type='button' className='inline-block px-4 py-1.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 hover:bg-gray-700 focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out' onClick={handleClearDrawing}><XCircleIcon className='h-4 w-4 inline mr-1' />Clear</button>
+            </div>
+          )
+        }
+        <div className='text-xs text-gray-600'>Tip: Many 311 requests are geocoded to the center of a street.  Polygons that end mid-block are optimal for capturing all activity ona given street.</div>
+      </div>
 
       <div className='flex justify-end'>
         <button
@@ -83,7 +116,9 @@ DrawSidebar.propTypes = {
   name: PropTypes.string,
   isValid: PropTypes.bool,
   mapInstance: PropTypes.object,
+  drawnFeature: PropTypes.object,
   onDraw: PropTypes.func,
+  onClearDrawnFeature: PropTypes.func,
   onNameChange: PropTypes.func,
   onSaveClick: PropTypes.func
 }
