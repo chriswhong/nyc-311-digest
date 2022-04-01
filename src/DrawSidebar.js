@@ -4,20 +4,32 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {
   XCircleIcon
 } from '@heroicons/react/outline'
+import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react'
+import gjv from 'geojson-validation'
+import bbox from '@turf/bbox'
+import { useNavigate } from 'react-router-dom'
+
+import dummyGeojson from './util/dummyGeojson'
+import { fetchGeometries } from './App'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 const DrawSidebar = ({
-  name,
-  isValid,
-  mapInstance,
-  drawnFeature,
-  onDraw,
-  onNameChange,
-  onClearDrawnFeature,
-  onSaveClick
+  map,
+  onAllGeometriesUpdate
 }) => {
   const [drawInstance, setDrawInstance] = useState()
+
+  const [drawnFeature, setDrawnFeature] = useState()
+  const [drawnFeatureName, setDrawnFeatureName] = useState('')
+
+  const history = useNavigate()
+
+  const {
+    getAccessTokenSilently,
+    getAccessTokenWithPopup,
+    user
+  } = useAuth0()
 
   // creates a draw control and returns it, does not add it to the map
   const initializeDraw = () => {
@@ -26,7 +38,7 @@ const DrawSidebar = ({
       defaultMode: 'draw_polygon'
     })
 
-    mapInstance.on('draw.modechange', (d) => {
+    map.on('draw.modechange', (d) => {
       if (draw.getMode() === 'simple_select') {
         draw.changeMode('draw_polygon')
       }
@@ -36,19 +48,46 @@ const DrawSidebar = ({
   }
 
   useEffect(() => {
-    if (!mapInstance) return
+    if (!map) return
 
-    const draw = initializeDraw(mapInstance)
+    const draw = initializeDraw(map)
 
-    mapInstance.addControl(draw)
+    map.addControl(draw)
     setDrawInstance(draw)
 
     // TODO: this handler doesn't work when moved to initializeDraw()
     // but it works fine here.  Not sure why.
-    mapInstance.on('draw.create', (d) => {
-      onDraw(d.features[0])
+    map.on('draw.create', (d) => {
+      setDrawnFeature(d.features[0])
     })
-  }, [mapInstance])
+
+    // check for one source in the group
+    if (!map.getSource('drawn-feature')) {
+      map.addSource('drawn-feature', {
+        type: 'geojson',
+        data: dummyGeojson
+      })
+
+      map.addLayer({
+        id: 'drawn-feature-fill',
+        type: 'fill',
+        source: 'drawn-feature',
+        paint: {
+          'fill-color': 'steelblue',
+          'fill-opacity': 0.6
+        }
+      })
+    }
+
+    return () => {
+      map.getSource('drawn-feature').setData(dummyGeojson)
+    }
+  }, [map])
+
+  useEffect(() => {
+    if (!map) return
+    map.getSource('drawn-feature').setData(drawnFeature || dummyGeojson)
+  }, [map, drawnFeature])
 
   // when the a drawn feature exists, remove the draw control
   useEffect(() => {
@@ -58,7 +97,7 @@ const DrawSidebar = ({
       // this timeout gives it a chance to change modes first to avoid
       // an error
       setTimeout(() => {
-        mapInstance.removeControl(drawInstance)
+        map.removeControl(drawInstance)
         setDrawInstance(null)
       }, 500)
     }
@@ -66,9 +105,61 @@ const DrawSidebar = ({
 
   const handleClearDrawing = () => {
     const draw = initializeDraw()
-    mapInstance.addControl(draw)
+    map.addControl(draw)
     setDrawInstance(draw)
-    onClearDrawnFeature()
+    setDrawnFeature(null)
+  }
+
+  const validate = (feature, name) => {
+    const nameIsValid = name && name.length > 3
+    const featureIsValid = feature && gjv.valid(feature)
+    return !!nameIsValid && featureIsValid
+  }
+
+  const drawIsValid = validate(drawnFeature, drawnFeatureName)
+
+  const handleSave = async () => {
+    const postGeometryURL = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-geometry`
+
+    let auth0AccessTokenFunction = getAccessTokenSilently
+
+    // in development we can't get the access token silently
+    if (process.env.NODE_END !== 'production') {
+      auth0AccessTokenFunction = getAccessTokenWithPopup
+    }
+
+    const token = await auth0AccessTokenFunction({
+      audience: 'nyc-311-reports-functions',
+      scope: 'write:area-of-interest'
+    })
+
+    await fetch(postGeometryURL, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: drawnFeatureName,
+        geometry: drawnFeature.geometry,
+        bbox: bbox(drawnFeature.geometry),
+        owner: {
+          id: user.sub,
+          username: user.preferred_username
+        }
+      }),
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(d => d.json())
+      .then(async ({ id }) => {
+        await fetchGeometries()
+          .then((allGeometries) => {
+            onAllGeometriesUpdate(allGeometries)
+          })
+          .then(() => {
+            setDrawnFeature(null)
+            setDrawnFeatureName('')
+            history(`/report/${id}`)
+          })
+      })
   }
 
   return (
@@ -78,9 +169,9 @@ const DrawSidebar = ({
       <input
         className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'
         type='text'
-        value={name}
+        value={drawnFeatureName}
         placeholder='Enter a name'
-        onChange={(d) => { onNameChange(d.target.value) }}
+        onChange={(d) => { setDrawnFeatureName(d.target.value) }}
       />
       <div className='font-medium text-lg mb-2'>
         2. Draw it!
@@ -102,8 +193,8 @@ const DrawSidebar = ({
       <div className='flex justify-end'>
         <button
           className='ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50'
-          disabled={!isValid}
-          onClick={onSaveClick}
+          disabled={!drawIsValid}
+          onClick={handleSave}
         >
           Save Area of Interest
         </button>
@@ -113,14 +204,10 @@ const DrawSidebar = ({
 }
 
 DrawSidebar.propTypes = {
-  name: PropTypes.string,
-  isValid: PropTypes.bool,
-  mapInstance: PropTypes.object,
-  drawnFeature: PropTypes.object,
-  onDraw: PropTypes.func,
-  onClearDrawnFeature: PropTypes.func,
-  onNameChange: PropTypes.func,
-  onSaveClick: PropTypes.func
+  map: PropTypes.object,
+  onAllGeometriesUpdate: PropTypes.func
 }
 
-export default DrawSidebar
+export default withAuthenticationRequired(DrawSidebar, {
+  onRedirecting: () => <div>Loading...</div>
+})

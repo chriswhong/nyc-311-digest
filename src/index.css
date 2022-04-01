@@ -16,7 +16,3 @@ html, body, #root, .App {
 .mapboxgl-popup-content {
   padding: 0 !important;
 }
-
-.mapboxgl-map {
-  font: inherit !important;
-}

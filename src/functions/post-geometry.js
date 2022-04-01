@@ -1,7 +1,8 @@
 // inserts a geometry into the database, returning its unique id
+import shortid from 'shortid'
 
 import getDatabaseClient from './getDatabaseClient'
-import shortid from 'shortid'
+import { requireAuth, handleOptionsCall } from './auth'
 
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
@@ -11,7 +12,8 @@ const queryDatabase = async (body, client) => {
       _id: id,
       name: body.name,
       geometry: body.geometry,
-      bbox: body.bbox
+      bbox: body.bbox,
+      owner: body.owner
     })
 
   return {
@@ -26,7 +28,7 @@ const queryDatabase = async (body, client) => {
   }
 }
 
-exports.handler = async (event, context) => {
+exports.handler = handleOptionsCall(requireAuth(async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
@@ -34,4 +36,4 @@ exports.handler = async (event, context) => {
   const client = await getDatabaseClient()
   const body = JSON.parse(event.body)
   return queryDatabase(body, client)
-}
+}))

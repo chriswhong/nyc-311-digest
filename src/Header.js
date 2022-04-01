@@ -11,6 +11,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 import Link from './Link'
 import GithubIcon from './img/GithubIcon'
+import UserMenu from './UserMenu'
 
 export default function Header () {
   const history = useNavigate()
@@ -53,6 +54,7 @@ export default function Header () {
                 Add an Area of Interest
               </a>
             )}
+            <UserMenu />
           </div>
 
         </div>

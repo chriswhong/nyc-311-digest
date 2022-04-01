@@ -14,14 +14,15 @@ const queryDatabase = async (client) => {
         _id,
         name,
         geometry,
-        bbox
+        bbox, owner
       }) => {
         return {
           type: 'Feature',
           properties: {
             _id,
             name,
-            bbox
+            bbox,
+            owner
           },
           geometry
         }
