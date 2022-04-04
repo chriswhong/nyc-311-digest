@@ -1,9 +1,10 @@
 import { MongoClient } from 'mongodb'
 
-require('dotenv').config()
+if (process.env.REACT_APP_API_BASE_URL.includes('localhost')) {
+  require('dotenv').config()
+}
 
 const MONGODB_URI = process.env.MONGODB_URI
-// const DB_NAME = 'nyc-311-digest'
 
 const getDatabaseClient = async () => {
   const client = await new MongoClient(MONGODB_URI, {
