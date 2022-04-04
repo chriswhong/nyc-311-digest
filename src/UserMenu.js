@@ -30,8 +30,7 @@ const UserMenu = () => {
           </a>
           <Button
             onClick={() => loginWithRedirect({
-              screen_hint: 'signup',
-              redirectUri: 'http://localhost:3000/post-signup'
+              screen_hint: 'signup'
             })}
           >
             Sign up
