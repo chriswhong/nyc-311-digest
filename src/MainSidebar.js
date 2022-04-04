@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import bbox from '@turf/bbox'
 
 import dummyGeojson from './util/dummyGeojson'
+import Spinner from './Spinner'
 
 const MainSidebar = ({ map, allGeometries }) => {
   const history = useNavigate()
@@ -78,7 +79,7 @@ const MainSidebar = ({ map, allGeometries }) => {
   }, [map, allGeometries])
 
   if (!map) {
-    return <div>Loading</div>
+    return <Spinner>Loading...</Spinner>
   }
 
   return (

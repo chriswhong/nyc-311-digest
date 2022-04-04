@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import dummyGeojson from './util/dummyGeojson'
 import { fetchGeometries } from './App'
 import Button from './Button'
+import Spinner from './Spinner'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -209,5 +210,6 @@ DrawSidebar.propTypes = {
 }
 
 export default withAuthenticationRequired(DrawSidebar, {
-  onRedirecting: () => <div>Loading...</div>
+  onRedirecting: () => <Spinner>Loading...</Spinner>,
+  returnTo: '/new'
 })

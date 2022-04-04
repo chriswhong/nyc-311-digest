@@ -26,7 +26,7 @@ export default function Header () {
       <div className='max-w-7xl mx-auto px-4 sm:px-6'>
         <div className='flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
-            <a className='flex items-center' onClick={() => { history('/') }}>
+            <a className='flex items-center cursor-pointer' onClick={() => { history('/') }}>
               <TicketIcon className='h-8 w-8 text-indigo-600 inline' aria-hidden='true' />
               <div className='font-semibold ml-3' style={{ fontSize: 17 }}>NYC 311 Reports</div>
             </a>

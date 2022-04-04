@@ -15,6 +15,8 @@ import mapboxgl from '!mapbox-gl'
 import RollupChart from './RollupChart'
 import Link from './Link'
 import PopupSidebar from './PopupSidebar'
+import Spinner from './Spinner'
+
 import getRollupCategory from './util/getRollupCategory'
 import dummyGeojson from './util/dummyGeojson'
 
@@ -281,12 +283,7 @@ const AOISidebar = ({
             )}
 
             {!serviceRequests && (
-              <div className='flex flex-col justify-center items-center h-64'>
-                <div className='spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-indigo-600' role='status'>
-                  <span className='visually-hidden'>Loading...</span>
-                </div>
-                <div className='mt-2 text-sm text-gray-500'>Loading 311 data...</div>
-              </div>
+              <Spinner>Loading 311 data...</Spinner>
             )}
           </div>
         </div>
