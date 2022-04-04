@@ -1,6 +1,6 @@
 [build]
   command = "CI=false yarn build"
-  functions = "lambda"
+  functions = "src/functions"
   publish = "build"
 [[redirects]]
   from = "/*"
