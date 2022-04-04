@@ -18,6 +18,7 @@
     "geojson-validation": "^1.0.2",
     "mapbox-gl": "^2.7.0",
     "moment": "^2.29.1",
+    "mongodb": "^4.4.1",
     "netlify-lambda": "^2.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
