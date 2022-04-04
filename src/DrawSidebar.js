@@ -126,7 +126,7 @@ const DrawSidebar = ({
     let auth0AccessTokenFunction = getAccessTokenSilently
 
     // in development we can't get the access token silently
-    if (process.env.NODE_END !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       auth0AccessTokenFunction = getAccessTokenWithPopup
     }
 
