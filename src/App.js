@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import {
-  BrowserRouter,
   Routes,
-  Route
+  Route,
+  useNavigate
 } from 'react-router-dom'
+import { Auth0Provider } from '@auth0/auth0-react'
 
 import MapWrapper from './MapWrapper.js'
 import Header from './Header.js'
@@ -22,6 +23,8 @@ function App () {
   const [mapInstance, setMapInstance] = useState()
   const [allGeometries, setAllGeometries] = useState()
 
+  const history = useNavigate()
+
   // get all area of interest geometries
   useEffect(() => {
     fetchGeometries()
@@ -32,7 +35,14 @@ function App () {
 
   return (
     <div className='App flex flex-col'>
-      <BrowserRouter>
+      <Auth0Provider
+        domain='nyc-311-reports.us.auth0.com'
+        clientId='9nFBTNCFCZR2Fht7WGDjlt5g5vtbnpDD'
+        redirectUri={window.location.origin}
+        onRedirectCallback={(appState) => {
+          history(appState.returnTo)
+        }}
+      >
         <Header />
         <div className='flex-grow relative min-h-0'>
           <Routes>
@@ -67,7 +77,8 @@ function App () {
             </Route>
           </Routes>
         </div>
-      </BrowserRouter>
+      </Auth0Provider>
+
     </div>
   )
 }
