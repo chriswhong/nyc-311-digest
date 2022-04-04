@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Menu, Transition } from '@headlessui/react'
+import { useLocation } from 'react-router-dom'
 
 import Button from './Button'
 
@@ -10,6 +11,7 @@ function classNames (...classes) {
 
 const UserMenu = () => {
   const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0()
+  const location = useLocation()
 
   if (isLoading) {
     // spinner from https://flowbite.com/docs/components/spinner/
@@ -24,8 +26,14 @@ const UserMenu = () => {
     <>
       {
       !isAuthenticated && (
-        <div className='hidden md:flex items-center justify-end md:flex-1 ml-8'>
-          <a onClick={() => loginWithRedirect()} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'>
+        <div className='hidden md:flex items-center justify-end md:flex-1 ml-8 cursor-pointer'>
+          <a
+            onClick={() => loginWithRedirect({
+              appState: {
+                returnTo: location.pathname
+              }
+            })} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'
+          >
             Sign in
           </a>
           <Button

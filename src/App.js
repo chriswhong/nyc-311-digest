@@ -25,6 +25,10 @@ function App () {
 
   const history = useNavigate()
 
+  const onRedirectCallback = (appState) => {
+    history(appState.returnTo || '/')
+  }
+
   // get all area of interest geometries
   useEffect(() => {
     fetchGeometries()
@@ -39,9 +43,7 @@ function App () {
         domain='nyc-311-reports.us.auth0.com'
         clientId='9nFBTNCFCZR2Fht7WGDjlt5g5vtbnpDD'
         redirectUri={window.location.origin}
-        onRedirectCallback={(appState) => {
-          history(appState.returnTo)
-        }}
+        onRedirectCallback={onRedirectCallback}
       >
         <Header />
         <div className='flex-grow relative min-h-0'>
