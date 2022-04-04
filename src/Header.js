@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Link from './Link'
 import GithubIcon from './img/GithubIcon'
 import UserMenu from './UserMenu'
+import Button from './Button'
 
 export default function Header () {
   const history = useNavigate()
@@ -45,14 +46,12 @@ export default function Header () {
               <GithubIcon />
             </Link>
             {location.pathname !== '/new' && (
-              <a
-                href='#'
-                className='ml-6 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700'
+              <Button
+                icon={PlusIcon}
                 onClick={handleAddClick}
               >
-                <PlusIcon className='h-6 w-6 mr-2' />
-                Add an Area of Interest
-              </a>
+                New Area of Interest
+              </Button>
             )}
             <UserMenu />
           </div>

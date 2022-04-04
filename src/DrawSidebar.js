@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 import dummyGeojson from './util/dummyGeojson'
 import { fetchGeometries } from './App'
+import Button from './Button'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -191,13 +192,12 @@ const DrawSidebar = ({
       </div>
 
       <div className='flex justify-end'>
-        <button
-          className='ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50'
+        <Button
           disabled={!drawIsValid}
           onClick={handleSave}
         >
           Save Area of Interest
-        </button>
+        </Button>
       </div>
     </div>
   )
