@@ -11,11 +11,13 @@ import pointsWithinPolygon from '@turf/points-within-polygon'
 import { renderToString } from 'react-dom/server'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
+import _ from 'underscore'
 
 import RollupChart from './RollupChart'
 import Link from './Link'
 import PopupSidebar from './PopupSidebar'
 import Spinner from './Spinner'
+import CircleMarkerSvg from './CircleMarkerSvg'
 
 import getRollupCategory from './util/getRollupCategory'
 import dummyGeojson from './util/dummyGeojson'
@@ -33,6 +35,12 @@ export const categoryColors = [
   /* other */ 'gray'
 ]
 
+// de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
+// https://github.com/visgl/react-map-gl/issues/1410
+const dedupeServiceRequests = (serviceRequests) => {
+  return _.uniq(serviceRequests, d => d.properties.unique_key)
+}
+
 const AOISidebar = ({
   map,
   allGeometries
@@ -47,8 +55,8 @@ const AOISidebar = ({
 
   const highlightedFeature = popupData && popupData[0]
 
-  const handleMapClick = (e) => {
-    const { features } = e
+  const handleComplaintClick = (e) => {
+    const features = dedupeServiceRequests(e.features)
     setPopupData(features)
   }
 
@@ -65,7 +73,11 @@ const AOISidebar = ({
 
       map.addSource('serviceRequests', {
         type: 'geojson',
-        data: dummyGeojson
+        data: dummyGeojson,
+        cluster: true,
+        clusterMaxZoom: 18, // Max zoom to cluster points on
+        clusterRadius: 3,
+        generateId: true
       })
 
       map.addSource('highlighted-circle', {
@@ -91,9 +103,51 @@ const AOISidebar = ({
           'circle-color': categoryColors,
           'circle-radius': 3,
           'circle-stroke-color': 'black',
-          'circle-stroke-width': 2
+          'circle-stroke-width': 1.5
         },
-        filter: ['>=', ['get', 'created_date'], startDateMoment.unix()]
+        filter: ['!', ['has', 'point_count']]
+      })
+
+      map.addLayer({
+        id: 'serviceRequests-circle-cluster',
+        type: 'circle',
+        source: 'serviceRequests',
+        paint: {
+          'circle-color': '#ccc',
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            5,
+            3,
+            6,
+            5,
+            7,
+            7,
+            8,
+            9,
+            9
+          ],
+          'circle-stroke-color': 'black',
+          'circle-stroke-width': 1.5,
+          'circle-opacity': 0.5,
+          'circle-stroke-opacity': 0.8
+        },
+        filter: ['has', 'point_count']
+      })
+
+      map.addLayer({
+        id: 'serviceRequests-circle-cluster-count',
+        type: 'symbol',
+        source: 'serviceRequests',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 9
+        },
+        paint: {
+          // 'text-translate': [6, 6]
+        }
       })
 
       map.addLayer({
@@ -120,7 +174,7 @@ const AOISidebar = ({
     if (map && allGeometries) {
       const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
         const dateFrom = startDateMoment.format('YYYY-MM-DD')
-        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND (created_date>'${dateFrom}' OR status='Open')&$order=created_date DESC`
+        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND created_date>'${dateFrom}'&$order=created_date DESC`
         return await fetch(serviceRequestsApiUrl).then(d => d.json())
       }
 
@@ -147,7 +201,7 @@ const AOISidebar = ({
           }
 
           const clippedServiceRequests = pointsWithinPolygon(serviceRequestsGeojson, areaOfInterestGeometry)
-          // convert create_date to unix epoch
+          // convert created_date to unix epoch
           clippedServiceRequests.features = clippedServiceRequests.features.map((d) => {
             return {
               ...d,
@@ -160,6 +214,7 @@ const AOISidebar = ({
               }
             }
           })
+
           setServiceRequests(clippedServiceRequests)
         })
     }
@@ -185,15 +240,18 @@ const AOISidebar = ({
       })
 
       const showTooltip = (e) => {
+        const features = dedupeServiceRequests(e.features)
+
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer'
 
-        const coordinates = e.features[0].geometry.coordinates.slice()
+        const coordinates = features[0].geometry.coordinates.slice()
         const tooltipHtml = (
           <div className='px-2 py-1'>
-            {e.features.map((feature) => (
-              <div key={feature.properties.unique_key}>
-                <span className='text-sm'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
+            {features.map((feature) => (
+              <div key={feature.properties.unique_key} className='flex items-center'>
+                <CircleMarkerSvg rollupCategory={getRollupCategory(feature.properties.complaint_type)} />
+                <span className='text-sm ml-1'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
               </div>
             ))}
           </div>
@@ -207,9 +265,38 @@ const AOISidebar = ({
         tooltip.remove()
       }
       map.on('mouseenter', 'serviceRequests-circle', showTooltip)
-      map.on('click', 'serviceRequests-circle', handleMapClick)
+      map.on('click', 'serviceRequests-circle', handleComplaintClick)
+
+      map.on('mouseenter', 'serviceRequests-circle-cluster', (e) => {
+        const clusterId = e.features[0].properties.cluster_id
+        map.getSource('serviceRequests').getClusterLeaves(
+          clusterId,
+          100, // limit
+          0,
+          (err, features) => {
+            if (err) return
+
+            showTooltip({
+              features
+            })
+          }
+        )
+      })
+      map.on('click', 'serviceRequests-circle-cluster', (e) => {
+        const clusterId = e.features[0].properties.cluster_id
+        map.getSource('serviceRequests').getClusterLeaves(
+          clusterId,
+          100, // limit
+          0,
+          (err, features) => {
+            if (err) return
+            setPopupData(features)
+          }
+        )
+      })
 
       map.on('mouseleave', 'serviceRequests-circle', hideTooltip)
+      map.on('mouseleave', 'serviceRequests-circle-cluster', hideTooltip)
     }
   }, [map, serviceRequests])
 
@@ -217,20 +304,6 @@ const AOISidebar = ({
     if (!map) return
     map.getSource('highlighted-circle').setData(highlightedFeature || dummyGeojson)
   }, [map, highlightedFeature])
-
-  let newServiceRequests = []
-  let oldServiceRequests = []
-
-  // TODO: prep data elsewhere
-  if (serviceRequests) {
-    newServiceRequests = serviceRequests.features.filter((d) => {
-      return d.properties.created_date >= startDateMoment.unix()
-    })
-
-    oldServiceRequests = serviceRequests.features.filter((d) => {
-      return d.properties.created_date < startDateMoment.unix()
-    })
-  }
 
   const handleBackClick = () => {
     history('/')
@@ -267,18 +340,16 @@ const AOISidebar = ({
                 </div>
                 <div className='flex items-center'>
                   <div className='font-bold text-2xl mr-2'>
-                    {newServiceRequests.length}
+                    {serviceRequests.features.length}
                   </div>
                   <div className='flex-grow text-lg'>
                     New Service Requests
                   </div>
                 </div>
                 <div className='h-64 mb-3'>
-                  <RollupChart data={newServiceRequests} />
+                  <RollupChart data={serviceRequests.features} />
                 </div>
                 <div className='text-xs mb-3'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
-                <hr />
-                <div className='text-xs mt-3'>This area of interest also has <span className='font-bold'>{oldServiceRequests.length}</span> prior service requests that are still open.</div>
               </>
             )}
 
