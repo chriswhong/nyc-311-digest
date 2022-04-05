@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  CalendarIcon,
   ChevronLeftIcon,
   UserCircleIcon
 } from '@heroicons/react/outline'
@@ -18,6 +17,7 @@ import Link from './Link'
 import PopupSidebar from './PopupSidebar'
 import Spinner from './Spinner'
 import CircleMarkerSvg from './CircleMarkerSvg'
+import DateRangeSelector, { DEFAULT_DATE_RANGE } from './DateRangeSelector'
 
 import getRollupCategory from './util/getRollupCategory'
 import dummyGeojson from './util/dummyGeojson'
@@ -49,7 +49,8 @@ const AOISidebar = ({
   const [areaOfInterest, setAreaOfInterest] = useState()
   const [serviceRequests, setServiceRequests] = useState()
   const [popupData, setPopupData] = useState()
-  const [startDateMoment] = useState(moment().subtract(7, 'd').startOf('day'))
+  // array of two moments
+  const [dateRange, setDateRange] = useState(DEFAULT_DATE_RANGE)
 
   const { areaOfInterestId } = useParams()
 
@@ -159,7 +160,7 @@ const AOISidebar = ({
           'circle-color': 'lightblue',
           'circle-opacity': 0.6
         },
-        filter: ['>=', ['get', 'created_date'], startDateMoment.unix()]
+        filter: ['>=', ['get', 'created_date'], dateRange[0].unix()]
       }, 'serviceRequests-circle')
     }
 
@@ -171,10 +172,12 @@ const AOISidebar = ({
   }, [map])
 
   useEffect(() => {
+    const dateFrom = dateRange[0].format('YYYY-MM-DD')
+    const dateTo = dateRange[1].format('YYYY-MM-DD')
+
     if (map && allGeometries) {
       const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
-        const dateFrom = startDateMoment.format('YYYY-MM-DD')
-        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND created_date>'${dateFrom}'&$order=created_date DESC`
+        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND created_date>'${dateFrom}' AND created_date<='${dateTo}'&$order=created_date DESC`
         return await fetch(serviceRequestsApiUrl).then(d => d.json())
       }
 
@@ -218,7 +221,7 @@ const AOISidebar = ({
           setServiceRequests(clippedServiceRequests)
         })
     }
-  }, [map, allGeometries])
+  }, [map, allGeometries, dateRange])
 
   useEffect(() => {
     if (map && areaOfInterest) {
@@ -318,6 +321,14 @@ const AOISidebar = ({
       <PopupSidebar complaints={popupData} onClose={() => { setPopupData(null) }} />
     )
   }
+
+  const dateFrom = dateRange[0].format('DD MMM YYYY')
+  const dateTo = dateRange[1].format('DD MMM YYYY')
+
+  const handleDateRangeChange = (d) => {
+    setDateRange(d)
+  }
+
   return (
     <>
       {areaOfInterest && (
@@ -338,10 +349,9 @@ const AOISidebar = ({
 
             {serviceRequests && (
               <>
-                <div className='flex items-center mb-2'>
-                  <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
-                  <div className='text-sm'>Last 7 days <span className='text-xs'>({startDateMoment.format('D MMM YYYY')} to yesterday)</span></div>
-                </div>
+                <DateRangeSelector onChange={handleDateRangeChange} />
+                <div className='text-xs'>From {dateFrom} to {dateTo}</div>
+
                 <div className='flex items-center'>
                   <div className='font-bold text-2xl mr-2'>
                     {serviceRequests.features.length}
