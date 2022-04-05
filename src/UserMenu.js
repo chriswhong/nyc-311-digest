@@ -38,6 +38,9 @@ const UserMenu = () => {
           </a>
           <Button
             onClick={() => loginWithRedirect({
+              appState: {
+                returnTo: location.pathname
+              },
               screen_hint: 'signup'
             })}
           >
