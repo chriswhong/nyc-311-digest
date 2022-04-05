@@ -236,7 +236,8 @@ const AOISidebar = ({
 
       const tooltip = new mapboxgl.Popup({
         closeButton: false,
-        closeOnClick: false
+        closeOnClick: false,
+        offset: 5
       })
 
       const showTooltip = (e) => {
@@ -257,7 +258,10 @@ const AOISidebar = ({
           </div>
         )
 
-        tooltip.setLngLat(coordinates).setHTML(renderToString(tooltipHtml)).addTo(map)
+        tooltip
+          .setLngLat(coordinates)
+          .setHTML(renderToString(tooltipHtml))
+          .addTo(map)
       }
 
       const hideTooltip = () => {
