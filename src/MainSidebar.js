@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import bbox from '@turf/bbox'
+import slugify from 'slugify'
 
 import dummyGeojson from './util/dummyGeojson'
 import Spinner from './Spinner'
@@ -51,8 +52,11 @@ const MainSidebar = ({ map, allGeometries }) => {
       // make geometries clickable
       map.on('click', 'all-geometries-fill', (e) => {
         const [feature] = map.queryRenderedFeatures(e.point)
-        const geometryId = feature.properties._id
-        history(`/report/${geometryId}`)
+        const { name, _id: geometryId } = feature.properties
+        history(`/report/${geometryId}/${slugify(name, {
+          replacement: '-',
+          lower: true
+        })}`)
       })
       // make the cursor a pointer when hovering all-geomtries-fill layer
       map.on('mouseenter', 'all-geometries-fill', () => {

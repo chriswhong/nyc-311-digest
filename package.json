@@ -27,6 +27,7 @@
     "react-scripts": "5.0.0",
     "recharts": "^2.1.9",
     "shortid": "^2.2.16",
+    "slugify": "^1.6.5",
     "tw-elements": "^1.0.0-alpha11",
     "underscore": "^1.13.2",
     "web-vitals": "^2.1.4",

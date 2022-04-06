@@ -68,7 +68,7 @@ function App () {
                 }
               />
               <Route
-                path='/report/:areaOfInterestId'
+                path='/report/:areaOfInterestId/:slug'
                 element={
                   <AOISidebar
                     map={mapInstance}
