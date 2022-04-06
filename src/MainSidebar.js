@@ -18,7 +18,8 @@ const MainSidebar = ({ map, allGeometries }) => {
     if (!map.getSource('all-geometries')) {
       map.addSource('all-geometries', {
         type: 'geojson',
-        data: dummyGeojson
+        data: dummyGeojson,
+        generateId: true
       })
 
       map.addLayer({
@@ -27,7 +28,12 @@ const MainSidebar = ({ map, allGeometries }) => {
         source: 'all-geometries',
         paint: {
           'fill-color': 'steelblue',
-          'fill-opacity': 0.6
+          'fill-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0.6
+          ]
         }
       })
 
@@ -64,6 +70,37 @@ const MainSidebar = ({ map, allGeometries }) => {
       })
       map.on('mouseleave', 'all-geometries-fill', () => {
         map.getCanvas().style.cursor = ''
+      })
+
+      let hoveredStateId = null
+      // When the user moves their mouse over the state-fill layer, we'll update the
+      // feature state for the feature under the mouse.
+      map.on('mousemove', 'all-geometries-fill', (e) => {
+        if (e.features.length > 0) {
+          if (hoveredStateId !== null) {
+            map.setFeatureState(
+              { source: 'all-geometries', id: hoveredStateId },
+              { hover: false }
+            )
+          }
+          hoveredStateId = e.features[0].id
+          map.setFeatureState(
+            { source: 'all-geometries', id: hoveredStateId },
+            { hover: true }
+          )
+        }
+      })
+
+      // When the mouse leaves the state-fill layer, update the feature state of the
+      // previously hovered feature.
+      map.on('mouseleave', 'all-geometries-fill', () => {
+        if (hoveredStateId !== null) {
+          map.setFeatureState(
+            { source: 'all-geometries', id: hoveredStateId },
+            { hover: false }
+          )
+        }
+        hoveredStateId = null
       })
     }
 
