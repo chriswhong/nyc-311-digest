@@ -23,7 +23,7 @@ const RollupChart = ({ data }) => {
       <BarChart
         data={grouped}
         layout='vertical'
-        margin={{ left: 0, right: 20 }}
+        margin={{ left: 0, right: 30 }}
       >
         <YAxis type='category' width={150} dataKey='name' fontSize={11} interval={0} axisLine={false} dx={-5} tickLine={false} />
         <XAxis type='number' hide />
