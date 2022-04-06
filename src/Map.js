@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A'
@@ -58,6 +60,13 @@ const Map = ({
       minZoom,
       maxZoom
     })
+
+    map.addControl(
+      new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+      })
+    )
 
     map.on('load', () => {
       onLoad(map)
