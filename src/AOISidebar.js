@@ -333,7 +333,7 @@ const AOISidebar = ({
   return (
     <>
       {areaOfInterest && (
-        <div className='flex flex-col h-full'>
+        <>
           <div className='px-4 mb-3'>
             <div className='mb-1'>
               <Link onClick={handleBackClick}>
@@ -371,7 +371,7 @@ const AOISidebar = ({
               <Spinner>Loading 311 data...</Spinner>
             )}
           </div>
-        </div>
+        </>
       )}
     </>
   )
