@@ -176,6 +176,7 @@ const AOISidebar = ({
     const dateTo = dateRange[1].format('YYYY-MM-DD')
 
     if (map && allGeometries) {
+      setServiceRequests(null)
       const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
         const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND created_date>'${dateFrom}' AND created_date<='${dateTo}'&$order=created_date DESC`
         return await fetch(serviceRequestsApiUrl).then(d => d.json())
@@ -346,11 +347,10 @@ const AOISidebar = ({
             </div>
           </div>
           <div className='flex-grow overflow-y-scroll px-4'>
-
+            <DateRangeSelector onChange={handleDateRangeChange} />
+            <div className='text-xs'>From {dateFrom} to {dateTo}</div>
             {serviceRequests && (
               <>
-                <DateRangeSelector onChange={handleDateRangeChange} />
-                <div className='text-xs'>From {dateFrom} to {dateTo}</div>
 
                 <div className='flex items-center'>
                   <div className='font-bold text-2xl mr-2'>
