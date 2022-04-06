@@ -13,6 +13,7 @@ import dummyGeojson from './util/dummyGeojson'
 import { fetchGeometries } from './App'
 import Button from './Button'
 import Spinner from './Spinner'
+import { slugFromName } from './util/slugFromName'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -21,9 +22,9 @@ const DrawSidebar = ({
   onAllGeometriesUpdate
 }) => {
   const [drawInstance, setDrawInstance] = useState()
-
   const [drawnFeature, setDrawnFeature] = useState()
   const [drawnFeatureName, setDrawnFeatureName] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const history = useNavigate()
 
@@ -121,6 +122,7 @@ const DrawSidebar = ({
   const drawIsValid = validate(drawnFeature, drawnFeatureName)
 
   const handleSave = async () => {
+    setLoading(true)
     const postGeometryURL = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-geometry`
 
     let auth0AccessTokenFunction = getAccessTokenSilently
@@ -157,9 +159,9 @@ const DrawSidebar = ({
             onAllGeometriesUpdate(allGeometries)
           })
           .then(() => {
+            history(`/report/${id}/${slugFromName(drawnFeatureName)}`)
             setDrawnFeature(null)
             setDrawnFeatureName('')
-            history(`/report/${id}`)
           })
       })
   }
@@ -194,10 +196,20 @@ const DrawSidebar = ({
 
       <div className='flex justify-end'>
         <Button
-          disabled={!drawIsValid}
+          disabled={!drawIsValid || loading}
           onClick={handleSave}
         >
-          Save Area of Interest
+          {loading && (
+            <div className='flex justify-center items-center'>
+              <div className='spinner-border animate-spin inline-block w-5 h-5 border-4 rounded-full text-white mr-2' role='status'>
+                <span className='visually-hidden'>Saving...</span>
+              </div>
+              Saving...
+            </div>
+          )}
+          {!loading && (
+            <>Save Area of Interest</>
+          )}
         </Button>
       </div>
     </div>
