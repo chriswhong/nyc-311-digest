@@ -14,7 +14,7 @@ export const agencyColors = [
   ['get', 'rollupCategory'],
   'Noise & Nuisance', '#fbb4ae',
   'Streets & Sidewalks', '#b3cde3',
-  'Sanitation & Cleanliness', '#ccebc5',
+  'Sanitation & Environmental', '#ccebc5',
   'Business/Consumer', '#decbe4',
   'Housing & Buildings', '#fed9a6',
   'Homeless/Assistance', '#fddaec',

@@ -17,7 +17,8 @@ const getRollupCategory = (complaintType) => {
     'Tattooing',
     'Drinking',
     'Drug Activity',
-    'Illegal Fireworks'
+    'Illegal Fireworks',
+    'Unleashed Dog'
   ].includes(complaintType)) {
     rollupCategory = 'Noise & Nuisance'
   }
@@ -58,9 +59,16 @@ const getRollupCategory = (complaintType) => {
     'Street Sweeping Complaint',
     'Dead Animal',
     'Commercial Disposal Complaint',
-    'Residential Disposal Complaint'
+    'Residential Disposal Complaint',
+    'Unsanitary Pigeon Condition',
+    'Hazardous Materials',
+    'Air Quality',
+    'Lead',
+    'Water Conservation',
+    'Asbestos',
+    'Litter Basket Request'
   ].includes(complaintType)) {
-    rollupCategory = 'Sanitation & Cleanliness'
+    rollupCategory = 'Sanitation & Environmental'
   }
 
   if ([
@@ -92,7 +100,9 @@ const getRollupCategory = (complaintType) => {
     'School Maintenance',
     'Elevator',
     'Real Time Enforcement',
-    'Boilers'
+    'Boilers',
+    'Emergency Response Team (ERT)',
+    'BEST/Site Safety'
   ].includes(complaintType)) {
     rollupCategory = 'Housing & Buildings'
   }

@@ -12,7 +12,6 @@ import { renderToString } from 'react-dom/server'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
 import _ from 'underscore'
-import ReactTooltip from 'react-tooltip'
 
 import RollupChart from './RollupChart'
 import Link from './Link'
@@ -29,7 +28,7 @@ export const categoryColors = [
   ['get', 'rollupCategory'],
   'Noise & Nuisance', '#fbb4ae',
   'Streets & Sidewalks', '#b3cde3',
-  'Sanitation & Cleanliness', '#ccebc5',
+  'Sanitation & Environmental', '#ccebc5',
   'Business/Consumer', '#decbe4',
   'Housing & Buildings', '#fed9a6',
   'Homeless/Assistance', '#fddaec',
@@ -374,7 +373,6 @@ const AOISidebar = ({
                     <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
                   </div>
                 </Link>
-                <ReactTooltip place='right' type='dark' effect='solid' />
                 <div className='h-64 mb-3'>
                   <RollupChart data={serviceRequests.features} />
                 </div>

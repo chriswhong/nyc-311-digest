@@ -5,7 +5,7 @@ const getRollupCategory = (rollupCategory) => {
       return '#fbb4ae'
     case 'Streets & Sidewalks':
       return '#b3cde3'
-    case 'Sanitation & Cleanliness':
+    case 'Sanitation & Environmental':
       return '#ccebc5'
     case 'Business/Consumer':
       return '#decbe4'
