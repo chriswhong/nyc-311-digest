@@ -1,4 +1,14 @@
-// group 311 'complaint type' into higher-level categories
+/*
+ The high-level categories are logical groupings of the 311 complaint_type
+ field.  These were created specifically for this app to simplify reporting/charting
+ and are defined in this file.
+
+ complaint_type values that are not in one of the categories defined here will
+ show up as their own top-level category and shown in gray on the map and chart.
+
+ The maintainers of this app will attempt to add uncategorized complaint_type values
+ to these categories from time to time
+*/
 const getRollupCategory = (complaintType) => {
   let rollupCategory = complaintType
 

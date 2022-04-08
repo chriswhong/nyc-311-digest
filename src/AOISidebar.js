@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ChevronLeftIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  ExternalLinkIcon
 } from '@heroicons/react/outline'
 import moment from 'moment'
 import pointsWithinPolygon from '@turf/points-within-polygon'
@@ -11,6 +12,7 @@ import { renderToString } from 'react-dom/server'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
 import _ from 'underscore'
+import ReactTooltip from 'react-tooltip'
 
 import RollupChart from './RollupChart'
 import Link from './Link'
@@ -78,6 +80,9 @@ const AOISidebar = ({
         cluster: true,
         clusterMaxZoom: 18, // Max zoom to cluster points on
         clusterRadius: 3,
+        clusterProperties: {
+          rollupCategory: ['max', ['get', 'rollupCategory']]
+        },
         generateId: true
       })
 
@@ -114,7 +119,7 @@ const AOISidebar = ({
         type: 'circle',
         source: 'serviceRequests',
         paint: {
-          'circle-color': '#ccc',
+          'circle-color': categoryColors,
           'circle-radius': [
             'step',
             ['get', 'point_count'],
@@ -276,6 +281,7 @@ const AOISidebar = ({
       map.on('click', 'serviceRequests-circle', handleComplaintClick)
 
       map.on('mouseenter', 'serviceRequests-circle-cluster', (e) => {
+        console.log(e.features)
         const clusterId = e.features[0].properties.cluster_id
         map.getSource('serviceRequests').getClusterLeaves(
           clusterId,
@@ -347,8 +353,10 @@ const AOISidebar = ({
             </div>
           </div>
           <div className='flex-grow overflow-y-scroll px-4'>
-            <DateRangeSelector onChange={handleDateRangeChange} />
-            <div className='text-xs'>From {dateFrom} to {dateTo}</div>
+            <div className='mb-2'>
+              <DateRangeSelector onChange={handleDateRangeChange} />
+              <div className='text-xs'>From {dateFrom} to {dateTo}</div>
+            </div>
             {serviceRequests && (
               <>
 
@@ -356,10 +364,17 @@ const AOISidebar = ({
                   <div className='font-bold text-2xl mr-2'>
                     {serviceRequests.features.length}
                   </div>
-                  <div className='flex-grow text-lg'>
+                  <div className='text-lg'>
                     New Service Requests
                   </div>
                 </div>
+                <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/getRollupCategory.js'>
+                  <div className='text-xs flex items-center mb-2'>
+                    About these Categories
+                    <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
+                  </div>
+                </Link>
+                <ReactTooltip place='right' type='dark' effect='solid' />
                 <div className='h-64 mb-3'>
                   <RollupChart data={serviceRequests.features} />
                 </div>
