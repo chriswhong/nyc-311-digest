@@ -76,7 +76,10 @@ const getRollupCategory = (complaintType) => {
     'Consumer Complaint',
     'Day Care',
     'Outdoor Dining',
-    'Food Poisoning'
+    'Food Poisoning',
+    'Mobile Food Vendor',
+    'Green Taxi Complaint',
+    'Taxi Report'
   ].includes(complaintType)) {
     rollupCategory = 'Business/Consumer'
   }
@@ -102,7 +105,8 @@ const getRollupCategory = (complaintType) => {
     'Real Time Enforcement',
     'Boilers',
     'Emergency Response Team (ERT)',
-    'BEST/Site Safety'
+    'BEST/Site Safety',
+    'Plumbing'
   ].includes(complaintType)) {
     rollupCategory = 'Housing & Buildings'
   }
