@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import {
   ChevronLeftIcon,
   UserCircleIcon,
@@ -18,7 +18,7 @@ import Link from './Link'
 import PopupSidebar from './PopupSidebar'
 import Spinner from './Spinner'
 import CircleMarkerSvg from './CircleMarkerSvg'
-import DateRangeSelector, { DEFAULT_DATE_RANGE } from './DateRangeSelector'
+import DateRangeSelector, { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 
 import getRollupCategory from './util/getRollupCategory'
 import dummyGeojson from './util/dummyGeojson'
@@ -42,16 +42,30 @@ const dedupeServiceRequests = (serviceRequests) => {
   return _.uniq(serviceRequests, d => d.properties.unique_key)
 }
 
+function useQuery () {
+  const { search } = useLocation()
+
+  return React.useMemo(() => new URLSearchParams(search), [search])
+}
+
 const AOISidebar = ({
   map,
   allGeometries
 }) => {
+  const query = useQuery()
+  const dateRangeSelectorFromQueryParams = dateSelectionItems.find((d) => {
+    return d.value === query.get('dateSelection')
+  }) || DEFAULT_DATE_RANGE_SELECTION
+
+  const { pathname } = useLocation()
   const history = useNavigate()
   const [areaOfInterest, setAreaOfInterest] = useState()
   const [serviceRequests, setServiceRequests] = useState()
   const [popupData, setPopupData] = useState()
   // array of two moments
-  const [dateRange, setDateRange] = useState(DEFAULT_DATE_RANGE)
+  const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
+
+  console.log(dateSelection)
 
   const { areaOfInterestId } = useParams()
 
@@ -164,7 +178,7 @@ const AOISidebar = ({
           'circle-color': 'lightblue',
           'circle-opacity': 0.6
         },
-        filter: ['>=', ['get', 'created_date'], dateRange[0].unix()]
+        filter: ['>=', ['get', 'created_date'], dateSelection.dateRange[0].unix()]
       }, 'serviceRequests-circle')
     }
 
@@ -176,8 +190,8 @@ const AOISidebar = ({
   }, [map])
 
   useEffect(() => {
-    const dateFrom = dateRange[0].format('YYYY-MM-DD')
-    const dateTo = dateRange[1].format('YYYY-MM-DD')
+    const dateFrom = dateSelection.dateRange[0].format('YYYY-MM-DD')
+    const dateTo = dateSelection.dateRange[1].format('YYYY-MM-DD')
 
     if (map && allGeometries) {
       setServiceRequests(null)
@@ -226,7 +240,7 @@ const AOISidebar = ({
           setServiceRequests(clippedServiceRequests)
         })
     }
-  }, [map, allGeometries, dateRange])
+  }, [map, allGeometries, dateSelection.dateRange])
 
   useEffect(() => {
     if (map && areaOfInterest) {
@@ -280,7 +294,6 @@ const AOISidebar = ({
       map.on('click', 'serviceRequests-circle', handleComplaintClick)
 
       map.on('mouseenter', 'serviceRequests-circle-cluster', (e) => {
-        console.log(e.features)
         const clusterId = e.features[0].properties.cluster_id
         map.getSource('serviceRequests').getClusterLeaves(
           clusterId,
@@ -318,6 +331,11 @@ const AOISidebar = ({
     map.getSource('highlighted-circle').setData(highlightedFeature || dummyGeojson)
   }, [map, highlightedFeature])
 
+  // react to changes in query params
+  useEffect(() => {
+    setDateSelection(dateRangeSelectorFromQueryParams)
+  }, [dateRangeSelectorFromQueryParams])
+
   const handleBackClick = () => {
     history('/')
   }
@@ -328,11 +346,11 @@ const AOISidebar = ({
     )
   }
 
-  const dateFrom = dateRange[0].format('DD MMM YYYY')
-  const dateTo = dateRange[1].format('DD MMM YYYY')
+  const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
+  const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
   const handleDateRangeChange = (d) => {
-    setDateRange(d)
+    history(`${pathname}?dateSelection=${d.value}`)
   }
 
   return (
@@ -353,7 +371,7 @@ const AOISidebar = ({
           </div>
           <div className='flex-grow overflow-y-scroll px-4'>
             <div className='mb-2'>
-              <DateRangeSelector onChange={handleDateRangeChange} />
+              <DateRangeSelector selection={dateSelection} onChange={handleDateRangeChange} />
               <div className='text-xs'>From {dateFrom} to {dateTo}</div>
             </div>
             {serviceRequests && (

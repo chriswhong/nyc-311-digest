@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Menu, Transition } from '@headlessui/react'
@@ -9,23 +9,26 @@ import {
   CalendarIcon
 } from '@heroicons/react/outline'
 
-const items = [
+export const dateSelectionItems = [
   {
-    value: 'Yesterday',
+    value: 'yesterday',
+    displayName: 'Yesterday',
     dateRange: [
       moment().subtract(1, 'd').startOf('day'),
       moment().startOf('day')
     ]
   },
   {
-    value: 'Last 7 days',
+    value: 'last7days',
+    displayName: 'Last 7 days',
     dateRange: [
       moment().subtract(7, 'd').startOf('day'),
       moment().startOf('day')
     ]
   },
   {
-    value: 'Last 30 days',
+    value: 'last30days',
+    displayName: 'Last 30 days',
     dateRange: [
       moment().subtract(30, 'd').startOf('day'),
       moment().startOf('day')
@@ -33,22 +36,17 @@ const items = [
   }
 ]
 
-export const DEFAULT_DATE_RANGE = items[1].dateRange
+export const DEFAULT_DATE_RANGE_SELECTION = dateSelectionItems[1]
 
 const DateRangeSelector = ({
+  selection,
   onChange
 }) => {
-  const [activeItem, setActiveItem] = useState(items[1])
-
-  useEffect(() => {
-    onChange(activeItem.dateRange)
-  }, [activeItem])
-
   return (
     <Menu as='div' className='relative inline-block text-left mb-2 mt-1'>
       <div>
         <Menu.Button className='inline-flex items-center justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'>
-          <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' /> {activeItem.value}
+          <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' /> {selection.displayName}
           <ChevronDownIcon className='-mr-1 ml-2 h-5 w-5' aria-hidden='true' />
         </Menu.Button>
       </div>
@@ -64,11 +62,11 @@ const DateRangeSelector = ({
       >
         <Menu.Items className='origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10'>
           <div className='py-1'>
-            {items.map((item) => {
+            {dateSelectionItems.map((item) => {
               return (
                 <Menu.Item key={item.value}>
                   {({ active }) => {
-                    const selected = activeItem.value === item.value
+                    const selected = selection.value === item.value
                     return (
                       <a
                         href='#'
@@ -80,9 +78,9 @@ const DateRangeSelector = ({
                             'bg-indigo-600 text-white': selected
                           }
                         )}
-                        onClick={() => { setActiveItem(item) }}
+                        onClick={() => { onChange(item) }}
                       >
-                        {item.value}
+                        {item.displayName}
                       </a>
                     )
                   }}
@@ -98,6 +96,7 @@ const DateRangeSelector = ({
 }
 
 DateRangeSelector.propTypes = {
+  selection: PropTypes.object,
   onChange: PropTypes.func
 }
 
