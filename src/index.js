@@ -5,13 +5,13 @@ import {
 } from 'react-router-dom'
 
 import './index.css'
-import App from './App'
+import AppContainer from './AppContainer'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AppContainer />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

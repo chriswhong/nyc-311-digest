@@ -38,7 +38,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "functions-serve": "netlify-lambda serve ./src/functions",
+    "functions-serve": "REACT_APP_API_BASE_URL=http://localhost:9000 netlify-lambda serve ./src/functions",
     "eject": "react-scripts eject",
     "postinstall": "netlify-lambda install"
   },

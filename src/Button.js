@@ -1,15 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 const Button = ({
   icon,
+  className,
   children,
   href,
   disabled,
+  submit,
   onClick
 }) => {
   const Icon = icon
-  const className = 'ml-6 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:opacity-50'
+  const combinedClassName = classNames(
+    'whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:opacity-50',
+    className
+  )
 
   const buttonContent = (
     <>
@@ -22,31 +28,35 @@ const Button = ({
     return (
       <button
         href='#'
-        className={className}
+        className={combinedClassName}
         onClick={onClick}
         disabled={disabled}
+        submit={submit ? 'true' : ''}
       >
         {buttonContent}
       </button>
     )
   }
   return (
-    <a
-      className={className}
+    <button
+      className={combinedClassName}
       href={href}
       disabled={disabled}
+      submit={submit ? 'true' : ''}
     >
       {buttonContent}
-    </a>
+    </button>
   )
 }
 
 Button.propTypes = {
   children: PropTypes.string,
-  onClick: PropTypes.func,
+  className: PropTypes.string,
   href: PropTypes.string,
+  icon: PropTypes.object,
   disabled: PropTypes.bool,
-  icon: PropTypes.object
+  submit: PropTypes.bool,
+  onClick: PropTypes.func
 }
 
 export default Button

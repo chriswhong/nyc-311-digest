@@ -1,6 +1,5 @@
 [build]
   command = "CI=false yarn build"
-  functions = "src/functions"
   publish = "build"
 [[redirects]]
   from = "/*"

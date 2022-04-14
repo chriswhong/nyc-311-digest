@@ -47,6 +47,7 @@ export default function Header () {
             </Link>
             {location.pathname !== '/new' && (
               <Button
+                className='ml-6'
                 icon={PlusIcon}
                 onClick={handleAddClick}
               >

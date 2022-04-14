@@ -4,7 +4,23 @@ import getDatabaseClient from './getDatabaseClient'
 const queryDatabase = async (client) => {
   try {
     const db = client.db('nyc-311-digest')
-    const cursor = await db.collection('custom-geometries').find({})
+    const cursor = await db.collection('custom-geometries').aggregate([{
+      $lookup: {
+        from: 'users',
+        localField: 'owner',
+        foreignField: 'sub',
+        as: 'owner'
+      }
+    },
+    {
+      $project: {
+        id: '$id',
+        name: '$name',
+        geometry: '$geometry',
+        bbox: '$bbox',
+        owner: { $first: '$owner' }
+      }
+    }])
     const results = await cursor.toArray()
 
     // transform into a valid geojson FeatureCollection

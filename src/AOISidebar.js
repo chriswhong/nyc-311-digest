@@ -65,8 +65,6 @@ const AOISidebar = ({
   // array of two moments
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
 
-  console.log(dateSelection)
-
   const { areaOfInterestId } = useParams()
 
   const highlightedFeature = popupData && popupData[0]

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {
   XCircleIcon
 } from '@heroicons/react/outline'
-import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react'
+import { withAuthenticationRequired } from '@auth0/auth0-react'
 import gjv from 'geojson-validation'
 import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
 
 import dummyGeojson from './util/dummyGeojson'
-import { fetchGeometries } from './App'
+import { fetchGeometries, AuthContext } from './App'
 import Button from './Button'
 import Spinner from './Spinner'
 import { slugFromName } from './util/slugFromName'
@@ -32,7 +32,7 @@ const DrawSidebar = ({
     getAccessTokenSilently,
     getAccessTokenWithPopup,
     user
-  } = useAuth0()
+  } = useContext(AuthContext)
 
   // creates a draw control and returns it, does not add it to the map
   const initializeDraw = () => {
@@ -143,10 +143,7 @@ const DrawSidebar = ({
         name: drawnFeatureName,
         geometry: drawnFeature.geometry,
         bbox: bbox(drawnFeature.geometry),
-        owner: {
-          id: user.sub,
-          username: user.preferred_username
-        }
+        owner: user.sub
       }),
       headers: {
         Authorization: `Bearer ${token}`

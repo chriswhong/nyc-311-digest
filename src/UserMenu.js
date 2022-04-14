@@ -1,16 +1,16 @@
-import React, { Fragment } from 'react'
-import { useAuth0 } from '@auth0/auth0-react'
+import React, { Fragment, useContext } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { useLocation } from 'react-router-dom'
 
 import Button from './Button'
+import { AuthContext } from './App'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const UserMenu = () => {
-  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0()
+  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useContext(AuthContext)
   const location = useLocation()
 
   if (isLoading) {
@@ -37,6 +37,7 @@ const UserMenu = () => {
             Sign in
           </a>
           <Button
+            className='ml-6'
             onClick={() => loginWithRedirect({
               appState: {
                 returnTo: location.pathname
@@ -75,7 +76,7 @@ const UserMenu = () => {
                     <img className='rounded-full' src={user.picture} alt={user.name} referrerPolicy='no-referrer' />
                   </div>
                   <div className='flex-grow'>
-                    <p className='font-medium'>{user.preferred_username}</p>
+                    <p className='font-medium'>{user.username}</p>
                     <p className='font-light text-gray-500 text-xs'>{user.email}</p>
                   </div>
                 </div>
