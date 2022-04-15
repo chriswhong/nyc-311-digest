@@ -10,7 +10,7 @@ function MapWrapper ({ onLoad }) {
       <Map
         onLoad={(d) => { onLoad(d) }}
       />
-      <div className='md:absolute top-0 left-0 z-10 w-full md:w-96 h-2/3 md:h-auto md:max-h-full flex flex-col min-h-0'>
+      <div className='md:absolute top-0 left-0 z-10 w-full md:w-96 h-auto md:max-h-full flex flex-col min-h-0'>
         <div className='m-0 md:m-5 py-4 md:rounded-lg bg-white md:shadow-md overflow-hidden flex flex-col'>
           <div className='relative h-full flex-grow min-h-0 flex flex-col'>
             <Outlet />

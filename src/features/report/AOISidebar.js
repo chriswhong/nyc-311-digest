@@ -12,6 +12,7 @@ import { renderToString } from 'react-dom/server'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
 import _ from 'underscore'
+import { useDeviceSelectors } from 'react-device-detect'
 
 import RollupChart from './RollupChart'
 import Link from '../../ui/Link'
@@ -66,6 +67,14 @@ const AOISidebar = ({
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
 
   const { areaOfInterestId } = useParams()
+
+  const [selectors] = useDeviceSelectors(window.navigator.userAgent)
+  const { isMobile } = selectors
+
+  let fitBoundsPadding = { top: 30, bottom: 30, left: 400, right: 30 }
+  if (isMobile) {
+    fitBoundsPadding = { top: 5, bottom: 5, left: 5, right: 5 }
+  }
 
   const highlightedFeature = popupData && popupData[0]
 
@@ -245,7 +254,7 @@ const AOISidebar = ({
       map.getSource('area-of-interest').setData(areaOfInterest)
 
       map.fitBounds(areaOfInterest.properties.bbox, {
-        padding: { top: 30, bottom: 30, left: 400, right: 30 }
+        padding: fitBoundsPadding
       })
     }
   }, [map, areaOfInterest])
@@ -261,6 +270,7 @@ const AOISidebar = ({
       })
 
       const showTooltip = (e) => {
+        if (isMobile) { return }
         const features = dedupeServiceRequests(e.features)
 
         // Change the cursor style as a UI indicator.

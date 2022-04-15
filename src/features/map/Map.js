@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 // eslint-disable-next-line
 import mapboxgl from '!mapbox-gl'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
+import { useDeviceSelectors } from 'react-device-detect'
+import classNames from 'classnames'
+import { useLocation } from 'react-router-dom'
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -48,6 +51,12 @@ const Map = ({
 }) => {
   // this ref holds the map DOM node so that we can pass it into Mapbox GL
   const mapNode = useRef(null)
+  const geocoderRef = useRef()
+
+  const [selectors] = useDeviceSelectors(window.navigator.userAgent)
+  const { isMobile } = selectors
+
+  const { pathname } = useLocation()
 
   // instantiate the map, add sources and layers, event listeners, tooltips
   useEffect(() => {
@@ -61,12 +70,16 @@ const Map = ({
       maxZoom
     })
 
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
-      })
-    )
+    if (isMobile) {
+      map.scrollZoom.disable()
+    }
+
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl
+    })
+
+    geocoderRef.current.appendChild(geocoder.onAdd(map))
 
     map.on('load', () => {
       onLoad(map)
@@ -80,8 +93,16 @@ const Map = ({
 
   return (
     <div
-      className='relative h-1/3 md:h-full w-full'
+      className='relative h-3/6 md:h-full w-full'
     >
+      <div
+        className={classNames(
+          'geocoder absolute w-full md:w-auto -top-2 md:top-5 md:right-5',
+          {
+            hidden: pathname.includes('report')
+          })}
+        ref={geocoderRef}
+      />
       <div className='w-full h-full' ref={mapNode} style={{ width: '100%', height: '100%' }} />
     </div>
   )
