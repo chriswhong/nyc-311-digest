@@ -29,6 +29,7 @@ export default function Header () {
             <a className='flex items-center cursor-pointer' onClick={() => { history('/') }}>
               <TicketIcon className='h-8 w-8 text-indigo-600 inline' aria-hidden='true' />
               <div className='font-semibold ml-3' style={{ fontSize: 17 }}>NYC 311 Reports</div>
+              <div className='text-xs font-semibold h-4 text-white bg-blue-400 px-1 rounded flex items-center ml-2'><div>BETA</div></div>
             </a>
           </div>
           <div className='-mr-2 -my-2 md:hidden'>

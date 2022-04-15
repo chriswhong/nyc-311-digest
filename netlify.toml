@@ -6,3 +6,5 @@
   from = "/*"
   to = "/"
   status = 200
+[dev]
+  port = 8888

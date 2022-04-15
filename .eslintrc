@@ -7,5 +7,7 @@
       "globals": {
         "fetch": true
       },
-      "rules": {}
+      "rules": {
+        "no-unused-vars": "warn"
+      }
 }

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import bbox from '@turf/bbox'
 
 import dummyGeojson from '../../util/dummyGeojson'
 import Spinner from '../../ui/Spinner'
@@ -108,11 +107,10 @@ const MainSidebar = ({ map, allGeometries }) => {
 
   useEffect(() => {
     if (map && allGeometries) {
-      map.getSource('all-geometries').setData(allGeometries)
-      const allGeometriesBounds = bbox(allGeometries)
-      map.fitBounds(allGeometriesBounds, {
-        padding: 30
+      map.flyTo({
+        zoom: 12.5
       })
+      map.getSource('all-geometries').setData(allGeometries)
     }
   }, [map, allGeometries])
 
