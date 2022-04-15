@@ -1,0 +1,11 @@
+{
+    "extends": [
+        "standard",
+        "standard-jsx",
+        "standard-react"
+      ],
+      "globals": {
+        "fetch": true
+      },
+      "rules": {}
+}

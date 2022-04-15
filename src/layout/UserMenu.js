@@ -2,8 +2,8 @@ import React, { Fragment, useContext } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { useLocation } from 'react-router-dom'
 
-import Button from './Button'
-import { AuthContext } from './App'
+import Button from '../ui/Button'
+import { AuthContext } from '../App'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')

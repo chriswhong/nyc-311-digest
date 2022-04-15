@@ -4,7 +4,7 @@ import {
   ChevronLeftIcon
 } from '@heroicons/react/outline'
 
-import Link from './Link'
+import Link from '../../ui/Link'
 import PopupInfo from './PopupInfo'
 
 const PopupSidebar = ({

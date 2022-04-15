@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import bbox from '@turf/bbox'
 
-import dummyGeojson from './util/dummyGeojson'
-import Spinner from './Spinner'
-import { slugFromName } from './util/slugFromName'
+import dummyGeojson from '../../util/dummyGeojson'
+import Spinner from '../../ui/Spinner'
+import { slugFromName } from '../../util/slugFromName'
 
 const MainSidebar = ({ map, allGeometries }) => {
   const history = useNavigate()

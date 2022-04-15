@@ -9,10 +9,10 @@ import {
 } from '@heroicons/react/outline'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import Link from './Link'
-import GithubIcon from './img/GithubIcon'
+import Link from '../ui/Link'
+import GithubIcon from '../img/GithubIcon'
 import UserMenu from './UserMenu'
-import Button from './Button'
+import Button from '../ui/Button'
 
 export default function Header () {
   const history = useNavigate()

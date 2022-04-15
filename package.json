@@ -42,17 +42,6 @@
     "eject": "react-scripts eject",
     "postinstall": "netlify-lambda install"
   },
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "standard-jsx",
-      "standard-react"
-    ],
-    "globals": {
-      "fetch": true
-    },
-    "rules": {}
-  },
   "browserslist": {
     "production": [
       ">0.2%",

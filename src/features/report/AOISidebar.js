@@ -14,14 +14,14 @@ import mapboxgl from '!mapbox-gl'
 import _ from 'underscore'
 
 import RollupChart from './RollupChart'
-import Link from './Link'
+import Link from '../../ui/Link'
 import PopupSidebar from './PopupSidebar'
-import Spinner from './Spinner'
+import Spinner from '../../ui/Spinner'
 import CircleMarkerSvg from './CircleMarkerSvg'
 import DateRangeSelector, { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 
-import getRollupCategory from './util/getRollupCategory'
-import dummyGeojson from './util/dummyGeojson'
+import getRollupCategory from '../../util/getRollupCategory'
+import dummyGeojson from '../../util/dummyGeojson'
 
 export const categoryColors = [
   'match',

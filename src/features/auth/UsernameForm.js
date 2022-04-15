@@ -3,10 +3,10 @@ import React, { useState, useEffect, useContext } from 'react'
 import slugify from 'slugify'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { AuthContext } from './App'
-import Button from './Button'
-import TextInput from './TextInput'
-import useDebounce from './util/useDebounce.js'
+import { AuthContext } from '../../App'
+import Button from '../../ui/Button'
+import TextInput from '../../ui/TextInput'
+import useDebounce from '../../util/useDebounce.js'
 
 const UsernameForm = () => {
   const {

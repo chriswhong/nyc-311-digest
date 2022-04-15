@@ -7,12 +7,12 @@ import {
 } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
 
-import MapWrapper from './MapWrapper.js'
-import Header from './Header.js'
-import MainSidebar from './MainSidebar.js'
-import DrawSidebar from './DrawSidebar.js'
-import AOISidebar from './AOISidebar.js'
-import UsernameForm from './UsernameForm'
+import MapWrapper from './features/map/MapWrapper.js'
+import Header from './layout/Header.js'
+import MainSidebar from './features/main/MainSidebar.js'
+import DrawSidebar from './features/draw/DrawSidebar.js'
+import AOISidebar from './features/report/AOISidebar.js'
+import UsernameForm from './features/auth/UsernameForm'
 
 export const fetchGeometries = async () => {
   const getGeometriesUrl = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-geometries`

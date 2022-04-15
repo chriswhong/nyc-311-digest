@@ -9,11 +9,11 @@ import gjv from 'geojson-validation'
 import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
 
-import dummyGeojson from './util/dummyGeojson'
-import { fetchGeometries, AuthContext } from './App'
-import Button from './Button'
-import Spinner from './Spinner'
-import { slugFromName } from './util/slugFromName'
+import dummyGeojson from '../../util/dummyGeojson'
+import { fetchGeometries, AuthContext } from '../../App'
+import Button from '../../ui/Button'
+import Spinner from '../../ui/Spinner'
+import { slugFromName } from '../../util/slugFromName'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
