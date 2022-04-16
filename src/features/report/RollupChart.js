@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import _ from 'underscore'
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, LabelList, Cell } from 'recharts'
 
-import getColorFromRollupCategory from '../../util/getColorFromRollupCategory'
+import { getColorFromRollupCategory } from '../../util/categoryColors'
 
 const RollupChart = ({ data }) => {
   // group and count

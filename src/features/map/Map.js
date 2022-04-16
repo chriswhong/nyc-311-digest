@@ -12,19 +12,6 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A'
 
-export const agencyColors = [
-  'match',
-  ['get', 'rollupCategory'],
-  'Noise & Nuisance', '#fbb4ae',
-  'Streets & Sidewalks', '#b3cde3',
-  'Sanitation & Environmental', '#ccebc5',
-  'Business/Consumer', '#decbe4',
-  'Housing & Buildings', '#fed9a6',
-  'Homeless/Assistance', '#fddaec',
-  'Vehicular/Parking', '#e5d8bd',
-  /* other */ 'gray'
-]
-
 const Map = ({
   width = '100%',
   height = '100%',

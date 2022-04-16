@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import getColorFromRollupCategory from '../../util/getColorFromRollupCategory'
+import { getColorFromRollupCategory } from '../../util/categoryColors'
 
 // generate an SVG circle that resembles the circlemarkers used on the map
 const CircleMarkerSvg = ({ rollupCategory }) => {

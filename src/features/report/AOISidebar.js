@@ -21,21 +21,12 @@ import Spinner from '../../ui/Spinner'
 import CircleMarkerSvg from './CircleMarkerSvg'
 import DateRangeSelector, { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 
-import getRollupCategory from '../../util/getRollupCategory'
+import getRollupCategory, {
+  generateClusterProperties,
+  generateCircleCategoryColorStyle,
+  generateClusterCategoryColorStyle
+} from '../../util/categoryColors'
 import dummyGeojson from '../../util/dummyGeojson'
-
-export const categoryColors = [
-  'match',
-  ['get', 'rollupCategory'],
-  'Noise & Nuisance', '#fbb4ae',
-  'Streets & Sidewalks', '#b3cde3',
-  'Sanitation & Environmental', '#ccebc5',
-  'Business/Consumer', '#decbe4',
-  'Housing & Buildings', '#fed9a6',
-  'Homeless/Assistance', '#fddaec',
-  'Vehicular/Parking', '#e5d8bd',
-  /* other */ 'gray'
-]
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -100,9 +91,7 @@ const AOISidebar = ({
         cluster: true,
         clusterMaxZoom: 18, // Max zoom to cluster points on
         clusterRadius: 3,
-        clusterProperties: {
-          rollupCategory: ['max', ['get', 'rollupCategory']]
-        },
+        clusterProperties: generateClusterProperties(),
         generateId: true
       })
 
@@ -126,7 +115,7 @@ const AOISidebar = ({
         type: 'circle',
         source: 'serviceRequests',
         paint: {
-          'circle-color': categoryColors,
+          'circle-color': generateCircleCategoryColorStyle(),
           'circle-radius': 3,
           'circle-stroke-color': 'black',
           'circle-stroke-width': 1.5
@@ -139,7 +128,7 @@ const AOISidebar = ({
         type: 'circle',
         source: 'serviceRequests',
         paint: {
-          'circle-color': categoryColors,
+          'circle-color': generateClusterCategoryColorStyle(),
           'circle-radius': [
             'step',
             ['get', 'point_count'],
@@ -154,9 +143,7 @@ const AOISidebar = ({
             9
           ],
           'circle-stroke-color': 'black',
-          'circle-stroke-width': 1.5,
-          'circle-opacity': 0.5,
-          'circle-stroke-opacity': 0.8
+          'circle-stroke-width': 1.5
         },
         filter: ['has', 'point_count']
       })
