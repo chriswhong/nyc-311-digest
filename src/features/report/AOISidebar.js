@@ -27,6 +27,7 @@ import getRollupCategory, {
   generateClusterCategoryColorStyle
 } from '../../util/categoryColors'
 import dummyGeojson from '../../util/dummyGeojson'
+import AOIMenu from './AOIMenu'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -353,10 +354,13 @@ const AOISidebar = ({
       {areaOfInterest && (
         <>
           <div className='px-4 mb-3'>
-            <div className='mb-1'>
-              <Link onClick={handleBackClick}>
-                <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
-              </Link>
+            <div className='mb-1 flex items-center'>
+              <div className='flex-grow'>
+                <Link onClick={handleBackClick}>
+                  <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
+                </Link>
+              </div>
+              <AOIMenu />
             </div>
             <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
             <div className='flex items-center justify-end text-gray-600'>

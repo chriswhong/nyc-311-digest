@@ -7,12 +7,14 @@ import {
 } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
 
-import MapWrapper from './features/map/MapWrapper.js'
-import Header from './layout/Header.js'
-import MainSidebar from './features/main/MainSidebar.js'
-import DrawSidebar from './features/draw/DrawSidebar.js'
-import AOISidebar from './features/report/AOISidebar.js'
+import MapWrapper from './features/map/MapWrapper'
+import Header from './layout/Header'
+import MainSidebar from './features/main/MainSidebar'
+import DrawSidebar from './features/draw/DrawSidebar'
+import AOISidebar from './features/report/AOISidebar'
 import UsernameForm from './features/auth/UsernameForm'
+import ModalWrapper from './ui/modal/ModalWrapper'
+import useModal from './util/useModal'
 
 export const fetchGeometries = async () => {
   const getGeometriesUrl = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-geometries`
@@ -29,6 +31,7 @@ const getUsername = async (sub) => {
 }
 
 export const AuthContext = createContext()
+export const ModalContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
@@ -38,6 +41,9 @@ function App () {
   const authItems = useAuth0()
   const history = useNavigate()
   const { pathname } = useLocation()
+
+  const modalProps = useModal()
+  console.log(modalProps)
 
   // get all area of interest geometries
   useEffect(() => {
@@ -75,46 +81,49 @@ function App () {
   return (
     <div className='App flex flex-col'>
       <AuthContext.Provider value={authItemsWithUsername}>
-        <Header />
-        <div className='flex-grow relative min-h-0'>
-          <Routes>
-            <Route element={<MapWrapper onLoad={(map) => { setMapInstance(map) }} />}>
-              <Route
-                index
-                element={
-                  <MainSidebar
-                    map={mapInstance}
-                    allGeometries={allGeometries}
-                  />
+        <ModalContext.Provider value={modalProps}>
+          <Header />
+          <div className='flex-grow relative min-h-0'>
+            <Routes>
+              <Route element={<MapWrapper onLoad={(map) => { setMapInstance(map) }} />}>
+                <Route
+                  index
+                  element={
+                    <MainSidebar
+                      map={mapInstance}
+                      allGeometries={allGeometries}
+                    />
                 }
-              />
-              <Route
-                path='/new'
-                element={
-                  <DrawSidebar
-                    map={mapInstance}
-                    onAllGeometriesUpdate={(d) => { setAllGeometries(d) }}
-                  />
+                />
+                <Route
+                  path='/new'
+                  element={
+                    <DrawSidebar
+                      map={mapInstance}
+                      onAllGeometriesUpdate={(d) => { setAllGeometries(d) }}
+                    />
                 }
-              />
-              <Route
-                path='/report/:areaOfInterestId/:slug'
-                element={
-                  <AOISidebar
-                    map={mapInstance}
-                    allGeometries={allGeometries}
-                  />
+                />
+                <Route
+                  path='/report/:areaOfInterestId/:slug'
+                  element={
+                    <AOISidebar
+                      map={mapInstance}
+                      allGeometries={allGeometries}
+                    />
                 }
-              />
-            </Route>
-            <Route
-              path='/create-username'
-              element={
-                <UsernameForm />
+                />
+              </Route>
+              <Route
+                path='/create-username'
+                element={
+                  <UsernameForm />
               }
-            />
-          </Routes>
-        </div>
+              />
+            </Routes>
+          </div>
+          <ModalWrapper {...modalProps} />
+        </ModalContext.Provider>
       </AuthContext.Provider>
     </div>
   )
