@@ -32,8 +32,15 @@ exports.handler = handleOptionsCall(requireAuth(async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
+
   context.callbackWaitsForEmptyEventLoop = false
   const client = await getDatabaseClient()
   const body = JSON.parse(event.body)
+
+  // check that body.owner === identitycontext.claims.sub
+  if (body.owner !== context.identityContext.claims.sub) {
+    return { statusCode: 400, body: 'invalid request' }
+  }
+
   return queryDatabase(body, client)
 }))

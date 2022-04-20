@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import slugify from 'slugify'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import Button from '../../ui/Button'
 import TextInput from '../../ui/TextInput'
@@ -10,13 +10,12 @@ import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
 import { useAuth } from '../../util/auth'
 
 const UsernameForm = () => {
-  const { user, getAccessToken, setUsername: setAuthProviderUsername } = useAuth()
+  const { user, setUsername: setAuthProviderUsername } = useAuth()
   const [username, setUsername] = useState('')
   const [usernameAvailable, setUsernameAvailable] = useState()
 
   const debouncedUsername = useDebounce(username, 500)
 
-  const location = useLocation()
   const navigate = useNavigate()
 
   const {
@@ -68,11 +67,7 @@ const UsernameForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const token = await getAccessToken({
-      audience: 'nyc-311-reports-functions',
-      scope: 'write:area-of-interest'
-    })
-    createUsernameTrigger({ token })
+    createUsernameTrigger()
   }
 
   useEffect(() => {

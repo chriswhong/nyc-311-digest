@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from './auth'
 
 const useFetch = ({
   url,
@@ -10,18 +11,20 @@ const useFetch = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
   const [triggered, setTriggered] = useState(false)
-  const [accessToken, setAccessToken] = useState()
+  const authItems = useAuth()
+  const { getAccessToken } = { ...authItems }
 
-  const trigger = (triggerOptions) => {
-    if (triggerOptions?.token) { setAccessToken(triggerOptions.token) }
+  const trigger = () => {
     setTriggered(true)
   }
 
   useEffect(() => {
     if (triggered) {
       setTriggered(false)
+
       const fetchProduct = async () => {
         setLoading(true)
+
         try {
           setError()
           let fetchOptions = {
@@ -30,10 +33,13 @@ const useFetch = ({
           }
 
           if (authorization) {
+            const token = await getAccessToken({
+              audience: 'nyc-311-reports-functions'
+            })
             fetchOptions = {
               ...fetchOptions,
               headers: {
-                Authorization: `Bearer ${accessToken}`
+                Authorization: `Bearer ${token}`
               }
             }
           }

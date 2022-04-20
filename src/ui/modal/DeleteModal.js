@@ -6,8 +6,8 @@ import { ExclamationIcon } from '@heroicons/react/outline'
 
 import { useDeleteAOIQuery } from '../../util/api'
 
-export default function DeleteModal ({ hideModal, properties }) {
-  const { id } = properties
+export default function DeleteModal ({ hideModal, modalProperties }) {
+  const { id } = modalProperties
   const { data, loading, error, trigger } = useDeleteAOIQuery(id)
   const navigate = useNavigate()
 
@@ -82,6 +82,6 @@ export default function DeleteModal ({ hideModal, properties }) {
 }
 
 DeleteModal.propTypes = {
-  properties: PropTypes.obj,
+  modalProperties: PropTypes.object,
   hideModal: PropTypes.func
 }

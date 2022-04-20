@@ -1,14 +1,14 @@
 import useFetch from './useFetch'
 
 export const useDeleteAOIQuery = (areaOfInterestId) => {
-  return {
+  return useFetch({
     url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/delete-geometry`,
     method: 'DELETE',
     body: {
       id: areaOfInterestId
     },
     authorization: true
-  }
+  })
 }
 
 export const useGetServiceRequestsQuery = (areaOfInterest, dateSelection) => {
@@ -51,6 +51,14 @@ export const useCreateUsernameQuery = (username, sub) => {
       username,
       sub
     },
+    authorization: true
+  })
+}
+export const useCreateAOIQuery = (body) => {
+  return useFetch({
+    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-geometry`,
+    method: 'POST',
+    body,
     authorization: true
   })
 }

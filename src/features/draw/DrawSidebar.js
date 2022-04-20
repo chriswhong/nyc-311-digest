@@ -14,6 +14,7 @@ import Button from '../../ui/Button'
 import Spinner from '../../ui/Spinner'
 import { slugFromName } from '../../util/slugFromName'
 import { useAuth } from '../../util/auth'
+import { useCreateAOIQuery } from '../../util/api'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -24,15 +25,19 @@ const DrawSidebar = ({
   const [drawInstance, setDrawInstance] = useState()
   const [drawnFeature, setDrawnFeature] = useState()
   const [drawnFeatureName, setDrawnFeatureName] = useState('')
-  const [loading, setLoading] = useState(false)
 
   const history = useNavigate()
 
-  const {
-    getAccessTokenSilently,
-    getAccessTokenWithPopup,
-    user
-  } = useAuth()
+  const { user } = useAuth()
+
+  const requestBody = {
+    name: drawnFeatureName,
+    geometry: drawnFeature?.geometry,
+    bbox: drawnFeature && bbox(drawnFeature?.geometry),
+    owner: user.sub
+  }
+
+  const { data, loading, error, trigger } = useCreateAOIQuery(requestBody)
 
   // creates a draw control and returns it, does not add it to the map
   const initializeDraw = () => {
@@ -122,44 +127,20 @@ const DrawSidebar = ({
   const drawIsValid = validate(drawnFeature, drawnFeatureName)
 
   const handleSave = async () => {
-    setLoading(true)
-    const postGeometryURL = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-geometry`
+    trigger()
+  }
 
-    let auth0AccessTokenFunction = getAccessTokenSilently
-
-    // in development we can't get the access token silently
-    if (process.env.NODE_ENV !== 'production') {
-      auth0AccessTokenFunction = getAccessTokenWithPopup
-    }
-
-    const token = await auth0AccessTokenFunction({
-      audience: 'nyc-311-reports-functions',
-      scope: 'write:area-of-interest'
-    })
-
-    await fetch(postGeometryURL, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: drawnFeatureName,
-        geometry: drawnFeature.geometry,
-        bbox: bbox(drawnFeature.geometry),
-        owner: user.sub
-      }),
-      headers: {
-        Authorization: `Bearer ${token}`
+  // on successful submission
+  useEffect(() => {
+    if (!data) { return }
+    setDrawnFeature(null)
+    setDrawnFeatureName('')
+    history(`/report/${data.id}/${slugFromName(drawnFeatureName)}`, {
+      state: {
+        refresh: true
       }
     })
-      .then(d => d.json())
-      .then(async ({ id }) => {
-        history(`/report/${id}/${slugFromName(drawnFeatureName)}`, {
-          state: {
-            refresh: true
-          }
-        })
-        setDrawnFeature(null)
-        setDrawnFeatureName('')
-      })
-  }
+  }, [data])
 
   return (
     <div className='px-4'>

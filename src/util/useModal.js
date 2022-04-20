@@ -9,12 +9,12 @@ const useModal = () => {
     setVisible(false)
   }
 
-  function showModal (type, properties) {
+  function showModal (type, modalProperties) {
     setType(type)
-    setProperties(properties)
+    setProperties(modalProperties)
     setVisible(true)
   }
-  return { hideModal, visible, showModal, type, properties }
+  return { hideModal, visible, showModal, type, modalProperties: properties }
 }
 
 export default useModal
