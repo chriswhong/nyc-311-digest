@@ -3,64 +3,35 @@ import React, { useState, useEffect, useContext } from 'react'
 import slugify from 'slugify'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { AuthContext } from '../../App'
 import Button from '../../ui/Button'
 import TextInput from '../../ui/TextInput'
-import useDebounce from '../../util/useDebounce.js'
+import useDebounce from '../../util/useDebounce'
+import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
+import { useAuth } from '../../util/auth'
 
 const UsernameForm = () => {
-  const {
-    user,
-    getAccessTokenSilently,
-    getAccessTokenWithPopup
-  } = useContext(AuthContext)
+  const { user, getAccessToken, setUsername: setAuthProviderUsername } = useAuth()
   const [username, setUsername] = useState('')
   const [usernameAvailable, setUsernameAvailable] = useState()
 
   const debouncedUsername = useDebounce(username, 500)
 
   const location = useLocation()
-  const history = useNavigate()
+  const navigate = useNavigate()
 
-  const checkUsername = async (username) => {
-    const checkUsernameUrl = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-check-username`
+  const {
+    data: checkUsernameData,
+    loading: checkUsernameLoading,
+    error: checkUsernameError,
+    trigger: checkUsernameTrigger
+  } = useCheckUsernameQuery(username)
 
-    return await fetch(checkUsernameUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        username
-      })
-    }).then((d) => {
-      return d.json()
-    })
-  }
-
-  const createUsername = async (username, sub) => {
-    const createUsernameUrl = `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-create-username`
-    let auth0AccessTokenFunction = getAccessTokenSilently
-
-    // in development we can't get the access token silently
-    if (process.env.NODE_ENV !== 'production') {
-      auth0AccessTokenFunction = getAccessTokenWithPopup
-    }
-
-    const token = await auth0AccessTokenFunction({
-      audience: 'nyc-311-reports-functions',
-      scope: 'write:area-of-interest'
-    })
-    return await fetch(createUsernameUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        username,
-        sub
-      }),
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((d) => {
-      return d.json()
-    })
-  }
+  const {
+    data: createUsernameData,
+    loading: createUsernameLoading,
+    error: createUsernameError,
+    trigger: createUsernameTrigger
+  } = useCreateUsernameQuery(username, user?.sub)
 
   useEffect(() => {
     if (user) {
@@ -74,13 +45,16 @@ const UsernameForm = () => {
 
   useEffect(() => {
     if (username) {
-      checkUsername(username)
-        .then((d) => {
-          setUsernameAvailable(d.usernameAvailable)
-        })
-      // call API to determine if username exists
+      checkUsernameTrigger()
     }
   }, [debouncedUsername])
+
+  useEffect(() => {
+    if (checkUsernameData) {
+      const { usernameAvailable } = checkUsernameData
+      setUsernameAvailable(usernameAvailable)
+    }
+  }, [checkUsernameData])
 
   let message
 
@@ -92,13 +66,22 @@ const UsernameForm = () => {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    createUsername(username, user.sub)
-      .then((d) => {
-        history(location.state.returnTo || '/')
-      })
+    const token = await getAccessToken({
+      audience: 'nyc-311-reports-functions',
+      scope: 'write:area-of-interest'
+    })
+    createUsernameTrigger({ token })
   }
+
+  useEffect(() => {
+    if (createUsernameData) {
+      // update the username in the auth provider
+      setAuthProviderUsername(createUsernameData.username)
+      navigate('/')
+    }
+  }, [createUsernameData])
 
   return (
     <div className='block p-6 rounded-lg shadow-lg bg-white max-w-sm mx-auto'>

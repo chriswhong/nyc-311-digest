@@ -1,13 +1,12 @@
-// check if the username exists in the database
+// deletes an area of interest from the database
 import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
 
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
-  await db.collection('users')
-    .insertOne({
-      username: body.username,
-      sub: body.sub
+  const response = await db.collection('custom-geometries')
+    .deleteOne({
+      _id: body.id
     })
 
   return {
@@ -17,14 +16,13 @@ const queryDatabase = async (body, client) => {
       'Access-Control-Allow-Origin': '*' // Allow from anywhere
     },
     body: JSON.stringify({
-      success: true,
-      username: body.username
+      success: true
     })
   }
 }
 
 exports.handler = handleOptionsCall(requireAuth(async (event, context) => {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== 'DELETE') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
   context.callbackWaitsForEmptyEventLoop = false

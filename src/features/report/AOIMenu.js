@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   DotsHorizontalIcon
 } from '@heroicons/react/outline'
@@ -9,14 +10,15 @@ import { ModalContext } from '../../App'
 export default function AOIMenu () {
   const modalProps = useContext(ModalContext)
   const { showModal } = modalProps
+  const { areaOfInterestId } = useParams()
 
   const handleEdit = () => {
 
   }
 
   const handleDelete = () => {
-    showModal('DeleteModal', () => () => {
-      console.log('CLICK!')
+    showModal('DeleteModal', {
+      id: areaOfInterestId
     })
   }
 
@@ -41,7 +43,6 @@ export default function AOIMenu () {
       menuItems={menuItems}
       alignRight
       onChange={(item) => {
-        console.log(item)
         item.onClick()
       }}
     />

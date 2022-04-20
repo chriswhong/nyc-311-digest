@@ -1,8 +1,27 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 
-export default function DeleteModal ({ action, hideModal }) {
+import { useDeleteAOIQuery } from '../../util/api'
+
+export default function DeleteModal ({ hideModal, properties }) {
+  const { id } = properties
+  const { data, loading, error, trigger } = useDeleteAOIQuery(id)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (data) {
+      hideModal()
+      navigate('/', { state: { refresh: true } })
+    }
+  }, [data])
+
+  const handleDelete = async () => {
+    trigger()
+  }
+
   return (
     <Transition.Child
       as={Fragment}
@@ -22,11 +41,11 @@ export default function DeleteModal ({ action, hideModal }) {
             </div>
             <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
               <Dialog.Title as='h3' className='text-lg leading-6 font-medium text-gray-900'>
-                Deactivate account
+                Delete Area of Interest
               </Dialog.Title>
               <div className='mt-2'>
                 <p className='text-sm text-gray-500'>
-                  Are you sure you want to deactivate your account? All of your data will be permanently removed.
+                  Are you sure you want to delete this Area of Interest?
                   This action cannot be undone.
                 </p>
               </div>
@@ -37,9 +56,17 @@ export default function DeleteModal ({ action, hideModal }) {
           <button
             type='button'
             className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
-            onClick={() => { action() }}
+            onClick={handleDelete}
           >
-            Deactivate
+            {loading && (
+              <div className='flex justify-center items-center'>
+                <div className='spinner-border animate-spin inline-block w-5 h-5 border-4 rounded-full text-white mr-2' role='status'>
+                  <span className='visually-hidden'>Deleting...</span>
+                </div>
+                Deleting...
+              </div>
+            )}
+            {!loading && 'Delete'}
           </button>
           <button
             type='button'
@@ -52,4 +79,9 @@ export default function DeleteModal ({ action, hideModal }) {
       </div>
     </Transition.Child>
   )
+}
+
+DeleteModal.propTypes = {
+  properties: PropTypes.obj,
+  hideModal: PropTypes.func
 }

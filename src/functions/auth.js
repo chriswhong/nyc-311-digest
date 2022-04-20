@@ -12,7 +12,7 @@ export const handleOptionsCall = (handler) => async (event, context) => {
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
   }
 
-  if (event.httpMethod !== 'POST') {
+  if (!['POST', 'DELETE'].includes(event.httpMethod)) {
     return {
       statusCode: 200,
       headers

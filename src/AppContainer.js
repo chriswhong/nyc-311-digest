@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { Auth0Provider } from '@auth0/auth0-react'
 
 import App from './App.js'
+import { AuthProvider } from './util/auth'
 
 function AppContainer () {
-  const history = useNavigate()
+  const navigate = useNavigate()
 
   const onRedirectCallback = (appState) => {
-    history(appState.returnTo || '/')
+    navigate(appState.returnTo || '/')
   }
   return (
     <Auth0Provider
@@ -17,7 +18,9 @@ function AppContainer () {
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
     >
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </Auth0Provider>
   )
 }

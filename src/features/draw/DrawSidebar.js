@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {
@@ -10,10 +10,10 @@ import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
 
 import dummyGeojson from '../../util/dummyGeojson'
-import { fetchGeometries, AuthContext } from '../../App'
 import Button from '../../ui/Button'
 import Spinner from '../../ui/Spinner'
 import { slugFromName } from '../../util/slugFromName'
+import { useAuth } from '../../util/auth'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
@@ -32,7 +32,7 @@ const DrawSidebar = ({
     getAccessTokenSilently,
     getAccessTokenWithPopup,
     user
-  } = useContext(AuthContext)
+  } = useAuth()
 
   // creates a draw control and returns it, does not add it to the map
   const initializeDraw = () => {
@@ -151,15 +151,13 @@ const DrawSidebar = ({
     })
       .then(d => d.json())
       .then(async ({ id }) => {
-        await fetchGeometries()
-          .then((allGeometries) => {
-            onAllGeometriesUpdate(allGeometries)
-          })
-          .then(() => {
-            history(`/report/${id}/${slugFromName(drawnFeatureName)}`)
-            setDrawnFeature(null)
-            setDrawnFeatureName('')
-          })
+        history(`/report/${id}/${slugFromName(drawnFeatureName)}`, {
+          state: {
+            refresh: true
+          }
+        })
+        setDrawnFeature(null)
+        setDrawnFeatureName('')
       })
   }
 

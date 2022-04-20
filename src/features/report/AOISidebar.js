@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   ChevronLeftIcon,
   UserCircleIcon,
@@ -19,7 +19,7 @@ import Link from '../../ui/Link'
 import PopupSidebar from './PopupSidebar'
 import Spinner from '../../ui/Spinner'
 import CircleMarkerSvg from './CircleMarkerSvg'
-import DateRangeSelector, { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
+import DateRangeSelector from './DateRangeSelector'
 
 import getRollupCategory, {
   generateClusterProperties,
@@ -28,6 +28,7 @@ import getRollupCategory, {
 } from '../../util/categoryColors'
 import dummyGeojson from '../../util/dummyGeojson'
 import AOIMenu from './AOIMenu'
+import { useGetServiceRequestsQuery } from '../../util/api'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -35,33 +36,20 @@ const dedupeServiceRequests = (serviceRequests) => {
   return _.uniq(serviceRequests, d => d.properties.unique_key)
 }
 
-function useQuery () {
-  const { search } = useLocation()
-
-  return React.useMemo(() => new URLSearchParams(search), [search])
-}
-
 const AOISidebar = ({
   map,
-  allGeometries
+  areaOfInterest,
+  dateSelection,
+  onDateRangeChange
 }) => {
-  const query = useQuery()
-  const dateRangeSelectorFromQueryParams = dateSelectionItems.find((d) => {
-    return d.value === query.get('dateSelection')
-  }) || DEFAULT_DATE_RANGE_SELECTION
-
-  const { pathname } = useLocation()
   const history = useNavigate()
-  const [areaOfInterest, setAreaOfInterest] = useState()
   const [serviceRequests, setServiceRequests] = useState()
   const [popupData, setPopupData] = useState()
-  // array of two moments
-  const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
-
-  const { areaOfInterestId } = useParams()
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent)
   const { isMobile } = selectors
+
+  const { data, loading, error, trigger } = useGetServiceRequestsQuery(areaOfInterest, dateSelection)
 
   let fitBoundsPadding = { top: 30, bottom: 30, left: 400, right: 30 }
   if (isMobile) {
@@ -185,57 +173,46 @@ const AOISidebar = ({
   }, [map])
 
   useEffect(() => {
-    const dateFrom = dateSelection.dateRange[0].format('YYYY-MM-DD')
-    const dateTo = dateSelection.dateRange[1].format('YYYY-MM-DD')
+    if (map && areaOfInterest) {
+      trigger()
+    }
+  }, [map, areaOfInterest, dateSelection.dateRange])
 
-    if (map && allGeometries) {
-      setServiceRequests(null)
-      const fetchData = async (bounds) => { // get datestamp for 7 days ago (go one day earlier so we can do a date > clause)
-        const serviceRequestsApiUrl = `https://data.cityofnewyork.us/resource/erm2-nwe9.json?$where=latitude>${bounds[1]} AND latitude<${bounds[3]} AND longitude>${bounds[0]} AND longitude<${bounds[2]} AND created_date>'${dateFrom}' AND created_date<='${dateTo}'&$order=created_date DESC`
-        return await fetch(serviceRequestsApiUrl).then(d => d.json())
+  useEffect(() => {
+    if (data) {
+      // convert to geojson
+      const serviceRequestsGeojson = {
+        type: 'FeatureCollection',
+        features: data.map((d) => {
+          return {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [parseFloat(d.longitude), parseFloat(d.latitude)]
+            },
+            properties: { ...d }
+          }
+        })
       }
 
-      const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
-
-      setAreaOfInterest(areaOfInterest)
-
-      const areaOfInterestGeometry = areaOfInterest.geometry
-      fetchData(areaOfInterest.properties.bbox)
-        .then((data) => {
-          // convert to geojson
-          const serviceRequestsGeojson = {
-            type: 'FeatureCollection',
-            features: data.map((d) => {
-              return {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [parseFloat(d.longitude), parseFloat(d.latitude)]
-                },
-                properties: { ...d }
-              }
-            })
+      const clippedServiceRequests = pointsWithinPolygon(serviceRequestsGeojson, areaOfInterest.geometry)
+      // convert created_date to unix epoch
+      clippedServiceRequests.features = clippedServiceRequests.features.map((d) => {
+        return {
+          ...d,
+          properties: {
+            ...d.properties,
+            created_date: moment(d.properties.created_date).unix(),
+            closed_date: moment(d.properties.closed_date).unix(),
+            resolution_action_updated_date: moment(d.properties.resolution_action_updated_date).unix(),
+            rollupCategory: getRollupCategory(d.properties.complaint_type)
           }
+        }
+      })
 
-          const clippedServiceRequests = pointsWithinPolygon(serviceRequestsGeojson, areaOfInterestGeometry)
-          // convert created_date to unix epoch
-          clippedServiceRequests.features = clippedServiceRequests.features.map((d) => {
-            return {
-              ...d,
-              properties: {
-                ...d.properties,
-                created_date: moment(d.properties.created_date).unix(),
-                closed_date: moment(d.properties.closed_date).unix(),
-                resolution_action_updated_date: moment(d.properties.resolution_action_updated_date).unix(),
-                rollupCategory: getRollupCategory(d.properties.complaint_type)
-              }
-            }
-          })
-
-          setServiceRequests(clippedServiceRequests)
-        })
+      setServiceRequests(clippedServiceRequests)
     }
-  }, [map, allGeometries, dateSelection.dateRange])
+  }, [data])
 
   useEffect(() => {
     if (map && areaOfInterest) {
@@ -327,11 +304,6 @@ const AOISidebar = ({
     map.getSource('highlighted-circle').setData(highlightedFeature || dummyGeojson)
   }, [map, highlightedFeature])
 
-  // react to changes in query params
-  useEffect(() => {
-    setDateSelection(dateRangeSelectorFromQueryParams)
-  }, [dateRangeSelectorFromQueryParams])
-
   const handleBackClick = () => {
     history('/')
   }
@@ -344,10 +316,6 @@ const AOISidebar = ({
 
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
-
-  const handleDateRangeChange = (d) => {
-    history(`${pathname}?dateSelection=${d.value}`)
-  }
 
   return (
     <>
@@ -370,7 +338,7 @@ const AOISidebar = ({
           </div>
           <div className='flex-grow overflow-y-scroll px-4'>
             <div className='mb-2'>
-              <DateRangeSelector selection={dateSelection} onChange={handleDateRangeChange} />
+              <DateRangeSelector selection={dateSelection} onChange={onDateRangeChange} />
               <div className='text-xs'>From {dateFrom} to {dateTo}</div>
             </div>
             {serviceRequests && (
@@ -409,7 +377,9 @@ const AOISidebar = ({
 
 AOISidebar.propTypes = {
   map: PropTypes.object,
-  allGeometries: PropTypes.object
+  areaOfInterest: PropTypes.object,
+  dateSelection: PropTypes.object,
+  onDateRangeChange: PropTypes.func
 }
 
 export default AOISidebar

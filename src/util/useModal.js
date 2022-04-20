@@ -3,18 +3,18 @@ import { useState } from 'react'
 const useModal = () => {
   const [visible, setVisible] = useState(false)
   const [type, setType] = useState()
-  const [action, setAction] = useState()
+  const [properties, setProperties] = useState()
 
   function hideModal () {
     setVisible(false)
   }
 
-  function showModal (type, theAction) {
+  function showModal (type, properties) {
     setType(type)
-    setAction(theAction)
+    setProperties(properties)
     setVisible(true)
   }
-  return { hideModal, visible, showModal, type, action }
+  return { hideModal, visible, showModal, type, properties }
 }
 
 export default useModal

@@ -8,13 +8,24 @@ const queryDatabase = async (sub, client) => {
       sub
     })
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*' // Allow from anywhere
-      },
-      body: JSON.stringify(results)
+    if (results) {
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*' // Allow from anywhere
+        },
+        body: JSON.stringify(results)
+      }
+    } else {
+      return {
+        statusCode: 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*' // Allow from anywhere
+        },
+        body: JSON.stringify({ error: 'not found' })
+      }
     }
   } catch (err) {
     console.log(err) // output to netlify function log

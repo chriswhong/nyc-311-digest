@@ -1,16 +1,17 @@
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { useLocation } from 'react-router-dom'
 
+import { useAuth } from '../util/auth'
+
 import Button from '../ui/Button'
-import { AuthContext } from '../App'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const UserMenu = () => {
-  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useContext(AuthContext)
+  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -40,7 +41,7 @@ const UserMenu = () => {
             className='ml-6'
             onClick={() => loginWithRedirect({
               appState: {
-                returnTo: location.pathname
+                returnTo: '/create-username'
               },
               screen_hint: 'signup'
             })}
