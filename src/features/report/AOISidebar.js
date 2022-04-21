@@ -29,6 +29,7 @@ import getRollupCategory, {
 import dummyGeojson from '../../util/dummyGeojson'
 import AOIMenu from './AOIMenu'
 import { useGetServiceRequestsQuery } from '../../util/api'
+import { useAuth } from '../../util/auth'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -48,6 +49,8 @@ const AOISidebar = ({
 
   const [selectors] = useDeviceSelectors(window.navigator.userAgent)
   const { isMobile } = selectors
+
+  const { user } = useAuth()
 
   const { data, loading, error, trigger } = useGetServiceRequestsQuery(areaOfInterest, dateSelection)
 
@@ -317,6 +320,9 @@ const AOISidebar = ({
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
+  const isOwner = user?.sub === areaOfInterest?.properties.owner.sub
+  const isAdmin = user && user['http://demozero.net/roles'].includes('Admin')
+
   return (
     <>
       {areaOfInterest && (
@@ -328,7 +334,7 @@ const AOISidebar = ({
                   <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
                 </Link>
               </div>
-              <AOIMenu />
+              {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner.sub} />}
             </div>
             <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
             <div className='flex items-center justify-end text-gray-600'>
