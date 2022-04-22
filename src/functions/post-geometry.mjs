@@ -3,6 +3,7 @@ import shortid from 'shortid'
 
 import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
+import { fireSlackWebhook } from './notify.mjs'
 
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
@@ -15,6 +16,12 @@ const queryDatabase = async (body, client) => {
       bbox: body.bbox,
       owner: body.owner
     })
+
+  const { username } = await db.collection('users').findOne({
+    sub: body.owner
+  })
+
+  fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc-311-reports.netlify.app/report/${id}/`)
 
   return {
     statusCode: 200,

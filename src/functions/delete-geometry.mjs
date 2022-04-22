@@ -1,13 +1,20 @@
 // deletes an area of interest from the database
 import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
+import { fireSlackWebhook } from './notify.mjs'
 
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
-  const response = await db.collection('custom-geometries')
-    .deleteOne({
-      _id: body.id
-    })
+  const collection = db.collection('custom-geometries')
+  const { name } = await collection.findOne({
+    _id: body.id
+  })
+  await
+  collection.deleteOne({
+    _id: body.id
+  })
+
+  fireSlackWebhook(`AOI ${name} was deleted`)
 
   return {
     statusCode: 200,

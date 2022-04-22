@@ -10,6 +10,7 @@
     "@mapbox/mapbox-gl-geocoder": "^5.0.0",
     "@reduxjs/toolkit": "^1.8.0",
     "@serverless-jwt/netlify": "^0.2.1",
+    "@slack/webhook": "^6.1.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^13.5.0",
