@@ -29,14 +29,13 @@ The backend uses netlify functions to read from and write to a mongodb atlas dat
 Create a `.env` file with the following variables:
 
 - `MONGODB_URI` for the netlify functions to connect to the database
-- `REACT_APP_API_BASE_URL=http://localhost:9000` so the frontend knows where to get data from
+- `REACT_APP_API_BASE_URL=http://localhost:8888` 
+- `JWT_ISSUER`
+- `JWT_AUDIENCE`
+- `ESLINT_NO_DEV_ERRORS=true` makes create react app be less yelly
 
-### Start the netlify functions local server
+### Develop with netlify CLI
 
-`netlify-lambda serve ./src/functions`
-
-Local calls to these functions looks like `http://localhost:9000/.netlify/functions/get-geometry?id=iMiIWuGlN`
-
-### Start the react app
-
-`yarn start`
+`netlify login`
+`netlify link` 
+`netlify dev`    
