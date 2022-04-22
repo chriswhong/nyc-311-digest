@@ -50,7 +50,10 @@ const Button = ({
 }
 
 Button.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array
+  ]),
   className: PropTypes.string,
   href: PropTypes.string,
   icon: PropTypes.object,

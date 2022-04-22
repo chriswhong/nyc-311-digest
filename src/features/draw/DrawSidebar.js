@@ -8,6 +8,7 @@ import { withAuthenticationRequired } from '@auth0/auth0-react'
 import gjv from 'geojson-validation'
 import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
+import ReactGA from 'react-ga4'
 
 import dummyGeojson from '../../util/dummyGeojson'
 import Button from '../../ui/Button'
@@ -54,6 +55,11 @@ const DrawSidebar = ({
 
     return draw
   }
+
+  useEffect(() => {
+    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
+    ReactGA.send({ hitType: 'pageview', page: '/new' })
+  }, [])
 
   useEffect(() => {
     if (!map) return

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ChevronLeftIcon,
   UserCircleIcon,
@@ -13,6 +13,7 @@ import { renderToString } from 'react-dom/server'
 import mapboxgl from '!mapbox-gl'
 import _ from 'underscore'
 import { useDeviceSelectors } from 'react-device-detect'
+import ReactGA from 'react-ga4'
 
 import RollupChart from './RollupChart'
 import Link from '../../ui/Link'
@@ -52,6 +53,8 @@ const AOISidebar = ({
 
   const { user } = useAuth()
 
+  const { pathname } = useLocation()
+
   const { data, loading, error, trigger } = useGetServiceRequestsQuery(areaOfInterest, dateSelection)
 
   let fitBoundsPadding = { top: 30, bottom: 30, left: 400, right: 30 }
@@ -65,6 +68,11 @@ const AOISidebar = ({
     const features = dedupeServiceRequests(e.features)
     setPopupData(features)
   }
+
+  useEffect(() => {
+    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
+    ReactGA.send({ hitType: 'pageview', page: pathname })
+  }, [])
 
   // initialize sources and layers
   useEffect(() => {
