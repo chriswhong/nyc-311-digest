@@ -21,7 +21,7 @@ const queryDatabase = async (body, client) => {
     sub: body.owner
   })
 
-  fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc-311-reports.netlify.app/report/${id}/`)
+  fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/`)
 
   return {
     statusCode: 200,
