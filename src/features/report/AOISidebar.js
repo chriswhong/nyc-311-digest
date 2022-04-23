@@ -31,6 +31,7 @@ import dummyGeojson from '../../util/dummyGeojson'
 import AOIMenu from './AOIMenu'
 import { useGetServiceRequestsQuery } from '../../util/api'
 import { useAuth } from '../../util/auth'
+import { statusColorsMapStyle } from '../../util/statusColors'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -117,7 +118,7 @@ const AOISidebar = ({
         paint: {
           'circle-color': generateCircleCategoryColorStyle(),
           'circle-radius': 3,
-          'circle-stroke-color': 'black',
+          'circle-stroke-color': statusColorsMapStyle,
           'circle-stroke-width': 1.5
         },
         filter: ['!', ['has', 'point_count']]
@@ -142,7 +143,7 @@ const AOISidebar = ({
             9,
             9
           ],
-          'circle-stroke-color': 'black',
+          'circle-stroke-color': statusColorsMapStyle,
           'circle-stroke-width': 1.5
         },
         filter: ['has', 'point_count']

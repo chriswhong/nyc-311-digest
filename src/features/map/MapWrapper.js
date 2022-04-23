@@ -1,10 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 import Map from './Map.js'
+import CircleMarkerSvg from '../report/CircleMarkerSvg.js'
 
 function MapWrapper ({ onLoad }) {
+  const { pathname } = useLocation()
+  const showLegend = pathname.includes('report')
+
   return (
     <div className='h-full'>
       <Map
@@ -17,6 +21,20 @@ function MapWrapper ({ onLoad }) {
           </div>
         </div>
       </div>
+      {/* Legend */}
+      {
+        showLegend && (
+          <div className='md:rounded-lg bg-white md:shadow-md overflow-hidden flex flex-col absolute top-5 right-5 p-3'>
+            <div className='flex items-center text-xs text-gray-600 mb-1'>
+              <CircleMarkerSvg rollupCatgory='transparent' status='Open' noFill /> <div className='ml-2'>Open Complaint</div>
+            </div>
+            <div className='flex items-center text-xs text-gray-600'>
+              <CircleMarkerSvg rollupCatgory='transparent' status='Closed' noFill /> <div className='ml-2'>Closed Complaint</div>
+            </div>
+          </div>
+        )
+      }
+
     </div>
   )
 }

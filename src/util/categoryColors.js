@@ -10,7 +10,7 @@
  to these categories from time to time
 */
 
-const DEFAULT_CATEGORY_COLOR = 'gray'
+const DEFAULT_CATEGORY_COLOR = '#C0C0BF'
 
 const rollupCategories = [
   {

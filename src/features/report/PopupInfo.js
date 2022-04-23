@@ -29,21 +29,21 @@ const PopupInfo = ({ complaint }) => {
   const updatedTimestamp = moment.unix(resolutionActionUpdatedDate).format(timestampFormat)
 
   return (
-    <div className='block p-3 rounded-lg max-w-sm mb-2 border'>
+    <div className='block px-3 py-1.5 rounded-lg max-w-sm mb-2 border'>
       <div className='flex flex-col'>
         <div className='flex items-center mb-0.5 border-b pb-1'>
           <div className='mr-2'>
-            <CircleMarkerSvg rollupCategory={rollupCategory} />
+            <CircleMarkerSvg rollupCategory={rollupCategory} status={status} />
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-600 font-light' style={{ fontSize: 10 }}>{rollupCategory}</div>
-            <div className='text-xs'>{incidentAddress}</div>
+            <div className='text-xs'>{complaintType}</div>
           </div>
         </div>
         <div className='flex mt-1'>
           <div className='flex-grow text-left'>
-            <div className='font-semibold text-sm'>{complaintType}</div>
-            <div className='font-light' style={{ fontSize: 10, lineHeight: '14px' }}>{descriptor}</div>
+            <div className='font-semibold text-sm'>{descriptor}</div>
+            <div className='font-light' style={{ fontSize: 12, lineHeight: '14px' }}>{incidentAddress || 'Address not specified'}</div>
           </div>
           <div className='flex-grow text-right pl-2'>
             <div className='font-light' style={{ fontSize: 10 }}>{status}</div>
