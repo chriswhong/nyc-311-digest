@@ -1,9 +1,17 @@
 // inserts a geometry into the database, returning its unique id
 import shortid from 'shortid'
+import slugify from 'slugify'
 
 import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
 import { fireSlackWebhook } from './notify.mjs'
+
+const slugFromName = (string) => {
+  return slugify(string, {
+    replacement: '-',
+    lower: true
+  })
+}
 
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
@@ -21,7 +29,7 @@ const queryDatabase = async (body, client) => {
     sub: body.owner
   })
 
-  fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/`)
+  await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/${slugFromName(body.name)}`)
 
   return {
     statusCode: 200,

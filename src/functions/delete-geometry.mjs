@@ -14,7 +14,7 @@ const queryDatabase = async (body, client) => {
     _id: body.id
   })
 
-  fireSlackWebhook(`AOI ${name} was deleted`)
+  await fireSlackWebhook(`AOI ${name} was deleted`)
 
   return {
     statusCode: 200,
