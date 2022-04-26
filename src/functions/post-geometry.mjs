@@ -16,18 +16,25 @@ const slugFromName = (string) => {
 const queryDatabase = async (body, client) => {
   const db = client.db('nyc-311-digest')
   const id = shortid.generate()
+
+  // reject if no username exists for this user
+  const { username } = await db.collection('users').findOne({
+    sub: body.owner
+  })
+
+  if (!username) {
+    return { statusCode: 400, body: `username not found for ${body.owner}` }
+  }
+
   await db.collection('custom-geometries')
     .insertOne({
       _id: id,
       name: body.name,
       geometry: body.geometry,
       bbox: body.bbox,
-      owner: body.owner
+      owner: body.owner,
+      created_at: new Date()
     })
-
-  const { username } = await db.collection('users').findOne({
-    sub: body.owner
-  })
 
   await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/${slugFromName(body.name)}`)
 
