@@ -30,15 +30,25 @@ const queryDatabase = async (client) => {
         _id,
         name,
         geometry,
-        bbox, owner
+        bbox,
+        owner
       }) => {
+        // add a dummy owner to orphaned AOIs
+        let theOwner = owner
+        if (!theOwner) {
+          theOwner = {
+            _id: '12345',
+            username: 'Anonymous',
+            sub: '12345'
+          }
+        }
         return {
           type: 'Feature',
           properties: {
             _id,
             name,
             bbox,
-            owner
+            owner: theOwner
           },
           geometry
         }
