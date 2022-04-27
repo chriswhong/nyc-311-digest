@@ -17,6 +17,7 @@ import useModal from './util/useModal'
 import { useGetAOIsQuery } from './util/api'
 import { useAuth } from './util/auth'
 import ProtectedRoute from './features/auth/ProtectedRoute'
+import NotFound from './layout/NotFound'
 
 export const ModalContext = createContext()
 
@@ -108,6 +109,7 @@ function App () {
                 <UsernameForm />
               }
             />
+            <Route path='*' element={<NotFound />} />
           </Routes>
         </div>
         <ModalWrapper {...modalProps} />

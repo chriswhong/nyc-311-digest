@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
-
 import AOISidebar from './AOISidebar'
 
 function useQuery () {
@@ -18,7 +17,7 @@ const AOISidebarWrapper = ({
 }) => {
   const query = useQuery()
   const { pathname } = useLocation()
-  const history = useNavigate()
+  const navigate = useNavigate()
   const { areaOfInterestId } = useParams()
 
   // array of two moments
@@ -35,14 +34,18 @@ const AOISidebarWrapper = ({
   }, [dateRangeSelectorFromQueryParams])
 
   const handleDateRangeChange = (d) => {
-    history(`${pathname}?dateSelection=${d.value}`)
+    navigate(`${pathname}?dateSelection=${d.value}`)
   }
 
   useEffect(() => {
     if (allGeometries) {
       const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
 
-      setAreaOfInterest(areaOfInterest)
+      if (!areaOfInterest) {
+        navigate('/404')
+      } else {
+        setAreaOfInterest(areaOfInterest)
+      }
     }
   }, [allGeometries])
 
