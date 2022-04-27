@@ -22,6 +22,8 @@ const queryDatabase = async (body, client) => {
     sub: body.owner
   })
 
+  console.log(`found username '${username}' for sub ${body.owner}`)
+
   if (!username) {
     return { statusCode: 400, body: `username not found for ${body.owner}` }
   }
@@ -35,6 +37,8 @@ const queryDatabase = async (body, client) => {
       owner: body.owner,
       created_at: new Date()
     })
+
+  console.log(`inserted AOI ${body.name} into database...`)
 
   await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/${slugFromName(body.name)}`)
 
@@ -63,6 +67,8 @@ exports.handler = handleOptionsCall(requireAuth(async (event, context) => {
   if (body.owner !== context.identityContext.claims.sub) {
     return { statusCode: 400, body: 'invalid request' }
   }
+
+  console.log(`owner ${body.owner} matches token, proceeding...`)
 
   return queryDatabase(body, client)
 }))
