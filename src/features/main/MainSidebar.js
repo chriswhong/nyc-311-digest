@@ -6,6 +6,7 @@ import ReactGA from 'react-ga4'
 import dummyGeojson from '../../util/dummyGeojson'
 import Spinner from '../../ui/Spinner'
 import { slugFromName } from '../../util/slugFromName'
+import Head from '../../layout/Head'
 
 const MainSidebar = ({ map, allGeometries }) => {
   const history = useNavigate()
@@ -125,11 +126,17 @@ const MainSidebar = ({ map, allGeometries }) => {
   }
 
   return (
-    <div className='text-sm px-4 foobar'>
-      <h3 className='font-semibold mb-3 text-lg'>Explore 311 Data for the Places You Care About</h3>
-      <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
-      <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { history('/new') }} className='text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4 cursor-pointer'>add it!</a></p>
-    </div>
+    <>
+      <Head
+        title='Citywide Map'
+        description='Browse user-created areas of interest for local 311 activity in New York City'
+      />
+      <div className='text-sm px-4 foobar'>
+        <h3 className='font-semibold mb-3 text-lg'>Explore 311 Data for the Places You Care About</h3>
+        <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
+        <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { history('/new') }} className='text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4 cursor-pointer'>add it!</a></p>
+      </div>
+    </>
   )
 }
 

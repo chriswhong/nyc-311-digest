@@ -23,7 +23,7 @@ export const ModalContext = createContext()
 function App () {
   const [mapInstance, setMapInstance] = useState()
 
-  const { pathname, state, hash } = useLocation()
+  const { pathname, state } = useLocation()
   const navigate = useNavigate()
 
   const modalProps = useModal()

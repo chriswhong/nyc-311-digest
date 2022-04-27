@@ -32,6 +32,7 @@ import AOIMenu from './AOIMenu'
 import { useGetServiceRequestsQuery } from '../../util/api'
 import { useAuth } from '../../util/auth'
 import { statusColorsMapStyle } from '../../util/statusColors'
+import Head from '../../layout/Head'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -336,6 +337,10 @@ const AOISidebar = ({
     <>
       {areaOfInterest && (
         <>
+          <Head
+            title={areaOfInterest.properties.name}
+            description={`A report of 311 activity in the area ${areaOfInterest.properties.name}`}
+          />
           <div className='px-4 mb-3'>
             <div className='mb-1 flex items-center'>
               <div className='flex-grow'>
