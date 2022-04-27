@@ -31,7 +31,7 @@ const UserMenu = () => {
           <a
             onClick={() => loginWithRedirect({
               appState: {
-                returnTo: location.pathname
+                returnTo: `${location.pathname}${location.hash}`
               }
             })} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'
           >
@@ -91,7 +91,9 @@ const UserMenu = () => {
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm cursor-pointer'
                     )}
-                    onClick={() => logout({ returnTo: window.location.origin })}
+                    onClick={() => logout({
+                      returnTo: `${window.location.origin}${location.hash}`
+                    })}
                   >
                     Log Out
                   </a>

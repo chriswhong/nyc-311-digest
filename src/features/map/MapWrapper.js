@@ -6,8 +6,14 @@ import Map from './Map.js'
 import CircleMarkerSvg from '../report/CircleMarkerSvg.js'
 
 function MapWrapper ({ onLoad }) {
-  const { pathname } = useLocation()
-  const showLegend = pathname.includes('report')
+  const location = useLocation()
+  const showLegend = location.pathname.includes('report')
+
+  // don't render the map immediately when being redirected from auth0
+  // this gives us time to update the hash so the map bounds can persist through login/logout
+  if (location.search.includes('code')) {
+    return null
+  }
 
   return (
     <div className='h-full'>

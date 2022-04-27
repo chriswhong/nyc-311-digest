@@ -4,7 +4,6 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {
   XCircleIcon
 } from '@heroicons/react/outline'
-import { withAuthenticationRequired } from '@auth0/auth0-react'
 import gjv from 'geojson-validation'
 import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
@@ -35,7 +34,7 @@ const DrawSidebar = ({
     name: drawnFeatureName,
     geometry: drawnFeature?.geometry,
     bbox: drawnFeature && bbox(drawnFeature?.geometry),
-    owner: user.sub
+    owner: user?.sub
   }
 
   const { data, loading, error, trigger } = useCreateAOIQuery(requestBody)
@@ -207,7 +206,4 @@ DrawSidebar.propTypes = {
   onAllGeometriesUpdate: PropTypes.func
 }
 
-export default withAuthenticationRequired(DrawSidebar, {
-  onRedirecting: () => <Spinner>Loading...</Spinner>,
-  returnTo: '/new'
-})
+export default DrawSidebar

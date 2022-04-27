@@ -19,7 +19,7 @@ export default function Header () {
   const location = useLocation()
 
   const handleAddClick = () => {
-    history('/new')
+    history(`/new${location.hash}`)
   }
   return (
     <Popover className='relative bg-white'>

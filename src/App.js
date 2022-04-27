@@ -16,18 +16,19 @@ import ModalWrapper from './ui/modal/ModalWrapper'
 import useModal from './util/useModal'
 import { useGetAOIsQuery } from './util/api'
 import { useAuth } from './util/auth'
+import ProtectedRoute from './features/auth/ProtectedRoute'
 
 export const ModalContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
 
-  const { pathname, state } = useLocation()
+  const { pathname, state, hash } = useLocation()
   const navigate = useNavigate()
 
   const modalProps = useModal()
 
-  const { user } = useAuth()
+  const { user, isLoading: userIsLoading } = useAuth()
 
   // don't let an authenticated user do anything else until they create a username
   const shouldRedirectToCreateUsername = (pathname !== '/create-username') && user?.username === null
@@ -84,9 +85,11 @@ function App () {
               <Route
                 path='/new'
                 element={
-                  <DrawSidebar
-                    map={mapInstance}
-                  />
+                  <ProtectedRoute user={user} userIsLoading={userIsLoading}>
+                    <DrawSidebar
+                      map={mapInstance}
+                    />
+                  </ProtectedRoute>
                 }
               />
               <Route

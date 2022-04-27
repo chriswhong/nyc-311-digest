@@ -5,7 +5,7 @@ import mapboxgl from '!mapbox-gl'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { useDeviceSelectors } from 'react-device-detect'
 import classNames from 'classnames'
-import { useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -24,7 +24,6 @@ const Map = ({
   maxZoom = 18,
   bounds = [],
   padding = 0.1,
-  location,
   areaOfInterest,
   drawnFeature,
   serviceRequests,
@@ -44,6 +43,7 @@ const Map = ({
   const { isMobile } = selectors
 
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   // instantiate the map, add sources and layers, event listeners, tooltips
   useEffect(() => {
@@ -54,7 +54,8 @@ const Map = ({
       style: `mapbox://styles/mapbox/${style}`,
       bounds: nycBounds,
       minZoom,
-      maxZoom
+      maxZoom,
+      hash: true
     })
 
     if (isMobile) {
@@ -69,6 +70,13 @@ const Map = ({
     geocoderRef.current.appendChild(geocoder.onAdd(map))
 
     map.on('load', () => {
+      map.on('moveend', () => {
+        // update the hash. hash:true in Map options doesn't work on its own,
+        // this pushes a new url to react router whenever the map moves
+        const hash = map._hash._getCurrentHash()
+        navigate(`${window.location.pathname}#${hash.join('/')}`)
+      })
+
       onLoad(map)
       window.map = map // for easier debugging and querying via console
     })
@@ -107,7 +115,6 @@ Map.propTypes = {
   sources: PropTypes.object,
   layers: PropTypes.arrayOf(PropTypes.object),
   bounds: PropTypes.arrayOf(PropTypes.number),
-  location: PropTypes.object,
   areaOfInterest: PropTypes.shape({
     type: PropTypes.string,
     properties: PropTypes.shape({
