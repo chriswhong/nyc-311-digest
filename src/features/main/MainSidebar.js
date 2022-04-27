@@ -37,7 +37,7 @@ const MainSidebar = ({ map, allGeometries }) => {
           'fill-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
-            1,
+            0.9,
             0.6
           ]
         }

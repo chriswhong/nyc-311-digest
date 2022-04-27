@@ -70,6 +70,23 @@ const Map = ({
     geocoderRef.current.appendChild(geocoder.onAdd(map))
 
     map.on('load', () => {
+      // add source and layer for borough boundaries
+      map.addSource('borough-boundaries', {
+        type: 'geojson',
+        data: 'data/borough-boundaries.geojson'
+      })
+
+      map.addLayer({
+        id: 'borough-boundaries-line',
+        source: 'borough-boundaries',
+        type: 'line',
+        paint: {
+          'line-color': '#4f46e5',
+          'line-dasharray': [5, 2],
+          'line-opacity': 0.7
+        }
+      })
+
       map.on('moveend', () => {
         // update the hash. hash:true in Map options doesn't work on its own,
         // this pushes a new url to react router whenever the map moves
