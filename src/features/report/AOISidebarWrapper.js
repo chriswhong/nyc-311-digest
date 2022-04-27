@@ -16,7 +16,7 @@ const AOISidebarWrapper = ({
   allGeometries
 }) => {
   const query = useQuery()
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
   const navigate = useNavigate()
   const { areaOfInterestId } = useParams()
 
@@ -41,7 +41,7 @@ const AOISidebarWrapper = ({
     if (allGeometries) {
       const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
 
-      if (!areaOfInterest) {
+      if (!areaOfInterest && !state?.refresh) {
         navigate('/404')
       } else {
         setAreaOfInterest(areaOfInterest)
