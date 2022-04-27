@@ -94,6 +94,7 @@ const DrawSidebar = ({
 
     return () => {
       map.getSource('drawn-feature').setData(dummyGeojson)
+      map.removeControl(draw)
     }
   }, [map])
 
