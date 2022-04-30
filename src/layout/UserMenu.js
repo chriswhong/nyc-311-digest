@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { useLocation } from 'react-router-dom'
 
 import { useAuth } from '../util/auth'
 
@@ -12,7 +11,6 @@ function classNames (...classes) {
 
 const UserMenu = () => {
   const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth()
-  const location = useLocation()
 
   if (isLoading) {
     // spinner from https://flowbite.com/docs/components/spinner/
@@ -23,28 +21,45 @@ const UserMenu = () => {
     )
   }
 
+  const handleLogin = () => {
+    const { pathname, search, hash } = window.location
+    loginWithRedirect({
+      appState: {
+        returnTo: `${pathname}${search}${hash}`
+      }
+    })
+  }
+
+  const handleSignup = () => {
+    const { pathname, search, hash } = window.location
+    loginWithRedirect({
+      appState: {
+        returnTo: `${pathname}${search}${hash}`
+      },
+      screen_hint: 'signup'
+    })
+  }
+
+  const handleLogout = () => {
+    const { origin, pathname, search, hash } = window.location
+    logout({
+      returnTo: `${origin}${pathname}${search}${hash}`
+    })
+  }
+
   return (
     <>
       {
       !isAuthenticated && (
         <div className='hidden md:flex items-center justify-end md:flex-1 ml-8 cursor-pointer'>
           <a
-            onClick={() => loginWithRedirect({
-              appState: {
-                returnTo: `${location.pathname}${location.hash}`
-              }
-            })} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'
+            onClick={handleLogin} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'
           >
             Sign in
           </a>
           <Button
             className='ml-6'
-            onClick={() => loginWithRedirect({
-              appState: {
-                returnTo: '/create-username'
-              },
-              screen_hint: 'signup'
-            })}
+            onClick={handleSignup}
           >
             Sign up
           </Button>
@@ -91,9 +106,7 @@ const UserMenu = () => {
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm cursor-pointer'
                     )}
-                    onClick={() => logout({
-                      returnTo: `${window.location.origin}${location.hash}`
-                    })}
+                    onClick={handleLogout}
                   >
                     Log Out
                   </a>

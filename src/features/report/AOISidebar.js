@@ -46,7 +46,7 @@ const AOISidebar = ({
   dateSelection,
   onDateRangeChange
 }) => {
-  const history = useNavigate()
+  const navigate = useNavigate()
   const [serviceRequests, setServiceRequests] = useState()
   const [popupData, setPopupData] = useState()
 
@@ -318,7 +318,7 @@ const AOISidebar = ({
   }, [map, highlightedFeature])
 
   const handleBackClick = () => {
-    history('/')
+    navigate('/')
   }
 
   if (popupData) {

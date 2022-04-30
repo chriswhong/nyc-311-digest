@@ -5,7 +5,7 @@ import mapboxgl from '!mapbox-gl'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import { useDeviceSelectors } from 'react-device-detect'
 import classNames from 'classnames'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -43,7 +43,6 @@ const Map = ({
   const { isMobile } = selectors
 
   const { pathname } = useLocation()
-  const navigate = useNavigate()
 
   // instantiate the map, add sources and layers, event listeners, tooltips
   useEffect(() => {
@@ -70,30 +69,6 @@ const Map = ({
     geocoderRef.current.appendChild(geocoder.onAdd(map))
 
     map.on('load', () => {
-      // add source and layer for borough boundaries
-      map.addSource('borough-boundaries', {
-        type: 'geojson',
-        data: 'data/borough-boundaries.geojson'
-      })
-
-      map.addLayer({
-        id: 'borough-boundaries-line',
-        source: 'borough-boundaries',
-        type: 'line',
-        paint: {
-          'line-color': '#4f46e5',
-          'line-dasharray': [5, 2],
-          'line-opacity': 0.7
-        }
-      })
-
-      map.on('moveend', () => {
-        // update the hash. hash:true in Map options doesn't work on its own,
-        // this pushes a new url to react router whenever the map moves
-        const hash = map._hash._getCurrentHash()
-        navigate(`${window.location.pathname}#${hash.join('/')}`)
-      })
-
       onLoad(map)
       window.map = map // for easier debugging and querying via console
     })

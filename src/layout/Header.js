@@ -15,18 +15,18 @@ import UserMenu from './UserMenu'
 import Button from '../ui/Button'
 
 export default function Header () {
-  const history = useNavigate()
+  const navigate = useNavigate()
   const location = useLocation()
 
   const handleAddClick = () => {
-    history(`/new${location.hash}`)
+    navigate(`/new${location.hash}`)
   }
   return (
     <Popover className='relative bg-white'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6'>
         <div className='flex justify-between items-center border-b-2 border-gray-100 py-3 md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
-            <a className='flex items-center cursor-pointer' onClick={() => { history('/') }}>
+            <a className='flex items-center cursor-pointer' onClick={() => { navigate('/') }}>
               <TicketIcon className='h-8 w-8 text-indigo-600 inline' aria-hidden='true' />
               <div className='font-semibold ml-3' style={{ fontSize: 17 }}>NYC 311 Reports</div>
               <div className='text-xs font-semibold h-4 text-white bg-blue-400 px-1 rounded flex items-center ml-2'><div>BETA</div></div>

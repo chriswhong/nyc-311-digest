@@ -23,8 +23,9 @@ export const ModalContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
+  const location = useLocation()
 
-  const { pathname, state } = useLocation()
+  const { pathname, state } = location
   const navigate = useNavigate()
 
   const modalProps = useModal()
@@ -66,6 +67,27 @@ function App () {
     }
   }, [state])
 
+  const handleMapLoad = (map) => {
+    setMapInstance(map)
+
+    // add source and layer for borough boundaries
+    map.addSource('borough-boundaries', {
+      type: 'geojson',
+      data: '/data/borough-boundaries.geojson'
+    })
+
+    map.addLayer({
+      id: 'borough-boundaries-line',
+      source: 'borough-boundaries',
+      type: 'line',
+      paint: {
+        'line-color': '#4f46e5',
+        'line-dasharray': [5, 2],
+        'line-opacity': 0.7
+      }
+    })
+  }
+
   return (
     <div className='App flex flex-col'>
 
@@ -73,7 +95,7 @@ function App () {
         <Header />
         <div className='flex-grow relative min-h-0'>
           <Routes>
-            <Route element={<MapWrapper onLoad={(map) => { setMapInstance(map) }} />}>
+            <Route element={<MapWrapper onLoad={handleMapLoad} />}>
               <Route
                 index
                 element={

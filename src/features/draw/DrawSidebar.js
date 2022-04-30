@@ -26,7 +26,7 @@ const DrawSidebar = ({
   const [drawnFeature, setDrawnFeature] = useState()
   const [drawnFeatureName, setDrawnFeatureName] = useState('')
 
-  const history = useNavigate()
+  const navigate = useNavigate()
 
   const { user } = useAuth()
 
@@ -141,7 +141,7 @@ const DrawSidebar = ({
     if (!data) { return }
     setDrawnFeature(null)
     setDrawnFeatureName('')
-    history(`/report/${data.id}/${slugFromName(drawnFeatureName)}`, {
+    navigate(`/report/${data.id}/${slugFromName(drawnFeatureName)}`, {
       state: {
         refresh: true
       }

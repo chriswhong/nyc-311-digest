@@ -34,7 +34,11 @@ const AOISidebarWrapper = ({
   }, [dateRangeSelectorFromQueryParams])
 
   const handleDateRangeChange = (d) => {
-    navigate(`${pathname}?dateSelection=${d.value}`)
+    navigate({
+      pathname,
+      search: `?dateSelection=${d.value}`,
+      hash: window.location.hash // get this value directly from window because mapboxgl is updating the hash
+    })
   }
 
   useEffect(() => {

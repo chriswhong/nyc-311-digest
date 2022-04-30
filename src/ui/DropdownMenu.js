@@ -54,8 +54,7 @@ export default function DropdownMenu ({
                   {({ active }) => {
                     const selected = selectedValue === item.value
                     return (
-                      <a
-                        href='#'
+                      <div
                         className={classNames(
                           'block px-4 py-2 text-sm',
                           {
@@ -67,7 +66,7 @@ export default function DropdownMenu ({
                         onClick={() => { onChange(item) }}
                       >
                         {item.displayName}
-                      </a>
+                      </div>
                     )
                   }}
                 </Menu.Item>

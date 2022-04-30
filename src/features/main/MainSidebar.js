@@ -9,7 +9,7 @@ import { slugFromName } from '../../util/slugFromName'
 import Head from '../../layout/Head'
 
 const MainSidebar = ({ map, allGeometries }) => {
-  const history = useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
@@ -65,7 +65,7 @@ const MainSidebar = ({ map, allGeometries }) => {
       map.on('click', 'all-geometries-fill', (e) => {
         const [feature] = map.queryRenderedFeatures(e.point)
         const { name, _id: geometryId } = feature.properties
-        history(`/report/${geometryId}/${slugFromName(name)}`)
+        navigate(`/report/${geometryId}/${slugFromName(name)}`)
       })
       // make the cursor a pointer when hovering all-geomtries-fill layer
       map.on('mouseenter', 'all-geometries-fill', () => {
@@ -134,7 +134,7 @@ const MainSidebar = ({ map, allGeometries }) => {
       <div className='text-sm px-4 foobar'>
         <h3 className='font-semibold mb-3 text-lg'>Explore 311 Data for the Places You Care About</h3>
         <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
-        <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { history('/new') }} className='text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4 cursor-pointer'>add it!</a></p>
+        <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { navigate('/new') }} className='text-blue-600 hover:text-blue-700 transition duration-300 ease-in-out mb-4 cursor-pointer'>add it!</a></p>
       </div>
     </>
   )
