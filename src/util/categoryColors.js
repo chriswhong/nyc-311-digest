@@ -166,12 +166,15 @@ const getRollupCategory = (complaintType) => {
 }
 
 // adds clusterProperties indicating whether all complaints in a cluster are the same category
-// if so they will be filled with that category's color. Mixed clustters will be filled with gray
+// if so they will be filled with that category's color. Mixed clusters will be filled with gray
 export const generateClusterProperties = () => {
   const clusterProperties = {}
   rollupCategories.forEach(({ id, displayName }) => {
     clusterProperties[`all_${id}`] = ['all', ['==', ['get', 'rollupCategory'], displayName], 'false']
   })
+
+  clusterProperties.all_closed = ['all', ['==', ['get', 'status'], 'Closed'], 'false']
+  clusterProperties.all_open = ['all', ['!=', ['get', 'status'], 'Closed'], 'false']
 
   return clusterProperties
 }

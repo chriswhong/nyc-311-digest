@@ -31,7 +31,7 @@ import dummyGeojson from '../../util/dummyGeojson'
 import AOIMenu from './AOIMenu'
 import { useGetServiceRequestsQuery } from '../../util/api'
 import { useAuth } from '../../util/auth'
-import { statusColorsMapStyle } from '../../util/statusColors'
+import { statusColorsMapStyle, statusColorsClusterMapStyle } from '../../util/statusColors'
 import Head from '../../layout/Head'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
@@ -144,7 +144,7 @@ const AOISidebar = ({
             9,
             9
           ],
-          'circle-stroke-color': statusColorsMapStyle,
+          'circle-stroke-color': statusColorsClusterMapStyle,
           'circle-stroke-width': 1.5
         },
         filter: ['has', 'point_count']
@@ -259,7 +259,7 @@ const AOISidebar = ({
           <div className='px-2 py-1'>
             {features.map((feature) => (
               <div key={feature.properties.unique_key} className='flex items-center'>
-                <CircleMarkerSvg rollupCategory={getRollupCategory(feature.properties.complaint_type)} />
+                <CircleMarkerSvg rollupCategory={getRollupCategory(feature.properties.complaint_type)} status={feature.properties.status} />
                 <span className='text-sm ml-1'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
               </div>
             ))}
