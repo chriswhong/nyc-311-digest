@@ -56,7 +56,7 @@ export default function DropdownMenu ({
                     return (
                       <div
                         className={classNames(
-                          'block px-4 py-2 text-sm',
+                          'block px-4 py-2 text-sm hover:cursor-pointer',
                           {
                             'bg-gray-100 text-gray-900': active && !selected,
                             'text-gray-700': !active && !selected,
