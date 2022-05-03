@@ -10,8 +10,7 @@ export default function ProtectedRoute ({ user, userIsLoading, children }) {
       loginWithRedirect({
         appState: {
           returnTo: `${location.pathname}${location.hash}`
-        },
-        screen_hint: 'signup'
+        }
       })
     }
   }
