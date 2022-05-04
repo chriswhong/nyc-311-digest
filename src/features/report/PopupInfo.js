@@ -37,13 +37,13 @@ const PopupInfo = ({ complaint }) => {
           </div>
           <div className='flex flex-col'>
             <div className='text-gray-600 font-light' style={{ fontSize: 10 }}>{rollupCategory}</div>
-            <div className='text-xs'>{complaintType}</div>
+            <div className='text-xs'>{incidentAddress || 'Address not specified'}</div>
           </div>
         </div>
         <div className='flex mt-1'>
           <div className='flex-grow text-left'>
-            <div className='font-semibold text-sm'>{descriptor}</div>
-            <div className='font-light' style={{ fontSize: 12, lineHeight: '14px' }}>{incidentAddress || 'Address not specified'}</div>
+            <div className='font-semibold text-sm'>{complaintType}</div>
+            <div className='font-semibold' style={{ fontSize: 12, lineHeight: '14px' }}>{descriptor}</div>
           </div>
           <div className='flex-grow text-right pl-2'>
             <div className='font-light' style={{ fontSize: 10 }}>{status}</div>
@@ -53,7 +53,7 @@ const PopupInfo = ({ complaint }) => {
       </div>
       <div className='pt-2 text-left'>
         <div className='font-light' style={{ fontSize: 10, lineHeight: '14px' }}>Opened {timeFromNow} ({createdTimestamp})</div>
-        {status === 'Closed' && <div className='font-light' style={{ fontSize: 10, lineHeight: '14px' }}>Closed {closedTimestamp} ({duration})</div>}
+        {status === 'Closed' && <div className='font-light' style={{ fontSize: 10, lineHeight: '14px' }}>Closed {closedTimestamp} ({duration} later)</div>}
         <div className='font-normal mt-2' style={{ fontSize: 10, lineHeight: '12px' }}>{resolutionDescription} (updated {updatedTimestamp})</div>
       </div>
     </div>
