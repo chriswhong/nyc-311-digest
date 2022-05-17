@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Dialog, Transition } from '@headlessui/react'
 
 import DeleteModal from './DeleteModal'
+import NoDataModal from './NoDataModal'
 
 export default function ModalWrapper (modalProps) {
   const {
@@ -15,12 +16,16 @@ export default function ModalWrapper (modalProps) {
   switch (type) {
     case 'DeleteModal':
       modalComponent = <DeleteModal {...modalProps} />
+      break
+    case 'NoDataModal':
+      modalComponent = <NoDataModal />
+      break
   }
 
   return (
     <Transition.Root show={visible} as={Fragment}>
-      <Dialog as='div' className='fixed z-10 inset-0 overflow-y-auto' onClose={() => { hideModal() }}>
-        <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+      <Dialog as='div' className='fixed inset-0 z-10 overflow-y-auto' onClose={() => { hideModal() }}>
+        <div className='flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0'>
           <Transition.Child
             as={Fragment}
             enter='ease-out duration-300'
@@ -30,7 +35,7 @@ export default function ModalWrapper (modalProps) {
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
           >
-            <Dialog.Overlay className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
+            <Dialog.Overlay className='fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75' />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}

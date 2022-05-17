@@ -29,6 +29,7 @@ function App () {
   const navigate = useNavigate()
 
   const modalProps = useModal()
+  const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useAuth()
 
@@ -59,6 +60,7 @@ function App () {
   // get all area of interest geometries
   useEffect(() => {
     allGeometriesTrigger()
+    showModal('NoDataModal')
   }, [])
 
   useEffect(() => {
@@ -89,11 +91,11 @@ function App () {
   }
 
   return (
-    <div className='App flex flex-col'>
+    <div className='flex flex-col App'>
 
       <ModalContext.Provider value={modalProps}>
         <Header />
-        <div className='flex-grow relative min-h-0'>
+        <div className='relative flex-grow min-h-0'>
           <Routes>
             <Route element={<MapWrapper onLoad={handleMapLoad} />}>
               <Route
