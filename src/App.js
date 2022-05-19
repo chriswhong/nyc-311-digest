@@ -60,7 +60,8 @@ function App () {
   // get all area of interest geometries
   useEffect(() => {
     allGeometriesTrigger()
-    showModal('NoDataModal')
+    // modal that effectively hides the app if there is a data issue
+    // showModal('NoDataModal')
   }, [])
 
   useEffect(() => {
