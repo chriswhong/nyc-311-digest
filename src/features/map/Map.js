@@ -80,7 +80,7 @@ const Map = ({
 
   return (
     <div
-      className='relative h-3/6 md:h-full w-full'
+      className='relative w-full h-full'
     >
       <div
         className={classNames(

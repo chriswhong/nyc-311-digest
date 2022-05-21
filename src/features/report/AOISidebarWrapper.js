@@ -4,6 +4,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 import AOISidebar from './AOISidebar'
+import AOIMapRenderer from './AOIMapRenderer'
+import { useGetServiceRequestsQuery } from '../../util/api'
 
 function useQuery () {
   const { search } = useLocation()
@@ -27,6 +29,9 @@ const AOISidebarWrapper = ({
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
 
   const [areaOfInterest, setAreaOfInterest] = useState()
+  const [popupData, setPopupData] = useState()
+
+  const { data: serviceRequests, loading, error, trigger } = useGetServiceRequestsQuery(areaOfInterest, dateSelection)
 
   // react to changes in query params
   useEffect(() => {
@@ -53,15 +58,34 @@ const AOISidebarWrapper = ({
     }
   }, [allGeometries])
 
+  useEffect(() => {
+    if (map && areaOfInterest) {
+      trigger()
+    }
+  }, [map, areaOfInterest, dateSelection.dateRange])
+
   return (
     <>
       {areaOfInterest && dateSelection && (
-        <AOISidebar
-          map={map}
-          areaOfInterest={areaOfInterest}
-          dateSelection={dateSelection}
-          onDateRangeChange={handleDateRangeChange}
-        />
+        <>
+          <AOIMapRenderer
+            map={map}
+            dateSelection={dateSelection}
+            areaOfInterest={areaOfInterest}
+            serviceRequests={serviceRequests}
+            popupData={popupData}
+            setPopupData={setPopupData}
+          />
+          <AOISidebar
+            map={map}
+            areaOfInterest={areaOfInterest}
+            dateSelection={dateSelection}
+            serviceRequests={serviceRequests}
+            popupData={popupData}
+            setPopupData={setPopupData}
+            onDateRangeChange={handleDateRangeChange}
+          />
+        </>
       )}
     </>
   )

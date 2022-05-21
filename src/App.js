@@ -11,6 +11,7 @@ import Header from './layout/Header'
 import MainSidebar from './features/main/MainSidebar'
 import DrawSidebar from './features/draw/DrawSidebar'
 import AOISidebarWrapper from './features/report/AOISidebarWrapper'
+import AOIReportImage from './features/report/AOIReportImage'
 import UsernameForm from './features/auth/UsernameForm'
 import ModalWrapper from './ui/modal/ModalWrapper'
 import useModal from './util/useModal'
@@ -29,7 +30,6 @@ function App () {
   const navigate = useNavigate()
 
   const modalProps = useModal()
-  const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useAuth()
 
@@ -89,6 +89,26 @@ function App () {
         'line-opacity': 0.7
       }
     })
+  }
+
+  // render map + chart layout for static image creation
+  if (pathname.includes('report-image')) {
+    return (
+      <div className='flex flex-col App'>
+        <Routes>
+          <Route
+            path='/report-image/:areaOfInterestId'
+            element={
+              <AOIReportImage
+                map={mapInstance}
+                allGeometries={allGeometries}
+                onLoad={handleMapLoad}
+              />
+                }
+          />
+        </Routes>
+      </div>
+    )
   }
 
   return (

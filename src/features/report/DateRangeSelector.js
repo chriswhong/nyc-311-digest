@@ -21,7 +21,7 @@ export const dateSelectionItems = [
     displayName: 'Last 7 days',
     dateRange: [
       moment().subtract(7, 'd').startOf('day'),
-      moment().startOf('day')
+      moment().startOf('day').subtract(1, 's') // midnight - 1 second
     ]
   },
   {
@@ -46,7 +46,7 @@ const DateRangeSelector = ({
       selectedValue={selection.value}
       onChange={onChange}
     >
-      <CalendarIcon className='h-4 w-4 text-indigo-600 mr-2' />
+      <CalendarIcon className='w-4 h-4 mr-2 text-indigo-600' />
       {selection.displayName}
     </DropdownMenu>
   )

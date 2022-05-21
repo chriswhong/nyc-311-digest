@@ -16,13 +16,13 @@ function MapWrapper ({ onLoad }) {
   }
 
   return (
-    <div className='h-full'>
+    <div className='h-3/6 md:h-full'>
       <Map
         onLoad={(d) => { onLoad(d) }}
       />
-      <div className='md:absolute top-0 left-0 z-10 w-full md:w-96 h-auto md:max-h-full flex flex-col min-h-0'>
-        <div className='m-0 md:m-5 py-4 md:rounded-lg bg-white md:shadow-md overflow-hidden flex flex-col'>
-          <div className='relative h-full flex-grow min-h-0 flex flex-col'>
+      <div className='top-0 left-0 z-10 flex flex-col w-full h-auto min-h-0 md:absolute md:w-96 md:max-h-full'>
+        <div className='flex flex-col py-4 m-0 overflow-hidden bg-white md:m-5 md:rounded-lg md:shadow-md'>
+          <div className='relative flex flex-col flex-grow h-full min-h-0'>
             <Outlet />
           </div>
         </div>
@@ -30,8 +30,8 @@ function MapWrapper ({ onLoad }) {
       {/* Legend */}
       {
         showLegend && (
-          <div className='md:rounded-lg bg-white md:shadow-md overflow-hidden flex flex-col absolute top-5 right-5 p-3'>
-            <div className='flex items-center text-xs text-gray-600 mb-1'>
+          <div className='absolute flex flex-col p-3 overflow-hidden bg-white md:rounded-lg md:shadow-md top-5 right-5'>
+            <div className='flex items-center mb-1 text-xs text-gray-600'>
               <CircleMarkerSvg rollupCatgory='transparent' status='Open' noFill /> <div className='ml-2'>Open Complaint</div>
             </div>
             <div className='flex items-center text-xs text-gray-600'>
