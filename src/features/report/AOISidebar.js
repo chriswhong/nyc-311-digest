@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
@@ -33,6 +33,7 @@ import { useGetServiceRequestsQuery } from '../../util/api'
 import { useAuth } from '../../util/auth'
 import { statusColorsMapStyle, statusColorsClusterMapStyle } from '../../util/statusColors'
 import Head from '../../layout/Head'
+import { AuthContext } from '../../AppContainer'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -53,7 +54,7 @@ const AOISidebar = ({
   const [selectors] = useDeviceSelectors(window.navigator.userAgent)
   const { isMobile } = selectors
 
-  const { user } = useAuth()
+  const { user } = useContext(AuthContext)
 
   const { pathname } = useLocation()
 
@@ -260,7 +261,7 @@ const AOISidebar = ({
             {features.map((feature) => (
               <div key={feature.properties.unique_key} className='flex items-center'>
                 <CircleMarkerSvg rollupCategory={getRollupCategory(feature.properties.complaint_type)} status={feature.properties.status} />
-                <span className='text-sm ml-1'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
+                <span className='ml-1 text-sm'>{feature.properties.complaint_type} - </span><span className='text-xs text-gray-600'>{moment.unix(feature.properties.created_date).fromNow()}</span>
               </div>
             ))}
           </div>
@@ -342,7 +343,7 @@ const AOISidebar = ({
             description={`A report of 311 activity in the area ${areaOfInterest.properties.name}`}
           />
           <div className='px-4 mb-3'>
-            <div className='mb-1 flex items-center'>
+            <div className='flex items-center mb-1'>
               <div className='flex-grow'>
                 <Link onClick={handleBackClick}>
                   <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
@@ -350,13 +351,13 @@ const AOISidebar = ({
               </div>
               {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner.sub} />}
             </div>
-            <div className='font-semibold text-3xl mb-1'>{areaOfInterest.properties.name}</div>
+            <div className='mb-1 text-3xl font-semibold'>{areaOfInterest.properties.name}</div>
             <div className='flex items-center justify-end text-gray-600'>
-              <span className='font-light text-xs'>by</span> <UserCircleIcon className='h-4 w-4 ml-1 mr-0.5' />
+              <span className='text-xs font-light'>by</span> <UserCircleIcon className='h-4 w-4 ml-1 mr-0.5' />
               <div className='text-sm'>{areaOfInterest.properties.owner?.username || 'Anonymous'}</div>
             </div>
           </div>
-          <div className='flex-grow overflow-y-scroll px-4'>
+          <div className='flex-grow px-4 overflow-y-scroll'>
             <div className='mb-2'>
               <DateRangeSelector selection={dateSelection} onChange={onDateRangeChange} />
               <div className='text-xs'>From {dateFrom} to {dateTo}</div>
@@ -365,7 +366,7 @@ const AOISidebar = ({
               <>
 
                 <div className='flex items-center'>
-                  <div className='font-bold text-2xl mr-2'>
+                  <div className='mr-2 text-2xl font-bold'>
                     {serviceRequests.features.length}
                   </div>
                   <div className='text-lg'>
@@ -373,7 +374,7 @@ const AOISidebar = ({
                   </div>
                 </div>
                 <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/getRollupCategory.js'>
-                  <div className='text-xs flex items-center mb-2'>
+                  <div className='flex items-center mb-2 text-xs'>
                     About these Categories
                     <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
                   </div>
@@ -381,7 +382,7 @@ const AOISidebar = ({
                 <div className='h-64 mb-3'>
                   <RollupChart data={serviceRequests.features} />
                 </div>
-                <div className='text-xs mb-3'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
+                <div className='mb-3 text-xs'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
               </>
             )}
 

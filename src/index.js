@@ -5,13 +5,13 @@ import {
 } from 'react-router-dom'
 
 import './index.css'
-import AppContainer from './AppContainer'
+import AuthContainer from './AuthContainer'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppContainer />
+      <AuthContainer />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

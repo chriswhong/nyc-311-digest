@@ -1,21 +1,22 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useContext } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 
-import { useAuth } from '../util/auth'
-
 import Button from '../ui/Button'
+import { AuthContext } from '../AppContainer'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const UserMenu = () => {
-  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth()
+  const authItems = useContext(AuthContext)
+
+  const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = authItems
 
   if (isLoading) {
     // spinner from https://flowbite.com/docs/components/spinner/
     return (
-      <div className='ml-4 spinner-border animate-spin inline-block w-6 h-6 border-4 rounded-full text-indigo-600' role='status'>
+      <div className='inline-block w-6 h-6 ml-4 text-indigo-600 border-4 rounded-full spinner-border animate-spin' role='status'>
         <span className='visually-hidden'>Loading...</span>
       </div>
     )
@@ -51,9 +52,9 @@ const UserMenu = () => {
     <>
       {
       !isAuthenticated && (
-        <div className='hidden md:flex items-center justify-end md:flex-1 ml-8 cursor-pointer'>
+        <div className='items-center justify-end hidden ml-8 cursor-pointer md:flex md:flex-1'>
           <a
-            onClick={handleLogin} className='whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900'
+            onClick={handleLogin} className='text-base font-medium text-gray-500 whitespace-nowrap hover:text-gray-900'
           >
             Sign in
           </a>
@@ -68,10 +69,10 @@ const UserMenu = () => {
     }
       {
     isAuthenticated && (
-      <Menu as='div' className='relative inline-block text-left ml-4'>
+      <Menu as='div' className='relative inline-block ml-4 text-left'>
         <div className='flex items-center'>
-          <Menu.Button className='inline-flex justify-center h-10 w-10'>
-            <img className='rounded-full border-transparent border-4 hover:border-gray-400 transition-all duration-100' src={user.picture} alt={user.name} referrerPolicy='no-referrer' />
+          <Menu.Button className='inline-flex justify-center w-10 h-10'>
+            <img className='transition-all duration-100 border-4 border-transparent rounded-full hover:border-gray-400' src={user.picture} alt={user.name} referrerPolicy='no-referrer' />
           </Menu.Button>
         </div>
 
@@ -84,16 +85,16 @@ const UserMenu = () => {
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <Menu.Items className='origin-top-right absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-10'>
+          <Menu.Items className='absolute right-0 z-10 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
             <div className='py-1'>
               <Menu.Item>
                 <div className='flex items-center px-4 py-2 text-sm'>
-                  <div className='h-8 w-8 flex-shrink-0 mr-2'>
+                  <div className='flex-shrink-0 w-8 h-8 mr-2'>
                     <img className='rounded-full' src={user.picture} alt={user.name} referrerPolicy='no-referrer' />
                   </div>
                   <div className='flex-grow'>
                     <p className='font-medium'>{user.username}</p>
-                    <p className='font-light text-gray-500 text-xs'>{user.email}</p>
+                    <p className='text-xs font-light text-gray-500'>{user.email}</p>
                   </div>
                 </div>
               </Menu.Item>

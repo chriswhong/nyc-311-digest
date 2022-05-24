@@ -1,9 +1,8 @@
-import React, { useState, useEffect, createContext } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import {
   Routes,
   Route,
-  useLocation,
-  useNavigate
+  useLocation
 } from 'react-router-dom'
 
 import MapWrapper from './features/map/MapWrapper'
@@ -15,9 +14,9 @@ import UsernameForm from './features/auth/UsernameForm'
 import ModalWrapper from './ui/modal/ModalWrapper'
 import useModal from './util/useModal'
 import { useGetAOIsQuery } from './util/api'
-import { useAuth } from './util/auth'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import NotFound from './layout/NotFound'
+import { AuthContext } from './AppContainer'
 
 export const ModalContext = createContext()
 
@@ -26,29 +25,22 @@ function App () {
   const location = useLocation()
 
   const { pathname, state } = location
-  const navigate = useNavigate()
 
   const modalProps = useModal()
   const { showModal } = modalProps
 
-  const { user, isLoading: userIsLoading } = useAuth()
+  const { user, isLoading: userIsLoading } = useContext(AuthContext)
 
   // don't let an authenticated user do anything else until they create a username
-  const shouldRedirectToCreateUsername = (pathname !== '/create-username') && user?.username === null
-  const shouldRedirectFromCreateUsername = (pathname === '/create-username') && user?.username
   useEffect(() => {
-    if (shouldRedirectToCreateUsername) {
-      navigate('/create-username', {
-        state: {
-          returnTo: pathname
-        }
+    if (userIsLoading) return
+
+    if (user && !user.username) {
+      showModal('CreateUsernameModal', {
+        locked: true
       })
     }
-
-    if (shouldRedirectFromCreateUsername) {
-      navigate('/')
-    }
-  })
+  }, [user])
 
   const {
     data: allGeometries,
@@ -93,46 +85,45 @@ function App () {
 
   return (
     <div className='flex flex-col App'>
-
       <ModalContext.Provider value={modalProps}>
         <Header />
         <div className='relative flex-grow min-h-0'>
+          <MapWrapper onLoad={handleMapLoad} />
           <Routes>
-            <Route element={<MapWrapper onLoad={handleMapLoad} />}>
-              <Route
-                index
-                element={
-                  <MainSidebar
+
+            <Route
+              index
+              element={
+                <MainSidebar
+                  map={mapInstance}
+                  allGeometries={allGeometries}
+                />
+                  }
+            />
+            <Route
+              path='/new'
+              element={
+                <ProtectedRoute user={user} userIsLoading={userIsLoading}>
+                  <DrawSidebar
                     map={mapInstance}
-                    allGeometries={allGeometries}
                   />
-                }
-              />
-              <Route
-                path='/new'
-                element={
-                  <ProtectedRoute user={user} userIsLoading={userIsLoading}>
-                    <DrawSidebar
-                      map={mapInstance}
-                    />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path='/report/:areaOfInterestId/:slug'
-                element={
-                  <AOISidebarWrapper
-                    map={mapInstance}
-                    allGeometries={allGeometries}
-                  />
-                }
-              />
-            </Route>
+                </ProtectedRoute>
+                  }
+            />
+            <Route
+              path='/report/:areaOfInterestId/:slug'
+              element={
+                <AOISidebarWrapper
+                  map={mapInstance}
+                  allGeometries={allGeometries}
+                />
+                  }
+            />
             <Route
               path='/create-username'
               element={
                 <UsernameForm />
-              }
+                }
             />
             <Route path='*' element={<NotFound />} />
           </Routes>

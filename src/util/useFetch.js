@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from './auth'
+import { useState, useEffect, useContext } from 'react'
+import { AuthContext } from '../AppContainer'
 
 const useFetch = ({
   url,
@@ -11,7 +11,7 @@ const useFetch = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
   const [triggered, setTriggered] = useState(false)
-  const authItems = useAuth()
+  const authItems = useContext(AuthContext)
   const { getAccessToken } = { ...authItems }
 
   const trigger = () => {

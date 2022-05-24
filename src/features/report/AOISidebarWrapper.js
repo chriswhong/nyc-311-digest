@@ -5,6 +5,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 import AOISidebar from './AOISidebar'
 
+import SidebarContainer from '../../layout/SidebarContainer'
+
 function useQuery () {
   const { search } = useLocation()
 
@@ -54,7 +56,7 @@ const AOISidebarWrapper = ({
   }, [allGeometries])
 
   return (
-    <>
+    <SidebarContainer>
       {areaOfInterest && dateSelection && (
         <AOISidebar
           map={map}
@@ -63,7 +65,7 @@ const AOISidebarWrapper = ({
           onDateRangeChange={handleDateRangeChange}
         />
       )}
-    </>
+    </SidebarContainer>
   )
 }
 

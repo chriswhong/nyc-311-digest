@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Dialog, Transition } from '@headlessui/react'
 
+import CreateUsernameModal from './CreateUsernameModal'
 import DeleteModal from './DeleteModal'
 import NoDataModal from './NoDataModal'
 
@@ -12,19 +13,31 @@ export default function ModalWrapper (modalProps) {
     hideModal
   } = modalProps
 
-  let modalComponent
+  let locked = false
+
+  let ModalComponent = () => (<></>)
   switch (type) {
+    case 'CreateUsernameModal':
+      ModalComponent = CreateUsernameModal
+      locked = true
+      break
     case 'DeleteModal':
-      modalComponent = <DeleteModal {...modalProps} />
+      ModalComponent = DeleteModal
       break
     case 'NoDataModal':
-      modalComponent = <NoDataModal />
+      ModalComponent = NoDataModal
       break
+  }
+
+  const handleClose = () => {
+    if (!locked) {
+      hideModal()
+    }
   }
 
   return (
     <Transition.Root show={visible} as={Fragment}>
-      <Dialog as='div' className='fixed inset-0 z-10 overflow-y-auto' onClose={() => { hideModal() }}>
+      <Dialog as='div' className='fixed inset-0 z-10 overflow-y-auto' onClose={handleClose}>
         <div className='flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0'>
           <Transition.Child
             as={Fragment}
@@ -42,7 +55,7 @@ export default function ModalWrapper (modalProps) {
           <span className='hidden sm:inline-block sm:align-middle sm:h-screen' aria-hidden='true'>
             &#8203;
           </span>
-          {modalComponent}
+          <ModalComponent {...modalProps} />
         </div>
       </Dialog>
     </Transition.Root>

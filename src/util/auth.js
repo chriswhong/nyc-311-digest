@@ -1,18 +1,15 @@
-import React, { useContext, createContext, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useState, useEffect, useContext } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
-import { useNavigate, useLocation } from 'react-router-dom'
 
 import { useGetUsernameQuery } from './api'
 
-const AuthContext = createContext(null)
-
-export const AuthProvider = ({ children }) => {
+export const useAuth = () => {
   const [username, setUsername] = useState()
+  // this should be true until have either gotten a username or confirmed there is no username
+  const [isLoading, setIsLoading] = useState(true)
 
   const authItems = useAuth0()
-  const { user, getAccessTokenSilently, getAccessTokenWithPopup } = authItems
-
+  const { user, getAccessTokenSilently, getAccessTokenWithPopup, isLoading: auth0IsLoading } = authItems
   const { data: usernameData, loading, error: usernameError, trigger: usernameTrigger } = useGetUsernameQuery(user?.sub)
 
   useEffect(() => {
@@ -28,31 +25,33 @@ export const AuthProvider = ({ children }) => {
     } else {
       setUsername(null)
     }
+    setIsLoading(false)
   }, [usernameData])
 
-  if (user) {
-    user.username = username
-  }
+  useEffect(() => {
+    if (auth0IsLoading === false && !user) {
+      setIsLoading(false)
+    }
+  }, [auth0IsLoading])
 
   // add getAccessToken for convenience, use the appropriate method for prod/dev environments
-  authItems.getAccessToken = getAccessTokenSilently
+  let getAccessToken = getAccessTokenSilently
 
   // in development we can't get the access token silently
   if (process.env.NODE_ENV !== 'production') {
-    authItems.getAccessToken = getAccessTokenWithPopup
+    getAccessToken = getAccessTokenWithPopup
   }
 
-  authItems.setUsername = setUsername
+  const userWithUsername = {
+    ...authItems.user,
+    username
+  }
 
-  return (
-    <AuthContext.Provider value={authItems}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
-
-export const useAuth = () => useContext(AuthContext)
-
-AuthProvider.propTypes = {
-  children: PropTypes.object
+  return {
+    ...authItems,
+    user: authItems.user ? userWithUsername : authItems.user,
+    setUsername,
+    getAccessToken,
+    isLoading
+  }
 }
