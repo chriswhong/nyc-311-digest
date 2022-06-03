@@ -13,10 +13,13 @@ import AOISidebarWrapper from './features/report/AOISidebarWrapper'
 import UsernameForm from './features/auth/UsernameForm'
 import ModalWrapper from './ui/modal/ModalWrapper'
 import useModal from './util/useModal'
-import { useGetAOIsQuery } from './util/api'
+import { useGetAOIsQuery, useGetCommunityDistrictsQuery } from './util/api'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import NotFound from './layout/NotFound'
 import { AuthContext } from './AppContainer'
+import StreetTreesSidebar from './features/street-trees/StreetTreesSidebar'
+import CommunityDistrictsSidebar from './features/community-districts/CommunityDistrictsSidebar'
+import CommunityDistrictReportSidebarWrapper from './features/community-districts/CommunityDistrictReportSidebarWrapper'
 
 export const ModalContext = createContext()
 
@@ -49,9 +52,17 @@ function App () {
     trigger: allGeometriesTrigger
   } = useGetAOIsQuery()
 
+  const {
+    data: communityDistricts,
+    loading: communityDistrictsLoading,
+    error: communityDistrictsError,
+    trigger: communityDistrictsTrigger
+  } = useGetCommunityDistrictsQuery()
+
   // get all area of interest geometries
   useEffect(() => {
     allGeometriesTrigger()
+    communityDistrictsTrigger()
     // modal that effectively hides the app if there is a data issue
     // showModal('NoDataModal')
   }, [])
@@ -111,6 +122,25 @@ function App () {
                   }
             />
             <Route
+              path='/community-districts'
+              element={
+                <CommunityDistrictsSidebar
+                  map={mapInstance}
+                  communityDistricts={communityDistricts}
+                />
+                  }
+            />
+            <Route
+              path='/report/community-districts/:boroughname/:cdnumber'
+              element={
+                <CommunityDistrictReportSidebarWrapper
+                  map={mapInstance}
+                  communityDistricts={communityDistricts}
+
+                />
+                  }
+            />
+            <Route
               path='/report/:areaOfInterestId/:slug'
               element={
                 <AOISidebarWrapper
@@ -119,10 +149,17 @@ function App () {
                 />
                   }
             />
+
             <Route
               path='/create-username'
               element={
                 <UsernameForm />
+                }
+            />
+            <Route
+              path='/street-trees'
+              element={
+                <StreetTreesSidebar map={mapInstance} />
                 }
             />
             <Route path='*' element={<NotFound />} />

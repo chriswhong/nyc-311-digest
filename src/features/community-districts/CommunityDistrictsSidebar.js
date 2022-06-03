@@ -10,7 +10,37 @@ import Head from '../../layout/Head'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
 
-const MainSidebar = ({ map, allGeometries }) => {
+const parseBoroCD = (boroCD) => {
+  const boroCode = Math.floor(boroCD / 100 % 10)
+  const cdNumber = Math.floor(boroCD % 100)
+  let borough = ''
+  switch (boroCode) {
+    case 1:
+      borough = 'manhattan'
+      break
+    case 2:
+      borough = 'bronx'
+      break
+    case 3:
+      borough = 'brooklyn'
+      break
+    case 4:
+      borough = 'queens'
+      break
+    case 5:
+      borough = 'staten-island'
+      break
+  }
+
+  console.log(borough, cdNumber)
+
+  return {
+    borough,
+    cdNumber
+  }
+}
+
+const MainSidebar = ({ map, communityDistricts }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -21,19 +51,20 @@ const MainSidebar = ({ map, allGeometries }) => {
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
   useEffect(() => {
-    if (!map) return
+    if (!map && !communityDistricts) return
+    console.log(communityDistricts)
     // use one source as a proxy for all sources related to this component
-    if (!map.getSource('all-geometries')) {
-      map.addSource('all-geometries', {
+    if (!map.getSource('community-districts')) {
+      map.addSource('community-districts', {
         type: 'geojson',
-        data: dummyGeojson,
+        data: communityDistricts,
         generateId: true
       })
 
       map.addLayer({
-        id: 'all-geometries-fill',
+        id: 'community-districts-fill',
         type: 'fill',
-        source: 'all-geometries',
+        source: 'community-districts',
         paint: {
           'fill-color': 'steelblue',
           'fill-opacity': [
@@ -45,52 +76,54 @@ const MainSidebar = ({ map, allGeometries }) => {
         }
       })
 
-      // add a symbol layer to label each polygon
-      map.addLayer({
-        id: 'all-geometries-symbol',
-        type: 'symbol',
-        source: 'all-geometries',
-        layout: {
-          'text-field': ['get', 'name'],
-          'text-variable-anchor': ['bottom'],
-          'text-radial-offset': 0.5,
-          'text-justify': 'auto'
-        },
-        paint: {
-          'text-halo-color': 'white',
-          'text-halo-width': 2,
-          'text-halo-blur': 1
-        }
-      })
+      //   // add a symbol layer to label each polygon
+      //   map.addLayer({
+      //     id: 'community-districts-symbol',
+      //     type: 'symbol',
+      //     source: 'community-districts',
+      //     layout: {
+      //       'text-field': ['get', 'name'],
+      //       'text-variable-anchor': ['bottom'],
+      //       'text-radial-offset': 0.5,
+      //       'text-justify': 'auto'
+      //     },
+      //     paint: {
+      //       'text-halo-color': 'white',
+      //       'text-halo-width': 2,
+      //       'text-halo-blur': 1
+      //     }
+      //   })
 
       // make geometries clickable
-      map.on('click', 'all-geometries-fill', (e) => {
+      map.on('click', 'community-districts-fill', (e) => {
         const [feature] = map.queryRenderedFeatures(e.point)
-        const { name, _id: geometryId } = feature.properties
-        navigate(`/report/${geometryId}/${slugFromName(name)}`)
+        const { BoroCD } = feature.properties
+        const { borough, cdNumber } = parseBoroCD(BoroCD)
+        console.log(`/report/community-districts/${borough}/${cdNumber}`)
+        navigate(`/report/community-districts/${borough}/${cdNumber}`)
       })
       // make the cursor a pointer when hovering all-geomtries-fill layer
-      map.on('mouseenter', 'all-geometries-fill', () => {
+      map.on('mouseenter', 'community-districts-fill', () => {
         map.getCanvas().style.cursor = 'pointer'
       })
-      map.on('mouseleave', 'all-geometries-fill', () => {
+      map.on('mouseleave', 'community-districts-fill', () => {
         map.getCanvas().style.cursor = ''
       })
 
       let hoveredStateId = null
       // When the user moves their mouse over the state-fill layer, we'll update the
       // feature state for the feature under the mouse.
-      map.on('mousemove', 'all-geometries-fill', (e) => {
+      map.on('mousemove', 'community-districts-fill', (e) => {
         if (e.features.length > 0) {
           if (hoveredStateId !== null) {
             map.setFeatureState(
-              { source: 'all-geometries', id: hoveredStateId },
+              { source: 'community-districts', id: hoveredStateId },
               { hover: false }
             )
           }
           hoveredStateId = e.features[0].id
           map.setFeatureState(
-            { source: 'all-geometries', id: hoveredStateId },
+            { source: 'community-districts', id: hoveredStateId },
             { hover: true }
           )
         }
@@ -98,30 +131,31 @@ const MainSidebar = ({ map, allGeometries }) => {
 
       // When the mouse leaves the state-fill layer, update the feature state of the
       // previously hovered feature.
-      map.on('mouseleave', 'all-geometries-fill', () => {
+      map.on('mouseleave', 'community-districts-fill', () => {
         if (hoveredStateId !== null) {
           map.setFeatureState(
-            { source: 'all-geometries', id: hoveredStateId },
+            { source: 'community-districts', id: hoveredStateId },
             { hover: false }
           )
         }
         hoveredStateId = null
       })
+    } else {
+      map.setLayoutProperty('community-districts-fill', 'visibility', 'visible')
     }
 
     return () => {
-      map.getSource('all-geometries').setData(dummyGeojson)
+      map.setLayoutProperty('community-districts-fill', 'visibility', 'none')
     }
   }, [map])
 
   useEffect(() => {
-    if (map && allGeometries) {
+    if (map) {
       map.flyTo({
         zoom: 12.5
       })
-      map.getSource('all-geometries').setData(allGeometries)
     }
-  }, [map, allGeometries])
+  }, [map, communityDistricts])
 
   if (!map) {
     return <Spinner>Loading...</Spinner>
@@ -136,10 +170,9 @@ const MainSidebar = ({ map, allGeometries }) => {
       <div className='px-4 text-sm'>
         <h3 className='mb-3 text-lg font-semibold'>Explore 311 Data for the Places You Care About</h3>
         <div className='mb-3'>
-          <GeometryTypeButtonTabs active='aoi' />
+          <GeometryTypeButtonTabs active='cd' />
         </div>
-        <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
-        <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { navigate('/new') }} className='mb-4 text-indigo-600 transition duration-300 ease-in-out cursor-pointer hover:text-indigo-700'>add it!</a></p>
+        <p className='mb-3'>Click on a community district to see a report of recent 311 activity.</p>
       </div>
     </SidebarContainer>
   )
@@ -147,7 +180,7 @@ const MainSidebar = ({ map, allGeometries }) => {
 
 MainSidebar.propTypes = {
   map: PropTypes.object,
-  allGeometries: PropTypes.object
+  communityDistricts: PropTypes.object
 }
 
 export default MainSidebar

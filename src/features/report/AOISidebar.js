@@ -331,7 +331,7 @@ const AOISidebar = ({
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
-  const isOwner = user?.sub === areaOfInterest?.properties.owner.sub
+  const isOwner = user?.sub === areaOfInterest?.properties.owner?.sub
   const isAdmin = user && user['http://demozero.net/roles'].includes('Admin')
 
   return (
@@ -349,7 +349,7 @@ const AOISidebar = ({
                   <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>City View</div></div>
                 </Link>
               </div>
-              {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner.sub} />}
+              {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner?.sub} />}
             </div>
             <div className='mb-1 text-3xl font-semibold'>{areaOfInterest.properties.name}</div>
             <div className='flex items-center justify-end text-gray-600'>
