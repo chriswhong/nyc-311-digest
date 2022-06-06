@@ -8,7 +8,7 @@ import {
 import MapWrapper from './features/map/MapWrapper'
 import Header from './layout/Header'
 import AOIIndex from './features/aoi/AOIIndex'
-import DrawSidebar from './features/draw/DrawSidebar'
+import Draw from './features/draw/Draw'
 import AOIReport from './features/aoi/AOIReport'
 import UsernameForm from './features/auth/UsernameForm'
 import ModalWrapper from './ui/modal/ModalWrapper'
@@ -114,7 +114,7 @@ function App () {
                 path='/new'
                 element={
                   <ProtectedRoute user={user} userIsLoading={userIsLoading}>
-                    <DrawSidebar />
+                    <Draw />
                   </ProtectedRoute>
                   }
               />

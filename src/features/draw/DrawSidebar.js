@@ -1,155 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import {
   XCircleIcon
 } from '@heroicons/react/outline'
-import gjv from 'geojson-validation'
-import bbox from '@turf/bbox'
-import { useNavigate } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 
-import dummyGeojson from '../../util/dummyGeojson'
 import Button from '../../ui/Button'
-import { slugFromName } from '../../util/slugFromName'
-import { useCreateAOIQuery } from '../../util/api'
 import Head from '../../layout/Head'
-
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import SidebarContainer from '../../layout/SidebarContainer'
-import { AuthContext } from '../../AppContainer'
-import { MapContext } from '../../App'
 
 const DrawSidebar = ({
-  onAllGeometriesUpdate
+  drawnFeature,
+  drawIsValid,
+  loading,
+  drawnFeatureName,
+  setDrawnFeatureName,
+  onSave,
+  setCleared
 }) => {
-  const map = useContext(MapContext)
-  const [drawInstance, setDrawInstance] = useState()
-  const [drawnFeature, setDrawnFeature] = useState()
-  const [drawnFeatureName, setDrawnFeatureName] = useState('')
-
-  const navigate = useNavigate()
-
-  const { user } = useContext(AuthContext)
-
-  const requestBody = {
-    name: drawnFeatureName,
-    geometry: drawnFeature?.geometry,
-    bbox: drawnFeature && bbox(drawnFeature?.geometry),
-    owner: user?.sub
-  }
-
-  const { data, loading, error, trigger } = useCreateAOIQuery(requestBody)
-
-  // creates a draw control and returns it, does not add it to the map
-  const initializeDraw = () => {
-    const draw = new MapboxDraw({
-      displayControlsDefault: false,
-      defaultMode: 'draw_polygon'
-    })
-
-    map.on('draw.modechange', (d) => {
-      if (draw.getMode() === 'simple_select') {
-        draw.changeMode('draw_polygon')
-      }
-    })
-
-    return draw
-  }
-
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
-    ReactGA.send({ hitType: 'pageview', page: '/new' })
-  }, [])
-
-  useEffect(() => {
-    if (!map) return
-
-    const draw = initializeDraw(map)
-
-    map.addControl(draw)
-    setDrawInstance(draw)
-
-    // TODO: this handler doesn't work when moved to initializeDraw()
-    // but it works fine here.  Not sure why.
-    map.on('draw.create', (d) => {
-      setDrawnFeature(d.features[0])
-    })
-
-    // check for one source in the group
-    if (!map.getSource('drawn-feature')) {
-      map.addSource('drawn-feature', {
-        type: 'geojson',
-        data: dummyGeojson
-      })
-
-      map.addLayer({
-        id: 'drawn-feature-fill',
-        type: 'fill',
-        source: 'drawn-feature',
-        paint: {
-          'fill-color': 'steelblue',
-          'fill-opacity': 0.6
-        }
-      })
-    }
-
-    return () => {
-      map.getSource('drawn-feature').setData(dummyGeojson)
-      map.removeControl(draw)
-    }
-  }, [map])
-
-  useEffect(() => {
-    if (!map) return
-    map.getSource('drawn-feature').setData(drawnFeature || dummyGeojson)
-  }, [map, drawnFeature])
-
-  // when the a drawn feature exists, remove the draw control
-  useEffect(() => {
-    if (drawnFeature) {
-      // draw will attempt to change mode on draw.create
-      // but we also want to remove the draw control on draw.create
-      // this timeout gives it a chance to change modes first to avoid
-      // an error
-      setTimeout(() => {
-        map.removeControl(drawInstance)
-        setDrawInstance(null)
-      }, 500)
-    }
-  }, [drawnFeature])
-
-  const handleClearDrawing = () => {
-    const draw = initializeDraw()
-    map.addControl(draw)
-    setDrawInstance(draw)
-    setDrawnFeature(null)
-  }
-
-  const validate = (feature, name) => {
-    const nameIsValid = name && name.length > 3
-    const featureIsValid = feature && gjv.valid(feature)
-    return !!nameIsValid && featureIsValid
-  }
-
-  const drawIsValid = validate(drawnFeature, drawnFeatureName)
-
-  const handleSave = async () => {
-    trigger()
-  }
-
-  // on successful submission
-  useEffect(() => {
-    if (!data) { return }
-    setDrawnFeature(null)
-    setDrawnFeatureName('')
-    navigate(`/report/${data.id}/${slugFromName(drawnFeatureName)}`, {
-      state: {
-        refresh: true
-      }
-    })
-  }, [data])
-
   return (
     <SidebarContainer>
       <Head title='Add an Area of Interest' description='Draw a new Area of Interest on the map to create a localized 311 data report' />
@@ -173,7 +40,11 @@ const DrawSidebar = ({
           {
           drawnFeature && (
             <div className='mb-2'>
-              <button type='button' className='inline-block px-4 py-1.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 hover:bg-gray-700 focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out' onClick={handleClearDrawing}><XCircleIcon className='inline w-4 h-4 mr-1' />Clear</button>
+              <button
+                type='button' className='inline-block px-4 py-1.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 hover:bg-gray-700 focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out'
+                onClick={() => { setCleared(true) }}
+              ><XCircleIcon className='inline w-4 h-4 mr-1' />Clear
+              </button>
             </div>
           )
         }
@@ -187,7 +58,7 @@ const DrawSidebar = ({
         <div className='flex justify-end'>
           <Button
             disabled={!drawIsValid || loading}
-            onClick={handleSave}
+            onClick={onSave}
           >
             {loading && (
               <div className='flex items-center justify-center'>
@@ -209,7 +80,13 @@ const DrawSidebar = ({
 }
 
 DrawSidebar.propTypes = {
-  onAllGeometriesUpdate: PropTypes.func
+  drawnFeature: PropTypes.object,
+  drawIsValid: PropTypes.bool,
+  loading: PropTypes.bool,
+  drawnFeatureName: PropTypes.string,
+  setDrawnFeatureName: PropTypes.func,
+  onSave: PropTypes.func,
+  setCleared: PropTypes.func
 }
 
 export default DrawSidebar
