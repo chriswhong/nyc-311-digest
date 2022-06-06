@@ -7,16 +7,18 @@ import {
 
 import MapWrapper from './features/map/MapWrapper'
 import Header from './layout/Header'
-import MainSidebar from './features/main/MainSidebar'
+import AOIIndex from './features/aoi/AOIIndex'
 import DrawSidebar from './features/draw/DrawSidebar'
-import AOISidebarWrapper from './features/report/AOISidebarWrapper'
+import AOIReport from './features/aoi/AOIReport'
 import UsernameForm from './features/auth/UsernameForm'
 import ModalWrapper from './ui/modal/ModalWrapper'
 import useModal from './util/useModal'
-import { useGetAOIsQuery } from './util/api'
+import { useGetAOIsQuery, useGetCommunityDistrictsQuery } from './util/api'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import NotFound from './layout/NotFound'
 import { AuthContext } from './AppContainer'
+import CommunityDistrictsIndex from './features/community-districts/CommunityDistrictsIndex'
+import CommunityDistrictReport from './features/community-districts/CommunityDistrictReport'
 
 export const ModalContext = createContext()
 
@@ -24,7 +26,7 @@ function App () {
   const [mapInstance, setMapInstance] = useState()
   const location = useLocation()
 
-  const { pathname, state } = location
+  const { state } = location
 
   const modalProps = useModal()
   const { showModal } = modalProps
@@ -49,9 +51,17 @@ function App () {
     trigger: allGeometriesTrigger
   } = useGetAOIsQuery()
 
+  const {
+    data: communityDistricts,
+    loading: communityDistrictsLoading,
+    error: communityDistrictsError,
+    trigger: communityDistrictsTrigger
+  } = useGetCommunityDistrictsQuery()
+
   // get all area of interest geometries
   useEffect(() => {
     allGeometriesTrigger()
+    communityDistrictsTrigger()
     // modal that effectively hides the app if there is a data issue
     // showModal('NoDataModal')
   }, [])
@@ -90,11 +100,10 @@ function App () {
         <div className='relative flex-grow min-h-0'>
           <MapWrapper onLoad={handleMapLoad} />
           <Routes>
-
             <Route
               index
               element={
-                <MainSidebar
+                <AOIIndex
                   map={mapInstance}
                   allGeometries={allGeometries}
                 />
@@ -111,14 +120,33 @@ function App () {
                   }
             />
             <Route
+              path='/community-districts'
+              element={
+                <CommunityDistrictsIndex
+                  map={mapInstance}
+                  communityDistricts={communityDistricts}
+                />
+                  }
+            />
+            <Route
+              path='/report/community-districts/:boroughname/:cdnumber'
+              element={
+                <CommunityDistrictReport
+                  map={mapInstance}
+                  communityDistricts={communityDistricts}
+                />
+                  }
+            />
+            <Route
               path='/report/:areaOfInterestId/:slug'
               element={
-                <AOISidebarWrapper
+                <AOIReport
                   map={mapInstance}
                   allGeometries={allGeometries}
                 />
                   }
             />
+
             <Route
               path='/create-username'
               element={

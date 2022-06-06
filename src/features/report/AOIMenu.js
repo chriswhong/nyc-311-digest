@@ -38,7 +38,7 @@ export default function AOIMenu () {
   return (
     <DropdownMenu
       icon={
-        <DotsHorizontalIcon className='h-6 w-6' />
+        <DotsHorizontalIcon className='w-6 h-6' />
       }
       menuItems={menuItems}
       alignRight

@@ -1,21 +1,12 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 
 import dummyGeojson from '../../util/dummyGeojson'
-import Spinner from '../../ui/Spinner'
 import { slugFromName } from '../../util/slugFromName'
-import Head from '../../layout/Head'
-import SidebarContainer from '../../layout/SidebarContainer'
 
-const MainSidebar = ({ map, allGeometries }) => {
+const AOIIndexMapElements = ({ map, allGeometries }) => {
   const navigate = useNavigate()
-
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
-    ReactGA.send({ hitType: 'pageview', page: '/' })
-  }, [])
 
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
@@ -122,28 +113,12 @@ const MainSidebar = ({ map, allGeometries }) => {
     }
   }, [map, allGeometries])
 
-  if (!map) {
-    return <Spinner>Loading...</Spinner>
-  }
-
-  return (
-    <SidebarContainer>
-      <Head
-        title='Citywide Map'
-        description='Browse user-created areas of interest for local 311 activity in New York City'
-      />
-      <div className='px-4 text-sm foobar'>
-        <h3 className='mb-3 text-lg font-semibold'>Explore 311 Data for the Places You Care About</h3>
-        <p className='mb-3'>This map shows custom <span className='italic'>areas of interest</span> created by users of this site to show localized 311 data.</p>
-        <p className=''>Click any area of interest to see a report of recent 311 activity.  If your neighborhood isn't reflected here, <a onClick={() => { navigate('/new') }} className='mb-4 text-blue-600 transition duration-300 ease-in-out cursor-pointer hover:text-blue-700'>add it!</a></p>
-      </div>
-    </SidebarContainer>
-  )
+  return null
 }
 
-MainSidebar.propTypes = {
+AOIIndexMapElements.propTypes = {
   map: PropTypes.object,
   allGeometries: PropTypes.object
 }
 
-export default MainSidebar
+export default AOIIndexMapElements

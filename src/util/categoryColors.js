@@ -23,12 +23,13 @@ const rollupCategories = [
       'Drinking',
       'Drug Activity',
       'Illegal Fireworks',
-      'Unleashed Dog'
+      'Unleashed Dog',
+      'Urinating in Public'
     ]
   },
   {
     id: 'streetsAndSidewalks',
-    displayName: 'Streets & Sidewalks',
+    displayName: 'Streets, Sidewalks, and Parks',
     color: '#b3cde3',
     complaintTypes: [
       'Street Condition',
@@ -48,7 +49,13 @@ const rollupCategories = [
       'Dead/Dying Tree',
       'Root/Sewer/Sidewalk Condition',
       'Bus Stop Shelter Complaint',
-      'Graffiti'
+      'Graffiti',
+      'Street Sign - Damaged',
+      'Violation of Park Rules',
+      'Bike/Roller/Skate Chronic',
+      'Dumpster Complaint',
+      'Animal in a Park',
+      'Street Sign - Dangling'
     ]
   },
   {
@@ -71,7 +78,15 @@ const rollupCategories = [
       'Lead',
       'Water Conservation',
       'Asbestos',
-      'Litter Basket Request'
+      'Litter Basket Request',
+      'Indoor Air Quality',
+      'Construction Lead Dust',
+      'Litter Basket Complaint',
+      'Sanitation Worker or Vehicle Complaint',
+      'Standing Water',
+      'Unsanitary Animal Pvt Property',
+      'Mosquitoes',
+      'Illegal Posting'
     ]
   },
   {
@@ -116,17 +131,21 @@ const rollupCategories = [
       'Boilers',
       'Emergency Response Team (ERT)',
       'BEST/Site Safety',
-      'Plumbing'
+      'Plumbing',
+      'Special Projects Inspection Team (SPIT)',
+      'Non-Residential Heat',
+      'Indoor Sewage'
     ]
   },
   {
     id: 'homelessAssistance',
-    displayName: 'Homeless/Assistance',
+    displayName: 'Homeless/Assistance/Abuse',
     color: '#fddaec',
     complaintTypes: [
       'Panhandling',
       'Encampment',
-      'Homeless Person Assistance'
+      'Homeless Person Assistance',
+      'Animal-Abuse'
     ]
   },
   {

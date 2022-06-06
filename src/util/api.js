@@ -27,6 +27,12 @@ export const useGetAOIsQuery = () => {
   })
 }
 
+export const useGetCommunityDistrictsQuery = () => {
+  return useFetch({
+    url: '/data/community-districts.geojson'
+  })
+}
+
 export const useGetUsernameQuery = (sub) => {
   return useFetch({
     url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-username?sub=${sub}`
