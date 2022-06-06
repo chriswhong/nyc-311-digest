@@ -13,22 +13,22 @@ export default function DropdownMenu ({
   children
 }) {
   let triggerItem = (
-    <Menu.Button className='inline-flex items-center justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'>
+    <Menu.Button className='inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'>
       {children}
-      <ChevronDownIcon className='-mr-1 ml-2 h-5 w-5' aria-hidden='true' />
+      <ChevronDownIcon className='w-5 h-5 ml-2 -mr-1' aria-hidden='true' />
     </Menu.Button>
   )
 
   if (icon) {
     triggerItem = (
-      <Menu.Button className='inline-flex items-center justify-center w-full rounded-md px-2 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'>
+      <Menu.Button className='inline-flex items-center justify-center w-full text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50'>
         {icon}
       </Menu.Button>
     )
   }
 
   return (
-    <Menu as='div' className='relative inline-block text-left mb-2 mt-1'>
+    <Menu as='div' className='relative inline-block text-left '>
       <div>
         {triggerItem}
       </div>
