@@ -43,6 +43,7 @@ const ThreeOneOneDataHandler = ({
 
   useEffect(() => {
     if (areaOfInterest) {
+      setServiceRequests()
       trigger()
     }
   }, [areaOfInterest, dateSelection.dateRange])
