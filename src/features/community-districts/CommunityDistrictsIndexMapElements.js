@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import ReactGA from 'react-ga4'
+import { MapContext } from '../../App'
 
 const parseBoroCD = (boroCD) => {
   const boroCode = Math.floor(boroCD / 100 % 10)
@@ -29,8 +30,9 @@ const parseBoroCD = (boroCD) => {
   }
 }
 
-const CommunityDistrictsIndexMapElements = ({ map, communityDistricts }) => {
+const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
   const navigate = useNavigate()
+  const map = useContext(MapContext)
 
   useEffect(() => {
     ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
@@ -163,7 +165,6 @@ const CommunityDistrictsIndexMapElements = ({ map, communityDistricts }) => {
 }
 
 CommunityDistrictsIndexMapElements.propTypes = {
-  map: PropTypes.object,
   communityDistricts: PropTypes.object
 }
 

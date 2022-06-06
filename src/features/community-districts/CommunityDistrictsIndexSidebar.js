@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 import Spinner from '../../ui/Spinner'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
+import { MapContext } from '../../App'
 
-const CommunityDistrictsIndexSidebar = ({ map, communityDistricts }) => {
+const CommunityDistrictsIndexSidebar = ({ communityDistricts }) => {
+  const map = useContext(MapContext)
   if (!map) {
     return <Spinner>Loading...</Spinner>
   }
@@ -24,7 +26,6 @@ const CommunityDistrictsIndexSidebar = ({ map, communityDistricts }) => {
 }
 
 CommunityDistrictsIndexSidebar.propTypes = {
-  map: PropTypes.object,
   communityDistricts: PropTypes.object
 }
 

@@ -21,6 +21,7 @@ import CommunityDistrictsIndex from './features/community-districts/CommunityDis
 import CommunityDistrictReport from './features/community-districts/CommunityDistrictReport'
 
 export const ModalContext = createContext()
+export const MapContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
@@ -96,67 +97,63 @@ function App () {
   return (
     <div className='flex flex-col App'>
       <ModalContext.Provider value={modalProps}>
-        <Header />
-        <div className='relative flex-grow min-h-0'>
-          <MapWrapper onLoad={handleMapLoad} />
-          <Routes>
-            <Route
-              index
-              element={
-                <AOIIndex
-                  map={mapInstance}
-                  allGeometries={allGeometries}
-                />
-                  }
-            />
-            <Route
-              path='/new'
-              element={
-                <ProtectedRoute user={user} userIsLoading={userIsLoading}>
-                  <DrawSidebar
-                    map={mapInstance}
+        <MapContext.Provider value={mapInstance}>
+          <Header />
+          <div className='relative flex-grow min-h-0'>
+            <MapWrapper onLoad={handleMapLoad} />
+            <Routes>
+              <Route
+                index
+                element={
+                  <AOIIndex
+                    allGeometries={allGeometries}
                   />
-                </ProtectedRoute>
                   }
-            />
-            <Route
-              path='/community-districts'
-              element={
-                <CommunityDistrictsIndex
-                  map={mapInstance}
-                  communityDistricts={communityDistricts}
-                />
+              />
+              <Route
+                path='/new'
+                element={
+                  <ProtectedRoute user={user} userIsLoading={userIsLoading}>
+                    <DrawSidebar />
+                  </ProtectedRoute>
                   }
-            />
-            <Route
-              path='/report/community-districts/:boroughname/:cdnumber'
-              element={
-                <CommunityDistrictReport
-                  map={mapInstance}
-                  communityDistricts={communityDistricts}
-                />
+              />
+              <Route
+                path='/community-districts'
+                element={
+                  <CommunityDistrictsIndex
+                    communityDistricts={communityDistricts}
+                  />
                   }
-            />
-            <Route
-              path='/report/:areaOfInterestId/:slug'
-              element={
-                <AOIReport
-                  map={mapInstance}
-                  allGeometries={allGeometries}
-                />
+              />
+              <Route
+                path='/report/community-districts/:boroughname/:cdnumber'
+                element={
+                  <CommunityDistrictReport
+                    communityDistricts={communityDistricts}
+                  />
                   }
-            />
+              />
+              <Route
+                path='/report/:areaOfInterestId/:slug'
+                element={
+                  <AOIReport
+                    allGeometries={allGeometries}
+                  />
+                  }
+              />
 
-            <Route
-              path='/create-username'
-              element={
-                <UsernameForm />
+              <Route
+                path='/create-username'
+                element={
+                  <UsernameForm />
                 }
-            />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </div>
-        <ModalWrapper {...modalProps} />
+              />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </div>
+          <ModalWrapper {...modalProps} />
+        </MapContext.Provider>
       </ModalContext.Provider>
     </div>
   )

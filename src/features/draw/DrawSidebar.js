@@ -18,11 +18,12 @@ import Head from '../../layout/Head'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import SidebarContainer from '../../layout/SidebarContainer'
 import { AuthContext } from '../../AppContainer'
+import { MapContext } from '../../App'
 
 const DrawSidebar = ({
-  map,
   onAllGeometriesUpdate
 }) => {
+  const map = useContext(MapContext)
   const [drawInstance, setDrawInstance] = useState()
   const [drawnFeature, setDrawnFeature] = useState()
   const [drawnFeatureName, setDrawnFeatureName] = useState('')
@@ -208,7 +209,6 @@ const DrawSidebar = ({
 }
 
 DrawSidebar.propTypes = {
-  map: PropTypes.object,
   onAllGeometriesUpdate: PropTypes.func
 }
 

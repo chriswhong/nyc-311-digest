@@ -55,7 +55,7 @@ const getCommunityDistrictFeature = (communityDistricts, boroughname, cdnumber) 
   return match
 }
 
-const CommunityDistrictReport = ({ communityDistricts, map }) => {
+const CommunityDistrictReport = ({ communityDistricts }) => {
   const { pathname } = useLocation()
 
   const { boroughname, cdnumber } = useParams()
@@ -92,7 +92,7 @@ const CommunityDistrictReport = ({ communityDistricts, map }) => {
               areaTitle={cdName}
 
             />
-            <ReportMapElements areaOfInterest={cdFeature} map={map} />
+            <ReportMapElements areaOfInterest={cdFeature} />
           </ThreeOneOneDataHandler>
         </>
       )}
@@ -101,7 +101,6 @@ const CommunityDistrictReport = ({ communityDistricts, map }) => {
 }
 
 CommunityDistrictReport.propTypes = {
-  map: PropTypes.object,
   communityDistricts: PropTypes.object
 }
 

@@ -12,7 +12,7 @@ import Head from '../../layout/Head'
 
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 
-const AOIReport = ({ allGeometries, map }) => {
+const AOIReport = ({ allGeometries }) => {
   const [areaOfInterest, setAreaOfInterest] = useState()
   const { state, pathname } = useLocation()
   const navigate = useNavigate()
@@ -55,7 +55,7 @@ const AOIReport = ({ allGeometries, map }) => {
               isOwner={isOwner} isAdmin={isAdmin}
               areaTitle={areaOfInterest.properties.name}
             />
-            <ReportMapElements areaOfInterest={areaOfInterest} map={map} />
+            <ReportMapElements areaOfInterest={areaOfInterest} />
           </ThreeOneOneDataHandler>
         </>
       )}
@@ -64,7 +64,6 @@ const AOIReport = ({ allGeometries, map }) => {
 }
 
 AOIReport.propTypes = {
-  map: PropTypes.object,
   allGeometries: PropTypes.object
 }
 

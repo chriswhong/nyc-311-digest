@@ -6,21 +6,20 @@ import CommunityDistrictsIndexMapElements from './CommunityDistrictsIndexMapElem
 
 import Head from '../../layout/Head'
 
-const CommunityDistrictsIndex = ({ map, communityDistricts }) => {
+const CommunityDistrictsIndex = ({ communityDistricts }) => {
   return (
     <>
       <Head
         title='Community Districts'
         description='Browse local 311 activity by Community District in New York City'
       />
-      <CommunityDistrictsIndexSidebar map={map} />
-      <CommunityDistrictsIndexMapElements map={map} communityDistricts={communityDistricts} />
+      <CommunityDistrictsIndexSidebar />
+      <CommunityDistrictsIndexMapElements communityDistricts={communityDistricts} />
     </>
   )
 }
 
 CommunityDistrictsIndex.propTypes = {
-  map: PropTypes.object,
   communityDistricts: PropTypes.object
 }
 

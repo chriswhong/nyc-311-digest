@@ -5,21 +5,20 @@ import AOIIndexMapElements from './AOIIndexMapElements'
 import AOIIndexSidebar from './AOIIndexSidebar'
 import Head from '../../layout/Head'
 
-const AOIIndex = ({ map, allGeometries }) => {
+const AOIIndex = ({ allGeometries }) => {
   return (
     <>
       <Head
         title='Citywide Map'
         description='Browse user-created areas of interest for local 311 activity in New York City'
       />
-      <AOIIndexSidebar map={map} />
-      <AOIIndexMapElements map={map} allGeometries={allGeometries} />
+      <AOIIndexSidebar />
+      <AOIIndexMapElements allGeometries={allGeometries} />
     </>
   )
 }
 
 AOIIndex.propTypes = {
-  map: PropTypes.object,
   allGeometries: PropTypes.object
 }
 

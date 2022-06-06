@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
 import Spinner from '../../ui/Spinner'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
-
-const AOIIndexSidebar = ({ map }) => {
+import { MapContext } from '../../App'
+const AOIIndexSidebar = () => {
   const navigate = useNavigate()
+  const map = useContext(MapContext)
 
   if (!map) {
     return <Spinner>Loading...</Spinner>
@@ -25,10 +26,6 @@ const AOIIndexSidebar = ({ map }) => {
       </div>
     </SidebarContainer>
   )
-}
-
-AOIIndexSidebar.propTypes = {
-  map: PropTypes.object
 }
 
 export default AOIIndexSidebar

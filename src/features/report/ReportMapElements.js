@@ -16,6 +16,7 @@ import getRollupCategory, {
 import dummyGeojson from '../../util/dummyGeojson'
 import { ThreeOneOneDataContext } from './ThreeOneOneDataHandler'
 import { statusColorsClusterMapStyle, statusColorsMapStyle } from '../../util/statusColors'
+import { MapContext } from '../../App'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410
@@ -24,9 +25,9 @@ const dedupeServiceRequests = (serviceRequests) => {
 }
 
 const ReportMapElements = ({
-  map,
   areaOfInterest
 }) => {
+  const map = useContext(MapContext)
   const {
     serviceRequests,
     popupData,
@@ -252,7 +253,6 @@ const ReportMapElements = ({
 }
 
 ReportMapElements.propTypes = {
-  map: PropTypes.object,
   areaOfInterest: PropTypes.object,
   dateSelection: PropTypes.object,
   onDateRangeChange: PropTypes.func

@@ -1,12 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
 import dummyGeojson from '../../util/dummyGeojson'
 import { slugFromName } from '../../util/slugFromName'
+import { MapContext } from '../../App'
 
-const AOIIndexMapElements = ({ map, allGeometries }) => {
+const AOIIndexMapElements = ({ allGeometries }) => {
   const navigate = useNavigate()
+  const map = useContext(MapContext)
 
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
@@ -117,7 +119,6 @@ const AOIIndexMapElements = ({ map, allGeometries }) => {
 }
 
 AOIIndexMapElements.propTypes = {
-  map: PropTypes.object,
   allGeometries: PropTypes.object
 }
 
