@@ -13,7 +13,7 @@ import PopupSidebar from './PopupSidebar'
 import Spinner from '../../ui/Spinner'
 import DateRangeSelector from './DateRangeSelector'
 import { ThreeOneOneDataContext } from './ThreeOneOneDataHandler'
-import AOIMenu from './AOIMenu'
+import AOIMenu from '../aoi/AOIMenu'
 import SidebarContainer from '../../layout/SidebarContainer'
 
 const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, areaTitle }) => {
