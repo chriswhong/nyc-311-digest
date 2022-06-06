@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 
 import { AuthContext } from '../../AppContainer'
 import ReportSidebar from '../report/ReportSidebar'
@@ -30,11 +29,6 @@ const AOIReport = ({ allGeometries }) => {
       }
     }
   }, [allGeometries])
-
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
-    ReactGA.send({ hitType: 'pageview', page: pathname })
-  }, [])
 
   const isOwner = user?.sub === areaOfInterest?.properties.owner?.sub
   const isAdmin = user && user['http://demozero.net/roles'].includes('Admin')

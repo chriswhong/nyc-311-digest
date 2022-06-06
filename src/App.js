@@ -19,6 +19,7 @@ import NotFound from './layout/NotFound'
 import { AuthContext } from './AppContainer'
 import CommunityDistrictsIndex from './features/community-districts/CommunityDistrictsIndex'
 import CommunityDistrictReport from './features/community-districts/CommunityDistrictReport'
+import usePageTracking from './util/usePageTracking'
 
 export const ModalContext = createContext()
 export const MapContext = createContext()
@@ -33,6 +34,8 @@ function App () {
   const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useContext(AuthContext)
+
+  usePageTracking()
 
   // don't let an authenticated user do anything else until they create a username
   useEffect(() => {

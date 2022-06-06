@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useParams, useLocation } from 'react-router-dom'
-import ReactGA from 'react-ga4'
+import { useParams } from 'react-router-dom'
 
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 import ReportSidebar from '../report/ReportSidebar'
@@ -56,16 +55,9 @@ const getCommunityDistrictFeature = (communityDistricts, boroughname, cdnumber) 
 }
 
 const CommunityDistrictReport = ({ communityDistricts }) => {
-  const { pathname } = useLocation()
-
   const { boroughname, cdnumber } = useParams()
 
   const [cdFeature, setCdFeature] = useState()
-
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
-    ReactGA.send({ hitType: 'pageview', page: pathname })
-  }, [])
 
   useEffect(() => {
     if (!communityDistricts) return

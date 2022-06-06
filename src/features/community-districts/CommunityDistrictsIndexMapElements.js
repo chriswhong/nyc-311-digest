@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import ReactGA from 'react-ga4'
 import { MapContext } from '../../App'
 
 const parseBoroCD = (boroCD) => {
@@ -33,11 +32,6 @@ const parseBoroCD = (boroCD) => {
 const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
   const navigate = useNavigate()
   const map = useContext(MapContext)
-
-  useEffect(() => {
-    ReactGA.initialize(process.env.REACT_APP_GA4_TRACKING_ID)
-    ReactGA.send({ hitType: 'pageview', page: '/' })
-  }, [])
 
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
