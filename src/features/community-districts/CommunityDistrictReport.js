@@ -8,6 +8,7 @@ import ReactGA from 'react-ga4'
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 import ReportSidebar from '../report/ReportSidebar'
 import ReportMapElements from '../report/ReportMapElements'
+import Head from '../../layout/Head'
 
 const borocodeFromBoroughname = (boroughname) => {
   let boroCode
@@ -79,10 +80,10 @@ const CommunityDistrictReport = ({ communityDistricts, map }) => {
     <>
       {cdFeature && (
         <>
-          {/* <Head
-            title={areaOfInterest.properties.name}
-            description={`A report of 311 activity in the area ${areaOfInterest.properties.name}`}
-          /> */}
+          <Head
+            title={cdName}
+            description={`A report of 311 activity in the area ${cdName}`}
+          />
           <ThreeOneOneDataHandler areaOfInterest={cdFeature}>
             <ReportSidebar
               areaOfInterest={cdFeature}

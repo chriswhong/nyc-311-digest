@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 
 import Spinner from '../../ui/Spinner'
-import Head from '../../layout/Head'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
 
@@ -16,10 +15,6 @@ const AOIIndexSidebar = ({ map }) => {
 
   return (
     <SidebarContainer>
-      <Head
-        title='Citywide Map'
-        description='Browse user-created areas of interest for local 311 activity in New York City'
-      />
       <div className='px-4 text-sm'>
         <h3 className='mb-3 text-lg font-semibold'>Explore 311 Data for the Places You Care About</h3>
         <div className='mb-3'>
