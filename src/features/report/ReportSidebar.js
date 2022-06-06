@@ -69,7 +69,7 @@ const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, a
                 New Service Requests
               </div>
             </div>
-            <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/getRollupCategory.js'>
+            <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/categoryColors.js'>
               <div className='flex items-center mb-2 text-xs'>
                 About these Categories
                 <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
