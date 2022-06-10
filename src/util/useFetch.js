@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { AuthContext } from '../AppContainer'
+import { AuthContext } from '../app/AppContainer'
 
 const useFetch = ({
   url,

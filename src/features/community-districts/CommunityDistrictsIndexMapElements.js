@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 
 const parseBoroCD = (boroCD) => {
   const boroCode = Math.floor(boroCD / 100 % 10)

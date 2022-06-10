@@ -9,7 +9,7 @@ import Button from '../../ui/Button'
 import TextInput from '../../ui/TextInput'
 import useDebounce from '../../util/useDebounce'
 import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
-import { AuthContext } from '../../AppContainer'
+import { AuthContext } from '../../app/AppContainer'
 
 export default function CreateUsernameModal ({ hideModal }) {
   const { user, setUsername: setAuthProviderUsername } = useContext(AuthContext)

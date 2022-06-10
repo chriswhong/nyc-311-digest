@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/outline'
 
 import DropdownMenu from '../../ui/DropdownMenu'
-import { ModalContext } from '../../App'
+import { ModalContext } from '../../app/App'
 
 export default function AOIMenu () {
   const modalProps = useContext(ModalContext)

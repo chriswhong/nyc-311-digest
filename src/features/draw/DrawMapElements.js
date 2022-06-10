@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 import dummyGeojson from '../../util/dummyGeojson'
 
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'

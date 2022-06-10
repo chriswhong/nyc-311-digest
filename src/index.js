@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
 import './index.css'
-import AuthContainer from './AuthContainer'
+import AuthContainer from './app/AuthContainer'
 import reportWebVitals from './reportWebVitals'
 
 Sentry.init({

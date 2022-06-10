@@ -16,7 +16,7 @@ import getRollupCategory, {
 import dummyGeojson from '../../util/dummyGeojson'
 import { ThreeOneOneDataContext } from './ThreeOneOneDataHandler'
 import { statusColorsClusterMapStyle, statusColorsMapStyle } from '../../util/statusColors'
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 
 // de-duplicate the features.  MapboxGl bug where solo points in clustered sources will show duplicates when queried during events
 // https://github.com/visgl/react-map-gl/issues/1410

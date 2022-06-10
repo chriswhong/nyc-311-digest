@@ -4,7 +4,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 
-import { AuthContext } from '../../AppContainer'
+import { AuthContext } from '../../app/AppContainer'
 import ReportSidebar from '../report/ReportSidebar'
 import ReportMapElements from '../report/ReportMapElements'
 import Head from '../../layout/Head'

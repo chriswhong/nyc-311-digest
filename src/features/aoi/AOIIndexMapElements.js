@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import dummyGeojson from '../../util/dummyGeojson'
 import { slugFromName } from '../../util/slugFromName'
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 
 const AOIIndexMapElements = ({ allGeometries }) => {
   const navigate = useNavigate()

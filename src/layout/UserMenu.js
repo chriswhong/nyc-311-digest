@@ -2,7 +2,7 @@ import React, { Fragment, useContext } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 
 import Button from '../ui/Button'
-import { AuthContext } from '../AppContainer'
+import { AuthContext } from '../app/AppContainer'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')

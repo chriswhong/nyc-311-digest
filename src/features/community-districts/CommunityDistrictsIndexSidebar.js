@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Spinner from '../../ui/Spinner'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 
 const CommunityDistrictsIndexSidebar = ({ communityDistricts }) => {
   const map = useContext(MapContext)

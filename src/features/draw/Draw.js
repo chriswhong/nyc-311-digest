@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { slugFromName } from '../../util/slugFromName'
 import { useCreateAOIQuery } from '../../util/api'
 import Head from '../../layout/Head'
-import { AuthContext } from '../../AppContainer'
+import { AuthContext } from '../../app/AppContainer'
 import DrawSidebar from './DrawSidebar'
 import DrawMapElements from './DrawMapElements'
 

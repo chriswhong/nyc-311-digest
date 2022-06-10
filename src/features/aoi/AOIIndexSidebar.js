@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import Spinner from '../../ui/Spinner'
 import SidebarContainer from '../../layout/SidebarContainer'
 import GeometryTypeButtonTabs from '../../ui/GeometryTypeButtonTabs'
-import { MapContext } from '../../App'
+import { MapContext } from '../../app/App'
 const AOIIndexSidebar = () => {
   const navigate = useNavigate()
   const map = useContext(MapContext)

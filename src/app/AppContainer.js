@@ -1,7 +1,7 @@
 import React, { createContext } from 'react'
 
 import App from './App.js'
-import { useAuth } from './util/auth.js'
+import { useAuth } from '../util/auth.js'
 
 export const AuthContext = createContext()
 

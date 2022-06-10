@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import useDebounce from '../../util/useDebounce'
 import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
 import Head from '../../layout/Head'
-import { AuthContext } from '../../AppContainer'
+import { AuthContext } from '../../app/AppContainer'
 
 const UsernameForm = () => {
   const { user, setUsername: setAuthProviderUsername } = useContext(AuthContext)
