@@ -3,6 +3,7 @@ import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
 
 const queryDatabase = async (body, client) => {
+  console.log(`Creating username ${body}`)
   const db = client.db('nyc-311-digest')
   await db.collection('users')
     .insertOne({
