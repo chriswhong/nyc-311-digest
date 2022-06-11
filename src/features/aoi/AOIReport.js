@@ -9,47 +9,50 @@ import ReportSidebar from '../report/ReportSidebar'
 import ReportMapElements from '../report/ReportMapElements'
 import Head from '../../layout/Head'
 
+import { useGetAoiQuery } from '../../util/rtk-api'
+
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 
 const AOIReport = ({ allGeometries }) => {
-  const [areaOfInterest, setAreaOfInterest] = useState()
   const { state, pathname } = useLocation()
   const navigate = useNavigate()
   const { areaOfInterestId } = useParams()
   const { user } = useContext(AuthContext)
 
-  useEffect(() => {
-    if (allGeometries) {
-      const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
+  const { data, error, isLoading } = useGetAoiQuery(areaOfInterestId)
 
-      if (!areaOfInterest && !state?.refresh) {
-        navigate('/404')
-      } else {
-        setAreaOfInterest(areaOfInterest)
-      }
-    }
-  }, [allGeometries])
+  // useEffect(() => {
+  //   if (allGeometries) {
+  //     const areaOfInterest = allGeometries.features.find((d) => d.properties._id === areaOfInterestId)
 
-  const isOwner = user?.sub === areaOfInterest?.properties.owner?.sub
+  //     if (!areaOfInterest && !state?.refresh) {
+  //       navigate('/404')
+  //     } else {
+  //       setAreaOfInterest(areaOfInterest)
+  //     }
+  //   }
+  // }, [allGeometries])
+
+  const isOwner = user?.sub === data?.properties.owner?.sub
   const isAdmin = user && user['http://demozero.net/roles'].includes('Admin')
 
   return (
     <>
-      {areaOfInterest && (
+      {data && (
         <>
           <Head
-            title={areaOfInterest.properties.name}
-            description={`A report of 311 activity in the area ${areaOfInterest.properties.name}`}
+            title={data.properties.name}
+            description={`A report of 311 activity in the area ${data.properties.name}`}
           />
-          <ThreeOneOneDataHandler areaOfInterest={areaOfInterest}>
+          <ThreeOneOneDataHandler areaOfInterest={data}>
             <ReportSidebar
-              areaOfInterest={areaOfInterest}
+              areaOfInterest={data}
               backText='Citywide View'
               backLink='/'
               isOwner={isOwner} isAdmin={isAdmin}
-              areaTitle={areaOfInterest.properties.name}
+              areaTitle={data.properties.name}
             />
-            <ReportMapElements areaOfInterest={areaOfInterest} />
+            <ReportMapElements areaOfInterest={data} />
           </ThreeOneOneDataHandler>
         </>
       )}

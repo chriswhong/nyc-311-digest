@@ -66,21 +66,9 @@ export const useGetServiceRequestsQuery = (areaOfInterest, dateSelection) => {
   return { data, loading, error, trigger }
 }
 
-export const useGetAOIsQuery = () => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-geometries`
-  })
-}
-
 export const useGetCommunityDistrictsQuery = () => {
   return useFetch({
     url: '/data/community-districts.geojson'
-  })
-}
-
-export const useGetUsernameQuery = (sub) => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/get-username?sub=${sub}`
   })
 }
 

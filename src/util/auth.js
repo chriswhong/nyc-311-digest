@@ -1,32 +1,37 @@
 import { useState, useEffect, useContext } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 
-import { useGetUsernameQuery } from './api'
+import { sec } from './security'
+
+import { useGetUsernameQuery } from './rtk-api'
 
 export const useAuth = () => {
   const [username, setUsername] = useState()
   // this should be true until have either gotten a username or confirmed there is no username
   const [isLoading, setIsLoading] = useState(true)
+  const [skip, setSkip] = useState(true)
 
   const authItems = useAuth0()
   const { user, getAccessTokenSilently, getAccessTokenWithPopup, isLoading: auth0IsLoading } = authItems
-  const { data: usernameData, loading, error: usernameError, trigger: usernameTrigger } = useGetUsernameQuery(user?.sub)
+  const { data, error, isLoading: usernameIsLoading, isUninitialized } = useGetUsernameQuery(user?.sub, {
+    skip
+  })
 
   useEffect(() => {
     if (user && !username) {
-      usernameTrigger()
+      setSkip(false)
     }
   }, [user])
 
   useEffect(() => {
-    if (!usernameData) return
-    if (usernameData?.username) {
-      setUsername(usernameData.username)
+    if (!data) return
+    if (data?.username) {
+      setUsername(data.username)
     } else {
       setUsername(null)
     }
     setIsLoading(false)
-  }, [usernameData])
+  }, [data])
 
   useEffect(() => {
     if (auth0IsLoading === false && !user) {
@@ -46,6 +51,8 @@ export const useAuth = () => {
     ...authItems.user,
     username
   }
+
+  sec.setAccessToken(getAccessToken)
 
   return {
     ...authItems,

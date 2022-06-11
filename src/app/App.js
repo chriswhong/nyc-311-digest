@@ -13,7 +13,7 @@ import AOIReport from '../features/aoi/AOIReport'
 import UsernameForm from '../features/auth/UsernameForm'
 import ModalWrapper from '../ui/modal/ModalWrapper'
 import useModal from '../util/useModal'
-import { useGetAOIsQuery, useGetCommunityDistrictsQuery } from '../util/api'
+import { useGetCommunityDistrictsQuery } from '../util/api'
 import ProtectedRoute from '../features/auth/ProtectedRoute'
 import NotFound from '../layout/NotFound'
 import { AuthContext } from './AppContainer'
@@ -49,13 +49,6 @@ function App () {
   }, [user])
 
   const {
-    data: allGeometries,
-    loading: allGeometriesLoading,
-    error: allGeometriesError,
-    trigger: allGeometriesTrigger
-  } = useGetAOIsQuery()
-
-  const {
     data: communityDistricts,
     loading: communityDistrictsLoading,
     error: communityDistrictsError,
@@ -64,7 +57,6 @@ function App () {
 
   // get all area of interest geometries
   useEffect(() => {
-    allGeometriesTrigger()
     communityDistrictsTrigger()
     // modal that effectively hides the app if there is a data issue
     // showModal('NoDataModal')
@@ -72,7 +64,7 @@ function App () {
 
   useEffect(() => {
     if (state?.refresh) {
-      allGeometriesTrigger()
+      // allGeometriesTrigger()
     }
   }, [state])
 
@@ -108,9 +100,7 @@ function App () {
               <Route
                 index
                 element={
-                  <AOIIndex
-                    allGeometries={allGeometries}
-                  />
+                  <AOIIndex />
                   }
               />
               <Route
@@ -140,9 +130,7 @@ function App () {
               <Route
                 path='/report/:areaOfInterestId/:slug'
                 element={
-                  <AOIReport
-                    allGeometries={allGeometries}
-                  />
+                  <AOIReport />
                   }
               />
 
