@@ -23,7 +23,7 @@ const queryDatabase = async (id, client) => {
       .collection('users')
       .findOne({ sub: aoi.owner })
 
-    const { _id, name, bbox, geometry } = aoi
+    const { _id, name, bbox, geometry, followers } = aoi
 
     if (!theOwner) {
       theOwner = {
@@ -45,7 +45,8 @@ const queryDatabase = async (id, client) => {
           _id,
           name,
           bbox,
-          owner: theOwner
+          owner: theOwner,
+          followers
         },
         geometry
       })

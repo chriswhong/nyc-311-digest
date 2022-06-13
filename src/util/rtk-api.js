@@ -9,7 +9,14 @@ export const mainApi = createApi({
     baseUrl: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions`,
     prepareHeaders: async (headers, { endpoint }) => {
       const getAccessToken = sec.getAccessToken()
-      if (['createAoi', 'deleteAoi', 'createUsername', 'checkUsername'].includes(endpoint)) {
+      if ([
+        'createAoi',
+        'deleteAoi',
+        'createUsername',
+        'checkUsername',
+        'followAoi',
+        'toggleFollowAoi'
+      ].includes(endpoint)) {
         const token = await getAccessToken({
           audience: 'nyc-311-reports-functions'
         })
@@ -26,7 +33,7 @@ export const mainApi = createApi({
     }),
 
     getAoi: builder.query({
-      query: (aoiId) => `get-aoi?id=${aoiId}`
+      query: (_id) => `get-aoi?id=${_id}`
     }),
 
     createAoi: builder.mutation({
@@ -67,7 +74,16 @@ export const mainApi = createApi({
         method: 'POST',
         body
       })
+    }),
+
+    toggleFollowAoi: builder.mutation({
+      query: (body) => ({
+        url: 'post-toggle-follow',
+        method: 'POST',
+        body
+      })
     })
+
   })
 })
 
@@ -78,5 +94,6 @@ export const {
   useDeleteAoiMutation,
   useGetUsernameQuery,
   useCheckUsernameMutation,
-  useCreateUsernameMutation
+  useCreateUsernameMutation,
+  useToggleFollowAoiMutation
 } = mainApi
