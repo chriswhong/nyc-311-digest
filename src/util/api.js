@@ -1,17 +1,6 @@
 import { useEffect, useState } from 'react'
 import useFetch from './useFetch'
 
-export const useDeleteAOIQuery = (areaOfInterestId) => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/delete-geometry`,
-    method: 'DELETE',
-    body: {
-      id: areaOfInterestId
-    },
-    authorization: true
-  })
-}
-
 // this is a custom implementation of useFetch() which can paginate NYC 311 requests
 export const useGetServiceRequestsQuery = (areaOfInterest, dateSelection) => {
   const bounds = areaOfInterest.properties.bbox
@@ -90,14 +79,6 @@ export const useCreateUsernameQuery = (username, sub) => {
       username,
       sub
     },
-    authorization: true
-  })
-}
-export const useCreateAOIQuery = (body) => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-geometry`,
-    method: 'POST',
-    body,
     authorization: true
   })
 }

@@ -4,7 +4,7 @@ import slugify from 'slugify'
 import { useNavigate } from 'react-router-dom'
 
 import useDebounce from '../../util/useDebounce'
-import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
+import { useCheckUsernameMutation, useCreateUsernameMutation } from '../../util/rtk-api'
 import Head from '../../layout/Head'
 import { AuthContext } from '../../app/AppContainer'
 
@@ -17,19 +17,8 @@ const UsernameForm = () => {
 
   const navigate = useNavigate()
 
-  const {
-    data: checkUsernameData,
-    loading: checkUsernameLoading,
-    error: checkUsernameError,
-    trigger: checkUsernameTrigger
-  } = useCheckUsernameQuery(username)
-
-  const {
-    data: createUsernameData,
-    loading: createUsernameLoading,
-    error: createUsernameError,
-    trigger: createUsernameTrigger
-  } = useCreateUsernameQuery(username, user?.sub)
+  const [checkUsername, { data: checkUsernameData, error: checkUsernameError, isLoading: checkUsernameLoading }] = useCheckUsernameMutation()
+  const [createUserame, { data: createUsernameData, error: createUsernameError, isLoading: createUsernameLoading }] = useCreateUsernameMutation()
 
   useEffect(() => {
     if (user) {
@@ -43,7 +32,7 @@ const UsernameForm = () => {
 
   useEffect(() => {
     if (username) {
-      checkUsernameTrigger()
+      checkUsername(username)
     }
   }, [debouncedUsername])
 
@@ -66,7 +55,7 @@ const UsernameForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    createUsernameTrigger()
+    createUserame(username, user?.sub)
   }
 
   useEffect(() => {

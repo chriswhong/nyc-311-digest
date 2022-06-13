@@ -9,9 +9,8 @@ export const mainApi = createApi({
     baseUrl: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions`,
     prepareHeaders: async (headers, { endpoint }) => {
       const getAccessToken = sec.getAccessToken()
-
       // If we have a token set in state, let's assume that we should be passing it.
-      if (['createAoi'].includes(endpoint)) {
+      if (['createAoi', 'deleteAoi', 'createUsername', 'checkUsername'].includes(endpoint)) {
         const token = await getAccessToken({
           audience: 'nyc-311-reports-functions'
         })
@@ -19,6 +18,8 @@ export const mainApi = createApi({
 
         headers.set('authorization', `Bearer ${token}`)
       }
+
+      console.log('headers', headers)
 
       return headers
     }
@@ -32,15 +33,45 @@ export const mainApi = createApi({
       query: (aoiId) => `get-aoi?id=${aoiId}`
     }),
 
-    getUsername: builder.query({
-      query: (sub) => `get-username?sub=${sub}`
-    }),
-
     createAoi: builder.mutation({
       query: (body) => ({
         url: 'post-aoi',
         method: 'POST',
         body
+      })
+    }),
+
+    deleteAoi: builder.mutation({
+      query: (id) => ({
+        url: 'delete-aoi',
+        method: 'DELETE',
+        body: {
+          id
+        }
+      })
+    }),
+
+    getUsername: builder.query({
+      query: (sub) => `get-username?sub=${sub}`
+    }),
+
+    checkUsername: builder.mutation({
+      query: (username) => ({
+        url: 'post-check-username',
+        method: 'POST',
+        body: {
+          username
+        }
+      })
+    }),
+
+    createUsername: builder.mutation({
+      query: (username, sub) => ({
+        url: 'post-create-username',
+        method: 'POST',
+        body: {
+          username, sub
+        }
       })
     })
   })
@@ -48,4 +79,13 @@ export const mainApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAoisQuery, useGetAoiQuery, useGetUsernameQuery, useCreateAoiMutation } = mainApi
+export const {
+  useGetAoisQuery,
+  useGetAoiQuery,
+  useCreateAoiMutation,
+  useDeleteAoiMutation,
+  useGetUsernameQuery,
+  useCheckUsernameMutation,
+  useCreateUsernameMutation
+
+} = mainApi
