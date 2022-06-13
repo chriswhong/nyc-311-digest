@@ -29,7 +29,7 @@ const ReportMapElements = ({
 }) => {
   const map = useContext(MapContext)
   const {
-    serviceRequests,
+    serviceRequestsFC,
     popupData,
     dateSelection,
     setPopupData
@@ -170,8 +170,8 @@ const ReportMapElements = ({
   }, [map, areaOfInterest])
 
   useEffect(() => {
-    if (map && serviceRequests) {
-      map.getSource('serviceRequests').setData(serviceRequests)
+    if (map && serviceRequestsFC) {
+      map.getSource('serviceRequests').setData(serviceRequestsFC)
 
       const tooltip = new mapboxgl.Popup({
         closeButton: false,
@@ -242,7 +242,7 @@ const ReportMapElements = ({
       map.on('mouseleave', 'serviceRequests-circle', hideTooltip)
       map.on('mouseleave', 'serviceRequests-circle-cluster', hideTooltip)
     }
-  }, [map, serviceRequests])
+  }, [map, serviceRequestsFC])
 
   useEffect(() => {
     if (!map) return

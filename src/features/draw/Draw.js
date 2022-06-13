@@ -4,7 +4,7 @@ import bbox from '@turf/bbox'
 import { useNavigate } from 'react-router-dom'
 
 import { slugFromName } from '../../util/slugFromName'
-import { useCreateAOIQuery } from '../../util/api'
+import { useCreateAoiMutation } from '../../util/rtk-api'
 import Head from '../../layout/Head'
 import { AuthContext } from '../../app/AppContainer'
 import DrawSidebar from './DrawSidebar'
@@ -19,14 +19,7 @@ const Draw = () => {
 
   const { user } = useContext(AuthContext)
 
-  const requestBody = {
-    name: drawnFeatureName,
-    geometry: drawnFeature?.geometry,
-    bbox: drawnFeature && bbox(drawnFeature?.geometry),
-    owner: user?.sub
-  }
-
-  const { data, loading, error, trigger } = useCreateAOIQuery(requestBody)
+  const [createAoi, { data, error, isLoading }] = useCreateAoiMutation()
 
   const validate = (feature, name) => {
     const nameIsValid = name && name.length > 3
@@ -37,7 +30,12 @@ const Draw = () => {
   const drawIsValid = validate(drawnFeature, drawnFeatureName)
 
   const handleSave = async () => {
-    trigger()
+    createAoi({
+      name: drawnFeatureName,
+      geometry: drawnFeature?.geometry,
+      bbox: drawnFeature && bbox(drawnFeature?.geometry),
+      owner: user?.sub
+    })
   }
 
   // on successful submission
@@ -64,7 +62,7 @@ const Draw = () => {
       <DrawSidebar
         drawnFeature={drawnFeature}
         drawIsValid={drawIsValid}
-        loading={loading}
+        loading={isLoading}
         drawnFeatureName={drawnFeatureName}
         setDrawnFeatureName={setDrawnFeatureName}
         onSave={handleSave}

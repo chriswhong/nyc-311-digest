@@ -18,7 +18,7 @@ import SidebarContainer from '../../layout/SidebarContainer'
 
 const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, areaTitle }) => {
   const {
-    serviceRequests,
+    serviceRequestsFC,
     dateSelection,
     handleDateSelectionChange,
     popupData,
@@ -58,12 +58,12 @@ const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, a
           <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
           <div className='text-xs'>From {dateFrom} to {dateTo}</div>
         </div>
-        {serviceRequests && (
+        {serviceRequestsFC?.features.length && (
           <>
 
             <div className='flex items-center'>
               <div className='mr-2 text-2xl font-bold'>
-                {serviceRequests.features.length}
+                {serviceRequestsFC.features.length}
               </div>
               <div className='text-lg'>
                 New Service Requests
@@ -76,13 +76,13 @@ const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, a
               </div>
             </Link>
             <div className='h-64 mb-3'>
-              <RollupChart data={serviceRequests.features} />
+              <RollupChart data={serviceRequestsFC.features} />
             </div>
             <div className='mb-3 text-xs'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
           </>
         )}
 
-        {!serviceRequests && (
+        {!serviceRequestsFC?.features.length && (
           <Spinner>Loading 311 data...</Spinner>
         )}
       </div>

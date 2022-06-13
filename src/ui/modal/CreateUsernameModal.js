@@ -8,30 +8,22 @@ import slugify from 'slugify'
 import Button from '../../ui/Button'
 import TextInput from '../../ui/TextInput'
 import useDebounce from '../../util/useDebounce'
-import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
+import { useCheckUsernameMutation, useCreateUsernameMutation } from '../../util/rtk-api'
 import { AuthContext } from '../../app/AppContainer'
 
 export default function CreateUsernameModal ({ hideModal }) {
   const { user, setUsername: setAuthProviderUsername } = useContext(AuthContext)
+
   const [username, setUsername] = useState('')
   const [usernameAvailable, setUsernameAvailable] = useState()
 
   const debouncedUsername = useDebounce(username, 500)
 
-  const {
-    data: checkUsernameData,
-    loading: checkUsernameLoading,
-    error: checkUsernameError,
-    trigger: checkUsernameTrigger
-  } = useCheckUsernameQuery(username)
+  const [checkUsername, { data: checkUsernameData, error: checkUsernameError, isLoading: checkUsernameLoading }] = useCheckUsernameMutation()
 
-  const {
-    data: createUsernameData,
-    loading: createUsernameLoading,
-    error: createUsernameError,
-    trigger: createUsernameTrigger
-  } = useCreateUsernameQuery(username, user?.sub)
+  const [createUsername, { data: createUsernameData, error: createUsernameError, isLoading: createUsernameLoading }] = useCreateUsernameMutation()
 
+  // create a placeholder username based on the user's nickname
   useEffect(() => {
     if (user) {
       setUsername(slugify(user.nickname || '', {
@@ -42,12 +34,14 @@ export default function CreateUsernameModal ({ hideModal }) {
     }
   }, [])
 
+  // trigger check to see if the username is available
   useEffect(() => {
     if (username) {
-      checkUsernameTrigger()
+      checkUsername(username)
     }
   }, [debouncedUsername])
 
+  // when the check username response is returned, update local state
   useEffect(() => {
     if (checkUsernameData) {
       const { usernameAvailable } = checkUsernameData
@@ -67,7 +61,10 @@ export default function CreateUsernameModal ({ hideModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    createUsernameTrigger()
+    createUsername({
+      username,
+      sub: user.sub
+    })
   }
 
   useEffect(() => {

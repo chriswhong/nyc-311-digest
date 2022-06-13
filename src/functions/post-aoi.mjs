@@ -61,6 +61,7 @@ exports.handler = handleOptionsCall(requireAuth(async (event, context) => {
 
   context.callbackWaitsForEmptyEventLoop = false
   const client = await getDatabaseClient()
+  console.log(event.body)
   const body = JSON.parse(event.body)
 
   // check that body.owner === identitycontext.claims.sub
