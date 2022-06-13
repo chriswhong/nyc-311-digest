@@ -13,25 +13,35 @@ export const useAuth = () => {
 
   const authItems = useAuth0()
   const { user, getAccessTokenSilently, getAccessTokenWithPopup, isLoading: auth0IsLoading } = authItems
-  const { data, error, isLoading: usernameIsLoading, isUninitialized } = useGetUsernameQuery(user?.sub, {
+  const { data, error, isLoading: usernameIsLoading } = useGetUsernameQuery(user?.sub, {
     skip
   })
 
+  console.log('foo', data, error, isLoading)
+
   useEffect(() => {
+    console.log('skipeffect')
     if (user && !username) {
       setSkip(false)
     }
   }, [user])
 
+  // once we have a username
   useEffect(() => {
-    if (!data) return
+    console.log('dataEffect')
+
     if (data?.username) {
       setUsername(data.username)
-    } else {
-      setUsername(null)
+      console.log('dataeffectwillsettofalse')
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }, [data])
+
+  useEffect(() => {
+    if (error?.data.error === 'not found') {
+      setIsLoading(false)
+    }
+  }, [error])
 
   useEffect(() => {
     if (auth0IsLoading === false && !user) {

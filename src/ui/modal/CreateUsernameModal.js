@@ -8,7 +8,7 @@ import slugify from 'slugify'
 import Button from '../../ui/Button'
 import TextInput from '../../ui/TextInput'
 import useDebounce from '../../util/useDebounce'
-import { useCheckUsernameQuery, useCreateUsernameQuery } from '../../util/api'
+import { useCheckUsernameMutation, useCreateUsernameMutation } from '../../util/rtk-api'
 import { AuthContext } from '../../app/AppContainer'
 
 export default function CreateUsernameModal ({ hideModal }) {
@@ -18,20 +18,11 @@ export default function CreateUsernameModal ({ hideModal }) {
 
   const debouncedUsername = useDebounce(username, 500)
 
-  const {
-    data: checkUsernameData,
-    loading: checkUsernameLoading,
-    error: checkUsernameError,
-    trigger: checkUsernameTrigger
-  } = useCheckUsernameQuery(username)
+  const [checkUsername, { data: checkUsernameData, error: checkUsernameError, isLoading: checkUsernameLoading }] = useCheckUsernameMutation()
 
-  const {
-    data: createUsernameData,
-    loading: createUsernameLoading,
-    error: createUsernameError,
-    trigger: createUsernameTrigger
-  } = useCreateUsernameQuery(username, user?.sub)
+  const [createUsername, { data: createUsernameData, error: createUsernameError, isLoading: createUsernameLoading }] = useCreateUsernameMutation()
 
+  console.log(user)
   useEffect(() => {
     if (user) {
       setUsername(slugify(user.nickname || '', {
@@ -44,7 +35,7 @@ export default function CreateUsernameModal ({ hideModal }) {
 
   useEffect(() => {
     if (username) {
-      checkUsernameTrigger()
+      checkUsername(username)
     }
   }, [debouncedUsername])
 
@@ -67,7 +58,11 @@ export default function CreateUsernameModal ({ hideModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    createUsernameTrigger()
+    console.log('submitting username', username, user.sub)
+    createUsername({
+      username,
+      sub: user.sub
+    })
   }
 
   useEffect(() => {

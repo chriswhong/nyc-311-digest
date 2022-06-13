@@ -10,7 +10,6 @@ import Header from '../layout/Header'
 import AOIIndex from '../features/aoi/AOIIndex'
 import Draw from '../features/draw/Draw'
 import AOIReport from '../features/aoi/AOIReport'
-import UsernameForm from '../features/auth/UsernameForm'
 import ModalWrapper from '../ui/modal/ModalWrapper'
 import useModal from '../util/useModal'
 import { useGetCommunityDistrictsQuery } from '../util/api'
@@ -34,13 +33,13 @@ function App () {
   const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useContext(AuthContext)
-
+  console.log('userIsLoading', userIsLoading)
   usePageTracking()
 
   // don't let an authenticated user do anything else until they create a username
   useEffect(() => {
     if (userIsLoading) return
-
+    console.log('user', user)
     if (user && !user.username) {
       showModal('CreateUsernameModal', {
         locked: true
@@ -134,12 +133,6 @@ function App () {
                   }
               />
 
-              <Route
-                path='/create-username'
-                element={
-                  <UsernameForm />
-                }
-              />
               <Route path='*' element={<NotFound />} />
             </Routes>
           </div>

@@ -14,12 +14,9 @@ export const mainApi = createApi({
         const token = await getAccessToken({
           audience: 'nyc-311-reports-functions'
         })
-        console.log('token', token)
 
         headers.set('authorization', `Bearer ${token}`)
       }
-
-      console.log('headers', headers)
 
       return headers
     }
@@ -66,12 +63,10 @@ export const mainApi = createApi({
     }),
 
     createUsername: builder.mutation({
-      query: (username, sub) => ({
+      query: (body) => ({
         url: 'post-create-username',
         method: 'POST',
-        body: {
-          username, sub
-        }
+        body
       })
     })
   })

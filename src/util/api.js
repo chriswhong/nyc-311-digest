@@ -60,25 +60,3 @@ export const useGetCommunityDistrictsQuery = () => {
     url: '/data/community-districts.geojson'
   })
 }
-
-export const useCheckUsernameQuery = (username) => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-check-username`,
-    method: 'POST',
-    body: {
-      username
-    }
-  })
-}
-
-export const useCreateUsernameQuery = (username, sub) => {
-  return useFetch({
-    url: `${process.env.REACT_APP_API_BASE_URL}/.netlify/functions/post-create-username`,
-    method: 'POST',
-    body: {
-      username,
-      sub
-    },
-    authorization: true
-  })
-}
