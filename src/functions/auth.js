@@ -8,8 +8,8 @@ export const requireAuth = NetlifyJwtVerifier({
 export const handleOptionsCall = (handler) => async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE'
   }
 
   if (!['POST', 'DELETE'].includes(event.httpMethod)) {

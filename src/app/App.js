@@ -1,8 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import {
   Routes,
-  Route,
-  useLocation
+  Route
 } from 'react-router-dom'
 
 import MapWrapper from '../features/map/MapWrapper'
@@ -10,10 +9,9 @@ import Header from '../layout/Header'
 import AOIIndex from '../features/aoi/AOIIndex'
 import Draw from '../features/draw/Draw'
 import AOIReport from '../features/aoi/AOIReport'
-import UsernameForm from '../features/auth/UsernameForm'
 import ModalWrapper from '../ui/modal/ModalWrapper'
 import useModal from '../util/useModal'
-import { useGetAOIsQuery, useGetCommunityDistrictsQuery } from '../util/api'
+import { useGetCommunityDistrictsQuery } from '../util/static-api'
 import ProtectedRoute from '../features/auth/ProtectedRoute'
 import NotFound from '../layout/NotFound'
 import { AuthContext } from './AppContainer'
@@ -26,55 +24,28 @@ export const MapContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
-  const location = useLocation()
-
-  const { state } = location
 
   const modalProps = useModal()
   const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useContext(AuthContext)
-
   usePageTracking()
+
+  const {
+    data: communityDistricts,
+    isLoading: communityDistrictsLoading,
+    error: communityDistrictsError
+  } = useGetCommunityDistrictsQuery()
 
   // don't let an authenticated user do anything else until they create a username
   useEffect(() => {
     if (userIsLoading) return
-
     if (user && !user.username) {
       showModal('CreateUsernameModal', {
         locked: true
       })
     }
   }, [user])
-
-  const {
-    data: allGeometries,
-    loading: allGeometriesLoading,
-    error: allGeometriesError,
-    trigger: allGeometriesTrigger
-  } = useGetAOIsQuery()
-
-  const {
-    data: communityDistricts,
-    loading: communityDistrictsLoading,
-    error: communityDistrictsError,
-    trigger: communityDistrictsTrigger
-  } = useGetCommunityDistrictsQuery()
-
-  // get all area of interest geometries
-  useEffect(() => {
-    allGeometriesTrigger()
-    communityDistrictsTrigger()
-    // modal that effectively hides the app if there is a data issue
-    // showModal('NoDataModal')
-  }, [])
-
-  useEffect(() => {
-    if (state?.refresh) {
-      allGeometriesTrigger()
-    }
-  }, [state])
 
   const handleMapLoad = (map) => {
     setMapInstance(map)
@@ -108,9 +79,7 @@ function App () {
               <Route
                 index
                 element={
-                  <AOIIndex
-                    allGeometries={allGeometries}
-                  />
+                  <AOIIndex />
                   }
               />
               <Route
@@ -140,18 +109,10 @@ function App () {
               <Route
                 path='/report/:areaOfInterestId/:slug'
                 element={
-                  <AOIReport
-                    allGeometries={allGeometries}
-                  />
+                  <AOIReport />
                   }
               />
 
-              <Route
-                path='/create-username'
-                element={
-                  <UsernameForm />
-                }
-              />
               <Route path='*' element={<NotFound />} />
             </Routes>
           </div>

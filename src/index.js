@@ -5,6 +5,8 @@ import {
 } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
+import { store } from './app/store'
+import { Provider } from 'react-redux'
 
 import './index.css'
 import AuthContainer from './app/AuthContainer'
@@ -21,11 +23,13 @@ Sentry.init({
 })
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthContainer />
-    </BrowserRouter>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <BrowserRouter>
+        <AuthContainer />
+      </BrowserRouter>
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 )
 

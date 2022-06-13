@@ -5,9 +5,10 @@ import moment from 'moment'
 import pointsWithinPolygon from '@turf/points-within-polygon'
 
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
-import { useGetServiceRequestsQuery } from '../../util/api'
+import { useGetServiceRequestsQuery } from '../../util/service-requests-api'
 import getRollupCategory from '../../util/categoryColors'
 
+// use query params
 function useQuery () {
   const { search } = useLocation()
 
@@ -20,6 +21,14 @@ const ThreeOneOneDataHandler = ({
   areaOfInterest,
   children
 }) => {
+  const [skip, setSkip] = useState(true)
+  // raw service requests, appended via pagination
+  const [serviceRequests, setServiceRequests] = useState([])
+  // FeatureCollection of combined service requests
+  const [serviceRequestsFC, setServiceRequestsFC] = useState()
+  const [page, setPage] = useState(1)
+  const [popupData, setPopupData] = useState()
+
   const query = useQuery()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -31,23 +40,30 @@ const ThreeOneOneDataHandler = ({
 
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
 
-  const { data, loading, error, trigger } = useGetServiceRequestsQuery(areaOfInterest, dateSelection)
+  const bbox = areaOfInterest.properties.bbox
 
-  const [serviceRequests, setServiceRequests] = useState()
-  const [popupData, setPopupData] = useState()
+  const { data, error, isLoading } = useGetServiceRequestsQuery({
+    bbox,
+    dateSelection,
+    page
+  }, {
+    skip
+  })
 
   // react to changes in query params
   useEffect(() => {
     setDateSelection(dateRangeSelectorFromQueryParams)
   }, [dateRangeSelectorFromQueryParams])
 
+  // kicks off the querying when the date range changes
   useEffect(() => {
     if (areaOfInterest) {
-      setServiceRequests()
-      trigger()
+      setServiceRequests([])
+      setSkip(false)
     }
   }, [areaOfInterest, dateSelection.dateRange])
 
+  // when data selection changes, update the query params
   const handleDateSelectionChange = (d) => {
     navigate({
       pathname,
@@ -56,12 +72,25 @@ const ThreeOneOneDataHandler = ({
     })
   }
 
+  // check results length, keep fetching data until the number of results is less than 1000
   useEffect(() => {
-    if (data) {
+    if (data?.length) {
+      setServiceRequests([...serviceRequests, ...data])
+      if (data.length < 1000) {
+        setSkip(true)
+      } else {
+        setPage(page + 1)
+      }
+    }
+  }, [data])
+
+  // when all pages are downloaded, convert to geojson FeatureCollection for export
+  useEffect(() => {
+    if (serviceRequests.length && skip) {
       // convert to geojson
       const serviceRequestsGeojson = {
         type: 'FeatureCollection',
-        features: data.map((d) => {
+        features: serviceRequests.map((d) => {
           return {
             type: 'Feature',
             geometry: {
@@ -88,13 +117,13 @@ const ThreeOneOneDataHandler = ({
         }
       })
 
-      setServiceRequests(clippedServiceRequests)
+      setServiceRequestsFC(clippedServiceRequests)
     }
-  }, [data])
+  }, [serviceRequests])
 
   return (
     <ThreeOneOneDataContext.Provider value={{
-      serviceRequests,
+      serviceRequestsFC,
       dateSelection,
       handleDateSelectionChange,
       popupData,
