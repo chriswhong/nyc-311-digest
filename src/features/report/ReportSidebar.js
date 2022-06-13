@@ -15,8 +15,17 @@ import DateRangeSelector from './DateRangeSelector'
 import { ThreeOneOneDataContext } from './ThreeOneOneDataHandler'
 import AOIMenu from '../aoi/AOIMenu'
 import SidebarContainer from '../../layout/SidebarContainer'
+import FollowMenu from '../follow/FollowMenu'
+import { AuthContext } from '../../app/AppContainer'
 
-const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, areaTitle }) => {
+const ReportSidebar = ({
+  areaOfInterest,
+  backText,
+  backLink,
+  isOwner,
+  isAdmin,
+  areaTitle
+}) => {
   const {
     serviceRequestsFC,
     dateSelection,
@@ -32,14 +41,21 @@ const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, a
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
+  const { user, isLoading: userIsLoading } = useContext(AuthContext)
+
+  const followers = areaOfInterest.properties.followers?.weekly
+
   let content = (
     <>
       <div className='px-4 mb-3'>
-        <div className='flex items-center mb-1'>
+        <div className='flex items-center mb-1 mt-0.5'>
           <div className='flex-grow'>
             <Link onClick={handleBackClick}>
               <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>{backText}</div></div>
             </Link>
+          </div>
+          <div className='mr-2'>
+            <FollowMenu areaOfInterest={areaOfInterest} user={user} />
           </div>
           {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner?.sub} />}
         </div>
@@ -56,7 +72,7 @@ const ReportSidebar = ({ areaOfInterest, backText, backLink, isOwner, isAdmin, a
       <div className='flex-grow px-4 overflow-y-scroll'>
         <div className='mb-2'>
           <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
-          <div className='text-xs'>From {dateFrom} to {dateTo}</div>
+          <div className='mt-1 text-xs'>From {dateFrom} to {dateTo}</div>
         </div>
         {serviceRequestsFC?.features.length && (
           <>

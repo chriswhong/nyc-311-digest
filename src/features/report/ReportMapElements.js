@@ -25,7 +25,8 @@ const dedupeServiceRequests = (serviceRequests) => {
 }
 
 const ReportMapElements = ({
-  areaOfInterest
+  areaOfInterest,
+  offsetCenter = true
 }) => {
   const map = useContext(MapContext)
   const {
@@ -38,7 +39,7 @@ const ReportMapElements = ({
   const [selectors] = useDeviceSelectors(window.navigator.userAgent)
   const { isMobile } = selectors
 
-  let fitBoundsPadding = { top: 30, bottom: 30, left: 400, right: 30 }
+  let fitBoundsPadding = { top: 30, bottom: 30, left: offsetCenter ? 400 : 30, right: 30 }
   if (isMobile) {
     fitBoundsPadding = { top: 5, bottom: 5, left: 5, right: 5 }
   }
@@ -255,6 +256,7 @@ const ReportMapElements = ({
 ReportMapElements.propTypes = {
   areaOfInterest: PropTypes.object,
   dateSelection: PropTypes.object,
+  offsetCenter: PropTypes.bool,
   onDateRangeChange: PropTypes.func
 }
 

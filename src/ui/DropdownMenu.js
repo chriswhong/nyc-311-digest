@@ -9,11 +9,15 @@ export default function DropdownMenu ({
   selectedValue,
   icon,
   alignRight,
+  buttonClassNames,
   onChange,
   children
 }) {
   let triggerItem = (
-    <Menu.Button className='inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'>
+    <Menu.Button className={classNames(buttonClassNames, {
+      'inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500': !buttonClassNames
+    })}
+    >
       {children}
       <ChevronDownIcon className='w-5 h-5 ml-2 -mr-1' aria-hidden='true' />
     </Menu.Button>
@@ -29,7 +33,7 @@ export default function DropdownMenu ({
 
   return (
     <Menu as='div' className='relative inline-block text-left '>
-      <div>
+      <div className='flex items-center'>
         {triggerItem}
       </div>
 
@@ -60,12 +64,19 @@ export default function DropdownMenu ({
                           {
                             'bg-gray-100 text-gray-900': active && !selected,
                             'text-gray-700': !active && !selected,
-                            'bg-indigo-600 text-white': selected
+                            'bg-gray-200': selected
                           }
                         )}
                         onClick={() => { onChange(item) }}
                       >
-                        {item.displayName}
+                        <div className={classNames({
+                          'font-semibold text-black mb-1': !!item.description
+                        })}
+                        >{item.displayName}
+                        </div>
+                        {item.description && (
+                          <div className='text-xs text-gray-500'>{item.description}</div>
+                        )}
                       </div>
                     )
                   }}
@@ -85,6 +96,7 @@ DropdownMenu.propTypes = {
   selectedValue: PropTypes.string,
   icon: PropTypes.element,
   alignRight: PropTypes.bool,
+  buttonClassNames: PropTypes.string,
   onChange: PropTypes.func,
   children: PropTypes.array
 }

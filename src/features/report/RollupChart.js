@@ -5,7 +5,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, LabelList, Cell } fro
 
 import { getColorFromRollupCategory } from '../../util/categoryColors'
 
-const RollupChart = ({ data }) => {
+const RollupChart = ({ data, isAnimationActive = true }) => {
   // group and count
   let grouped = _.countBy(data, d => d.properties.rollupCategory)
 
@@ -25,9 +25,11 @@ const RollupChart = ({ data }) => {
         layout='vertical'
         margin={{ left: 0, right: 30 }}
       >
-        <YAxis type='category' width={150} dataKey='name' fontSize={11} interval={0} axisLine={false} dx={-5} tickLine={false} />
+        <YAxis type='category' width={200} dataKey='name' fontSize={11} interval={0} axisLine={false} dx={-5} tickLine={false} />
         <XAxis type='number' hide />
-        <Bar dataKey='count' fill='#285A64' label='count'>
+        <Bar
+          dataKey='count' fill='#285A64' label='count' isAnimationActive={isAnimationActive}
+        >
           {grouped.map((entry, index) => (
             <Cell key={index} fill={getColorFromRollupCategory(entry.name)} />
           ))}
@@ -39,7 +41,8 @@ const RollupChart = ({ data }) => {
 }
 
 RollupChart.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  isAnimationActive: PropTypes.bool
 }
 
 export default RollupChart

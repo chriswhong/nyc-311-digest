@@ -18,7 +18,8 @@ const queryDatabase = async (client) => {
         name: '$name',
         geometry: '$geometry',
         bbox: '$bbox',
-        owner: { $first: '$owner' }
+        owner: { $first: '$owner' },
+        followers: '$followers'
       }
     }])
     const results = await cursor.toArray()
@@ -31,7 +32,8 @@ const queryDatabase = async (client) => {
         name,
         geometry,
         bbox,
-        owner
+        owner,
+        followers
       }) => {
         // add a dummy owner to orphaned AOIs
         let theOwner = owner
@@ -48,7 +50,10 @@ const queryDatabase = async (client) => {
             _id,
             name,
             bbox,
-            owner: theOwner
+            owner: theOwner,
+            followers: followers || {
+              weekly: []
+            }
           },
           geometry
         }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import {
   Routes,
-  Route
+  Route,
+  useLocation
 } from 'react-router-dom'
 
 import MapWrapper from '../features/map/MapWrapper'
@@ -14,16 +15,22 @@ import useModal from '../util/useModal'
 import { useGetCommunityDistrictsQuery } from '../util/static-api'
 import ProtectedRoute from '../features/auth/ProtectedRoute'
 import NotFound from '../layout/NotFound'
+
 import { AuthContext } from './AppContainer'
 import CommunityDistrictsIndex from '../features/community-districts/CommunityDistrictsIndex'
 import CommunityDistrictReport from '../features/community-districts/CommunityDistrictReport'
 import usePageTracking from '../util/usePageTracking'
+import AOIReportImage from '../features/aoi/AOIReportImage'
 
 export const ModalContext = createContext()
 export const MapContext = createContext()
 
 function App () {
   const [mapInstance, setMapInstance] = useState()
+
+  const location = useLocation()
+
+  const { state, pathname } = location
 
   const modalProps = useModal()
   const { showModal } = modalProps
@@ -66,6 +73,26 @@ function App () {
         'line-opacity': 0.7
       }
     })
+  }
+
+  // render map + chart layout for static image creation
+  if (pathname.includes('report-image')) {
+    return (
+      <MapContext.Provider value={mapInstance}>
+        <div className='flex flex-col App'>
+          <Routes>
+            <Route
+              path='/report-image/:areaOfInterestId'
+              element={
+                <AOIReportImage
+                  onLoad={handleMapLoad}
+                />
+            }
+            />
+          </Routes>
+        </div>
+      </MapContext.Provider>
+    )
   }
 
   return (
