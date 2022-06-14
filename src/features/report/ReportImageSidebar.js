@@ -8,7 +8,7 @@ const ReportImageSidebar = ({
   areaOfInterest
 }) => {
   const {
-    serviceRequests,
+    serviceRequestsFC,
     dateSelection
   } = useContext(ThreeOneOneDataContext)
 
@@ -21,18 +21,18 @@ const ReportImageSidebar = ({
       <div className='mb-1 text-3xl font-semibold'>{areaOfInterest.properties.name}</div>
       <div className='text-xs'>From {dateFrom} thru {dateTo}</div>
       {
-        areaOfInterest && serviceRequests && (
+        areaOfInterest && serviceRequestsFC && (
           <>
             <div className='flex items-center'>
               <div className='mr-2 text-2xl font-bold'>
-                {serviceRequests.features.length}
+                {serviceRequestsFC.features.length}
               </div>
               <div className='text-lg'>
                 New Service Requests
               </div>
             </div>
             <div className='flex-grow mb-3 '>
-              <RollupChart data={serviceRequests.features} isAnimationActive={false} />
+              <RollupChart data={serviceRequestsFC.features} isAnimationActive={false} />
             </div>
           </>
         )
