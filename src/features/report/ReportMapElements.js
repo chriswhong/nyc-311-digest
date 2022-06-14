@@ -26,7 +26,8 @@ const dedupeServiceRequests = (serviceRequests) => {
 
 const ReportMapElements = ({
   areaOfInterest,
-  offsetCenter = true
+  offsetCenter = true,
+  isStatic = false
 }) => {
   const map = useContext(MapContext)
   const {
@@ -164,8 +165,10 @@ const ReportMapElements = ({
     if (map && areaOfInterest) {
       map.getSource('area-of-interest').setData(areaOfInterest)
 
+      const duration = isStatic ? { duration: 0 } : 0
       map.fitBounds(areaOfInterest.properties.bbox, {
-        padding: fitBoundsPadding
+        padding: fitBoundsPadding,
+        ...duration
       })
     }
   }, [map, areaOfInterest])

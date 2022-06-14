@@ -18,7 +18,7 @@ const AOIReportImage = ({
 
   return (
     <>
-      {areaOfInterest && (
+      {data && (
         <ThreeOneOneDataHandler areaOfInterest={data}>
           <ReportImageSidebar
             areaOfInterest={data}
@@ -28,7 +28,7 @@ const AOIReportImage = ({
               onLoad(map)
             }}
           />
-          <ReportMapElements areaOfInterest={data} offsetCenter={false} />
+          <ReportMapElements areaOfInterest={data} offsetCenter={false} isStatic />
         </ThreeOneOneDataHandler>
       )}
     </>

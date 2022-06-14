@@ -10,8 +10,8 @@ if (!fs.existsSync(dir)) {
 
 (async () => {
   // get all AOI ids
-  const allGeometries = await fetch('http://localhost:8888/.netlify/functions/get-geometries').then(d => d.json())
-  const AOIIds = allGeometries.features.map(d => d.properties._id)
+  const allAOIs = await fetch('http://localhost:8888/.netlify/functions/get-aois').then(d => d.json())
+  const AOIIds = allAOIs.features.map(d => d.properties._id)
 
   // initialize puppeteer
   const browser = await puppeteer.launch({ headless: false })
@@ -20,7 +20,7 @@ if (!fs.existsSync(dir)) {
 
   for (let i = 0; i < AOIIds.length; i += 1) {
     const id = AOIIds[i]
-    await page.goto(`http://localhost:8888/report-image/${id}`)
+    await page.goto(`http://localhost:8888/report-image/${id}`, { waitUntil: 'networkidle0' })
 
     await page.waitForSelector('.recharts-text.recharts-label')
 
