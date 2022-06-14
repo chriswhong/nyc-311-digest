@@ -3,15 +3,15 @@ const puppeteer = require('puppeteer')
 const fs = require('fs')
 
 const dir = `${__dirname}/tmp`
-
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir)
+if (fs.existsSync(dir)) {
+  fs.rmdirSync(dir, { recursive: true })
 }
 
+fs.mkdirSync(dir);
+
 (async () => {
-  // get all AOI ids
-  const allAOIs = await fetch('http://localhost:8888/.netlify/functions/get-aois').then(d => d.json())
-  const AOIIds = allAOIs.features.map(d => d.properties._id)
+  // get all AOI ids with followers
+  const AOIIds = await fetch('http://localhost:8888/.netlify/functions/get-aois-with-followers').then(d => d.json())
 
   // initialize puppeteer
   const browser = await puppeteer.launch({ headless: false })

@@ -1,0 +1,31 @@
+name: Process Weekly Emails
+on:
+  workflow_dispatch:
+jobs:
+  Process-Inspections-Data:
+    runs-on: ubuntu-latest
+    container: lironavon/docker-puppeteer-container:14.16.0
+    steps:
+      - run: echo "Starting weekly 311 report notifications pipeline..."
+      - name: Slack Notification - Start
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: "Starting weekly 311 report notifications pipeline..."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Process notifications
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: cd scripts && node weekly-reports.js
+        shell: bash
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Slack Notification - Finish
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          MSG_MINIMAL: true
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_MESSAGE: "weekly 311 report notifications Pipeline Finished | Job Status: ${{ job.status }}"
