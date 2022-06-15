@@ -1,5 +1,7 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk')
 
+const generateHtmlContent = require('./generateHtmlContent')
+
 require('dotenv').config({ path: '../../../.env' })
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance
@@ -10,9 +12,6 @@ apiKey.apiKey =
 const sendReportEmail = (name, email, follows) => {
   try {
     const date = new Date().toISOString().split('T')[0]
-    const imgTags = follows.map(id => {
-      return `<img src = 'https://nyc-311-reports-images.nyc3.digitaloceanspaces.com/${date}/${id}.png'>`
-    }).join('')
 
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
     let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail() // SendSmtpEmail | Values to send a transactional email
@@ -24,9 +23,9 @@ const sendReportEmail = (name, email, follows) => {
           name
         }
       ],
-      subject: 'Weekly 311 Report',
-      textContent: 'Test Email Content',
-      htmlContent: `<html><head></head><body>${imgTags}</body></html>`
+      subject: 'Weekly NYC 311 Report for Areas You Follow',
+      textContent: 'Here is a summary of recent 311 activity for the areas you follow on nyc311.app',
+      htmlContent: generateHtmlContent(date, name, email, follows)
     }
     apiInstance.sendTransacEmail(sendSmtpEmail).then(
       function (data) {
