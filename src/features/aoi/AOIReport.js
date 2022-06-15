@@ -13,12 +13,12 @@ import { useGetAoiQuery } from '../../util/rtk-api'
 
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 
-const AOIReport = ({ allGeometries }) => {
+const AOIReport = () => {
   const navigate = useNavigate()
   const { areaOfInterestId } = useParams()
   const { user } = useContext(AuthContext)
 
-  const { data, error, isLoading } = useGetAoiQuery(areaOfInterestId)
+  const { data, error, isLoading, refetch } = useGetAoiQuery(areaOfInterestId)
 
   useEffect(() => {
     if (error?.status === 404) {
@@ -44,6 +44,7 @@ const AOIReport = ({ allGeometries }) => {
               backLink='/'
               isOwner={isOwner} isAdmin={isAdmin}
               areaTitle={data.properties.name}
+              onRefetch={refetch}
             />
             <ReportMapElements areaOfInterest={data} />
           </ThreeOneOneDataHandler>

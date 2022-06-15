@@ -54,6 +54,14 @@ export const mainApi = createApi({
       })
     }),
 
+    getCommunityDistricts: builder.query({
+      query: () => 'get-community-districts'
+    }),
+
+    getCommunityDistrict: builder.query({
+      query: (id) => `get-community-district?id=${id}`
+    }),
+
     getUsername: builder.query({
       query: (sub) => `get-username?sub=${sub}`
     }),
@@ -92,6 +100,8 @@ export const {
   useGetAoiQuery,
   useCreateAoiMutation,
   useDeleteAoiMutation,
+  useGetCommunityDistrictsQuery,
+  useGetCommunityDistrictQuery,
   useGetUsernameQuery,
   useCheckUsernameMutation,
   useCreateUsernameMutation,

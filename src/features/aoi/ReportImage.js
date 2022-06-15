@@ -6,15 +6,23 @@ import Map from '../map/Map'
 import ThreeOneOneDataHandler from '../report/ThreeOneOneDataHandler'
 import ReportMapElements from '../report/ReportMapElements'
 import ReportImageSidebar from '../report/ReportImageSidebar'
-import { useGetAoiQuery } from '../../util/rtk-api'
+import { useGetAoiQuery, useGetCommunityDistrictQuery } from '../../util/rtk-api'
 
 const AOIReportImage = ({
-  allGeometries,
   onLoad
 }) => {
-  const { areaOfInterestId } = useParams()
+  const { type, id } = useParams()
+  console.log(type)
 
-  const { data, error, isLoading } = useGetAoiQuery(areaOfInterestId)
+  let useGetAreaQuery = useGetAoiQuery
+
+  if (type === 'cd') {
+    useGetAreaQuery = useGetCommunityDistrictQuery
+  }
+
+  const { data, error, isLoading } = useGetAreaQuery(id)
+
+  console.log(data)
 
   return (
     <>
@@ -36,7 +44,6 @@ const AOIReportImage = ({
 }
 
 AOIReportImage.propTypes = {
-  allGeometries: PropTypes.object,
   onLoad: PropTypes.func
 }
 

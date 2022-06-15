@@ -4,7 +4,40 @@ import getDatabaseClient from './getDatabaseClient'
 const queryDatabase = async (id, client) => {
   try {
     const db = client.db('nyc-311-digest')
-    const aoi = await db.collection('custom-geometries').findOne({ _id: id })
+    const cursor = await db.collection('custom-geometries').aggregate([
+      {
+        $match: { _id: id }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'owner',
+          foreignField: 'sub',
+          as: 'owner'
+        }
+      },
+      {
+        $lookup: {
+          from: 'follows',
+          localField: '_id',
+          foreignField: 'id',
+          as: 'followers'
+        }
+      },
+      {
+        $project: {
+          id: '$id',
+          name: '$name',
+          geometry: '$geometry',
+          bbox: '$bbox',
+          owner: { $first: '$owner' },
+          followers: { $first: '$followers.followers' }
+        }
+      }
+    ])
+
+    const [aoi] = await cursor.toArray()
+
     if (!aoi) {
       return {
         statusCode: 404,
@@ -19,19 +52,7 @@ const queryDatabase = async (id, client) => {
       }
     }
 
-    let theOwner = await client.db('nyc-311-digest')
-      .collection('users')
-      .findOne({ sub: aoi.owner })
-
-    const { _id, name, bbox, geometry, followers } = aoi
-
-    if (!theOwner) {
-      theOwner = {
-        _id: '12345',
-        username: 'Anonymous',
-        sub: '12345'
-      }
-    }
+    const { _id, name, bbox, geometry, owner, followers } = aoi
 
     return {
       statusCode: 200,
@@ -43,9 +64,10 @@ const queryDatabase = async (id, client) => {
         type: 'Feature',
         properties: {
           _id,
+          type: 'aoi',
           name,
           bbox,
-          owner: theOwner,
+          owner,
           followers
         },
         geometry

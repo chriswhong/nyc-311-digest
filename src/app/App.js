@@ -12,7 +12,6 @@ import Draw from '../features/draw/Draw'
 import AOIReport from '../features/aoi/AOIReport'
 import ModalWrapper from '../ui/modal/ModalWrapper'
 import useModal from '../util/useModal'
-import { useGetCommunityDistrictsQuery } from '../util/static-api'
 import ProtectedRoute from '../features/auth/ProtectedRoute'
 import NotFound from '../layout/NotFound'
 
@@ -20,7 +19,7 @@ import { AuthContext } from './AppContainer'
 import CommunityDistrictsIndex from '../features/community-districts/CommunityDistrictsIndex'
 import CommunityDistrictReport from '../features/community-districts/CommunityDistrictReport'
 import usePageTracking from '../util/usePageTracking'
-import AOIReportImage from '../features/aoi/AOIReportImage'
+import ReportImage from '../features/aoi/ReportImage'
 
 export const ModalContext = createContext()
 export const MapContext = createContext()
@@ -30,19 +29,13 @@ function App () {
 
   const location = useLocation()
 
-  const { state, pathname } = location
+  const { pathname } = location
 
   const modalProps = useModal()
   const { showModal } = modalProps
 
   const { user, isLoading: userIsLoading } = useContext(AuthContext)
   usePageTracking()
-
-  const {
-    data: communityDistricts,
-    isLoading: communityDistrictsLoading,
-    error: communityDistrictsError
-  } = useGetCommunityDistrictsQuery()
 
   // don't let an authenticated user do anything else until they create a username
   useEffect(() => {
@@ -82,9 +75,9 @@ function App () {
         <div className='flex flex-col App'>
           <Routes>
             <Route
-              path='/report-image/:areaOfInterestId'
+              path='/report-image/:type/:id'
               element={
-                <AOIReportImage
+                <ReportImage
                   onLoad={handleMapLoad}
                 />
             }
@@ -120,21 +113,17 @@ function App () {
               <Route
                 path='/community-districts'
                 element={
-                  <CommunityDistrictsIndex
-                    communityDistricts={communityDistricts}
-                  />
+                  <CommunityDistrictsIndex />
                   }
               />
               <Route
-                path='/report/community-districts/:boroughname/:cdnumber'
+                path='/report/community-district/:boroughname/:cdnumber'
                 element={
-                  <CommunityDistrictReport
-                    communityDistricts={communityDistricts}
-                  />
+                  <CommunityDistrictReport />
                   }
               />
               <Route
-                path='/report/:areaOfInterestId/:slug'
+                path='/report/aoi/:areaOfInterestId/:slug'
                 element={
                   <AOIReport />
                   }

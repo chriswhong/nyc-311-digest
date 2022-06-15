@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import { MapContext } from '../../app/App'
+import dummyGeojson from '../../util/dummyGeojson'
 
 const parseBoroCD = (boroCD) => {
   const boroCode = Math.floor(boroCD / 100 % 10)
@@ -36,12 +37,12 @@ const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
   useEffect(() => {
-    if (!map && !communityDistricts) return
+    if (!map) return
     // use one source as a proxy for all sources related to this component
     if (!map.getSource('community-districts')) {
       map.addSource('community-districts', {
         type: 'geojson',
-        data: communityDistricts,
+        data: dummyGeojson,
         generateId: true
       })
 
@@ -96,7 +97,7 @@ const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
         const [feature] = map.queryRenderedFeatures(e.point)
         const { BoroCD, cdNumber } = feature.properties
         const { borough } = parseBoroCD(BoroCD)
-        navigate(`/report/community-districts/${borough}/${cdNumber}`)
+        navigate(`/report/community-district/${borough}/${cdNumber}`)
       })
       // make the cursor a pointer when hovering all-geomtries-fill layer
       map.on('mouseenter', 'community-districts-fill', () => {
@@ -152,6 +153,7 @@ const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
       map.flyTo({
         zoom: 10
       })
+      map.getSource('community-districts').setData(communityDistricts)
     }
   }, [map, communityDistricts])
 

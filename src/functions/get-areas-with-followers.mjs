@@ -4,16 +4,19 @@ import getDatabaseClient from './getDatabaseClient'
 const queryDatabase = async (client) => {
   try {
     const db = client.db('nyc-311-digest')
-    const cursor = await db.collection('custom-geometries')
+    const cursor = await db.collection('follows')
       .aggregate([
         {
           $match: { 'followers.weekly': { $exists: true, $not: { $size: 0 } } }
         },
         {
           $project: {
+            type: '$type',
             id: '$id'
           }
-        }])
+        }
+
+      ])
     const results = await cursor.toArray()
 
     return {
@@ -22,7 +25,7 @@ const queryDatabase = async (client) => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*' // Allow from anywhere
       },
-      body: JSON.stringify(results.map(d => d._id))
+      body: JSON.stringify(results)
     }
   } catch (err) {
     console.log(err) // output to netlify function log

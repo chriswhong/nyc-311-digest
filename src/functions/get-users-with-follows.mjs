@@ -7,14 +7,13 @@ const queryDatabase = async (client) => {
     const cursor = await db.collection('users').aggregate([
       {
         $lookup: {
-          from: 'custom-geometries',
+          from: 'follows',
           let: { userSub: '$sub' },
           pipeline: [
             {
               $match: { 'followers.weekly': { $exists: true, $not: { $size: 0 } } }
             },
             {
-
               $match: {
                 $expr: {
                   $in: ['$$userSub', '$followers.weekly']
@@ -23,10 +22,10 @@ const queryDatabase = async (client) => {
             },
             {
               $project: {
+                _id: 0,
                 id: '$id'
               }
             }
-
           ],
           as: 'follows'
         }
@@ -35,7 +34,7 @@ const queryDatabase = async (client) => {
       },
       {
         $addFields: {
-          follows: '$follows._id'
+          follows: '$follows.id'
         }
       }
     ])

@@ -19,9 +19,9 @@ fs.mkdirSync(dir);
 
 (async () => {
   try {
-    // get all AOI ids with followers
+    // get type and id for all areas with followers
     console.log('fetching areas of interest that have followers...')
-    const AOIIds = await fetch(`${BASE_URL}/.netlify/functions/get-aois-with-followers`).then(d => d.json())
+    const areasWithFollowers = await fetch(`${BASE_URL}/.netlify/functions/get-areas-with-followers`).then(d => d.json())
 
     // initialize puppeteer
     console.log('initializing puppeteer...')
@@ -30,12 +30,12 @@ fs.mkdirSync(dir);
     const page = await browser.newPage()
     page.setViewport({ width: IMAGE_WIDTH, height: IMAGE_HEIGHT })
 
-    for (let i = 0; i < AOIIds.length; i += 1) {
-      const id = AOIIds[i]
+    for (let i = 0; i < areasWithFollowers.length; i += 1) {
+      const { type, id } = areasWithFollowers[i]
       console.log(`fetching report image for ${id}...`)
 
       // load the report-image view for this AOI
-      await page.goto(`${BASE_URL}/report-image/${id}`, { waitUntil: 'networkidle0' })
+      await page.goto(`${BASE_URL}/report-image/${type}/${id}`, { waitUntil: 'networkidle0' })
 
       // wait until the chart is loaded
       await page.waitForSelector('.recharts-text.recharts-label')
