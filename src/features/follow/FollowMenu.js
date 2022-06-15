@@ -5,13 +5,22 @@ import {
 } from '@heroicons/react/outline'
 
 import DropdownMenu from '../../ui/DropdownMenu'
-import { useGetAoiQuery, useToggleFollowAoiMutation } from '../../util/rtk-api'
+import { useToggleFollowAoiMutation } from '../../util/rtk-api'
+
+const Spinner = () => (
+  <div className='flex flex-col items-center justify-center h-4'>
+    <div className='inline-block w-4 h-4 text-gray-600 rounded-full border-0.5 spinner-border animate-spin' role='status'>
+      <span className='visually-hidden'>Loading...</span>
+    </div>
+  </div>
+)
 
 export default function FollowMenu ({
   areaOfInterest,
-  user
+  user,
+  onRefetch
 }) {
-  const { _id } = areaOfInterest.properties
+  const { _id, type } = areaOfInterest.properties
   const followers = areaOfInterest.properties.followers?.weekly
 
   let userIsFollower = false
@@ -20,13 +29,11 @@ export default function FollowMenu ({
   }
 
   const [toggleFollow, { data, error, isLoading }] = useToggleFollowAoiMutation()
-  const { refetch } = useGetAoiQuery(_id)
-
-  console.log('data', data)
 
   const handleToggleFollow = () => {
     toggleFollow({
-      _id,
+      type,
+      id: _id,
       sub: user?.sub
     })
   }
@@ -34,7 +41,7 @@ export default function FollowMenu ({
   // refetch the aoi when toggle-follow is successful
   useEffect(() => {
     if (data) {
-      refetch()
+      onRefetch()
     }
   }, [data])
 
@@ -79,12 +86,14 @@ export default function FollowMenu ({
     >
       <EyeIcon className='w-4 h-4 mr-1' aria-hidden='true' />
       <span className='mr-1.5 text-xs'>{displayValue}</span>
-      <Badge>{followers?.length || 0}</Badge>
+      {isLoading && <Spinner />}
+      {!isLoading && <Badge>{followers?.length || 0}</Badge>}
     </DropdownMenu>
   )
 }
 
 FollowMenu.propTypes = {
   areaOfInterest: PropTypes.object,
-  user: PropTypes.object
+  user: PropTypes.object,
+  onRefetch: PropTypes.func
 }

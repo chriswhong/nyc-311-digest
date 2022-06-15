@@ -2,41 +2,44 @@
 import getDatabaseClient from './getDatabaseClient'
 import { requireAuth, handleOptionsCall } from './auth'
 
-const queryDatabase = async ({ _id, sub }, client) => {
+const queryDatabase = async ({ type, id, sub }, client) => {
   const db = client.db('nyc-311-digest')
-
-  const AOI = await db.collection('custom-geometries')
+  const followRecord = await db.collection('follows')
     .findOne({
-      _id
+      type,
+      id
     })
 
-  console.log('here', AOI)
-
-  let followers = AOI.followers?.weekly
-  console.log(followers)
-  if (followers) {
-    const index = followers.findIndex(d => d === sub)
-    console.log('theIndex', index)
+  if (followRecord) {
+    const { _id, followers } = followRecord
+    let { weekly } = followers
+    // append or remove this user
+    const index = weekly.findIndex(d => d === sub)
 
     if (index === -1) {
-      followers = [
-        ...followers,
+      weekly = [
+        ...weekly,
         sub
       ]
     } else {
-      followers.splice(index, 1)
+      weekly.splice(index, 1)
     }
+
+    await db.collection('follows').updateOne({
+      _id
+    }, {
+      $set: { 'followers.weekly': weekly }
+    })
   } else {
-    followers = [sub]
+    // create a document with this user as the only follower
+    await db.collection('follows').insertOne({
+      type,
+      id,
+      followers: {
+        weekly: [sub]
+      }
+    })
   }
-
-  console.log('followers', followers)
-
-  await db.collection('custom-geometries').updateOne({
-    _id
-  }, {
-    $set: { 'followers.weekly': followers }
-  })
 
   return {
     statusCode: 200,

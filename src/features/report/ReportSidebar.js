@@ -24,7 +24,8 @@ const ReportSidebar = ({
   backLink,
   isOwner,
   isAdmin,
-  areaTitle
+  areaTitle,
+  onRefetch
 }) => {
   const {
     serviceRequestsFC,
@@ -55,7 +56,7 @@ const ReportSidebar = ({
             </Link>
           </div>
           <div className='mr-2'>
-            <FollowMenu areaOfInterest={areaOfInterest} user={user} />
+            <FollowMenu areaOfInterest={areaOfInterest} user={user} onRefetch={onRefetch} />
           </div>
           {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner?.sub} />}
         </div>
@@ -128,7 +129,8 @@ ReportSidebar.propTypes = {
   backLink: PropTypes.string,
   isOwner: PropTypes.bool,
   isAdmin: PropTypes.bool,
-  areaTitle: PropTypes.string
+  areaTitle: PropTypes.string,
+  onRefetch: PropTypes.func
 }
 
 export default ReportSidebar

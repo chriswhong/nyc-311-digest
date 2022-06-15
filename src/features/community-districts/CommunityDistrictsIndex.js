@@ -1,12 +1,18 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import CommunityDistrictsIndexSidebar from './CommunityDistrictsIndexSidebar'
 import CommunityDistrictsIndexMapElements from './CommunityDistrictsIndexMapElements'
+import { useGetCommunityDistrictsQuery } from '../../util/rtk-api'
 
 import Head from '../../layout/Head'
 
-const CommunityDistrictsIndex = ({ communityDistricts }) => {
+const CommunityDistrictsIndex = () => {
+  const {
+    data: communityDistricts,
+    isLoading: communityDistrictsLoading,
+    error: communityDistrictsError
+  } = useGetCommunityDistrictsQuery()
+
   return (
     <>
       <Head
@@ -17,10 +23,6 @@ const CommunityDistrictsIndex = ({ communityDistricts }) => {
       <CommunityDistrictsIndexMapElements communityDistricts={communityDistricts} />
     </>
   )
-}
-
-CommunityDistrictsIndex.propTypes = {
-  communityDistricts: PropTypes.object
 }
 
 export default CommunityDistrictsIndex
