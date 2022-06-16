@@ -19,7 +19,7 @@ jobs:
       - name: Process notifications
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: cd scripts && node weekly-reports.js
+        run: cd scripts && sh run-weekly-emails.sh
         shell: bash
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
