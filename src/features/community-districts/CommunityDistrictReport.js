@@ -49,7 +49,7 @@ const CommunityDistrictReport = ({ communityDistricts }) => {
 
   const { data, error, isLoading, refetch } = useGetCommunityDistrictQuery(boroCD)
 
-  const cdName = getCdName(boroughname, cdnumber)
+  const cdName = data.properties.name
   return (
     <>
       {data && (

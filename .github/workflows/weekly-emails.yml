@@ -13,8 +13,8 @@ jobs:
       DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
       DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
       DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - run: echo "Starting weekly 311 report notifications pipeline..."
       - name: Slack Notification - Start
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -23,14 +23,9 @@ jobs:
           SLACK_MESSAGE: "Starting weekly 311 report notifications pipeline..."
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - name: Process notifications
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: cd scripts/weekly-emails && sh run-weekly-emails.sh
         shell: bash
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Slack Notification - Finish
         uses: rtCamp/action-slack-notify@v2
         env:

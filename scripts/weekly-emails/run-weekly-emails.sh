@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -e
 yarn
 
 node 1-generate-screenshots.js

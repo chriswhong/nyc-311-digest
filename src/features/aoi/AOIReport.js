@@ -54,8 +54,4 @@ const AOIReport = () => {
   )
 }
 
-AOIReport.propTypes = {
-  allGeometries: PropTypes.object
-}
-
 export default AOIReport
