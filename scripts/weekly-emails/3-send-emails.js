@@ -1,7 +1,8 @@
 // `weekly-reports` rand prior to this script, creating screenshots for all areas of interest that have followers
 // next we will generate an email for each user who follows one or more area of interest, and embed the images in them
 
-const fetch = require('node-fetch')
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args))
 
 const getUserEmails = require('./util/get-user-emails')
 const sendReportEmail = require('./util/send-report-email')

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+yarn
+
 node 1-generate-screenshots.js
 
 node 2-push-to-spaces.js

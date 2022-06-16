@@ -2,9 +2,17 @@ name: Process Weekly Emails
 on:
   workflow_dispatch:
 jobs:
-  Process-Inspections-Data:
+  Process-Weekly-Emails:
     runs-on: ubuntu-latest
-    container: lironavon/docker-puppeteer-container:14.16.0
+    env:
+      REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
+      DO_SPACES_NAME: ${{ secrets.DO_SPACES_NAME }}
+      DO_SPACES_ENDPOINT: ${{ secrets.DO_SPACES_ENDPOINT }}
+      DO_SPACES_KEY: ${{ secrets.DO_SPACES_KEY }}
+      DO_SPACES_SECRET: ${{ secrets.DO_SPACES_SECRET }}
     steps:
       - run: echo "Starting weekly 311 report notifications pipeline..."
       - name: Slack Notification - Start
@@ -19,7 +27,7 @@ jobs:
       - name: Process notifications
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: cd scripts && node weekly-reports.js
+        run: cd scripts/weekly-emails && sh run-weekly-emails.sh
         shell: bash
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

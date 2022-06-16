@@ -1,7 +1,8 @@
-const fetch = require('node-fetch')
 const puppeteer = require('puppeteer')
 const fs = require('fs')
 const path = require('path')
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args))
 
 require('dotenv').config({ path: '../../.env' })
 
@@ -26,7 +27,7 @@ fs.mkdirSync(dir);
     // initialize puppeteer
     console.log('initializing puppeteer...')
 
-    const browser = await puppeteer.launch({ headless: false })
+    const browser = await puppeteer.launch()
     const page = await browser.newPage()
     page.setViewport({ width: IMAGE_WIDTH, height: IMAGE_HEIGHT })
 
@@ -35,7 +36,9 @@ fs.mkdirSync(dir);
       console.log(`fetching report image for ${id}...`)
 
       // load the report-image view for this AOI
-      await page.goto(`${BASE_URL}/report-image/${type}/${id}`, { waitUntil: 'networkidle0' })
+      const url = `${BASE_URL}/report-image/${type}/${id}`
+      console.log(`loading ${url}`)
+      await page.goto(url, { waitUntil: 'networkidle0' })
 
       // wait until the chart is loaded
       await page.waitForSelector('.recharts-text.recharts-label')
