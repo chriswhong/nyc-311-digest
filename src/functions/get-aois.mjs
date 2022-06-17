@@ -18,10 +18,11 @@ const queryDatabase = async (client) => {
         name: '$name',
         geometry: '$geometry',
         bbox: '$bbox',
+        area: '$area',
         owner: { $first: '$owner' },
         followers: '$followers'
       }
-    }])
+    }]).sort({ area: -1 })
     const results = await cursor.toArray()
 
     // transform into a valid geojson FeatureCollection
@@ -32,6 +33,7 @@ const queryDatabase = async (client) => {
         name,
         geometry,
         bbox,
+        area,
         owner,
         followers
       }) => {
@@ -50,6 +52,7 @@ const queryDatabase = async (client) => {
             _id,
             name,
             bbox,
+            area,
             owner: theOwner,
             followers: followers || {
               weekly: []
@@ -58,6 +61,7 @@ const queryDatabase = async (client) => {
           geometry
         }
       })
+
     }
 
     return {

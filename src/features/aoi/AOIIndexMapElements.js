@@ -37,6 +37,21 @@ const AOIIndexMapElements = ({ allGeometries }) => {
         }
       })
 
+      map.addLayer({
+        id: 'all-geometries-line',
+        type: 'line',
+        source: 'all-geometries',
+        paint: {
+          'line-color': '#4f46e5',
+          'line-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0
+          ]
+        }
+      })
+
       // add a symbol layer to label each polygon
       map.addLayer({
         id: 'all-geometries-symbol',
@@ -46,7 +61,8 @@ const AOIIndexMapElements = ({ allGeometries }) => {
           'text-field': ['get', 'name'],
           'text-variable-anchor': ['bottom'],
           'text-radial-offset': 0.5,
-          'text-justify': 'auto'
+          'text-justify': 'auto',
+          'text-size': 10
         },
         paint: {
           'text-halo-color': 'white',

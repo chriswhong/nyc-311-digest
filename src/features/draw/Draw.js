@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import gjv from 'geojson-validation'
 import bbox from '@turf/bbox'
+import area from '@turf/area'
 import { useNavigate } from 'react-router-dom'
 
 import { slugFromName } from '../../util/slugFromName'
@@ -34,6 +35,7 @@ const Draw = () => {
       name: drawnFeatureName,
       geometry: drawnFeature?.geometry,
       bbox: drawnFeature && bbox(drawnFeature?.geometry),
+      area: area(drawnFeature?.geometry),
       owner: user?.sub
     })
   }

@@ -35,12 +35,13 @@ const queryDatabase = async (body, client) => {
       geometry: body.geometry,
       bbox: body.bbox,
       owner: body.owner,
+      area: body.area,
       created_at: new Date()
     })
 
   console.log(`inserted AOI ${body.name} into database...`)
 
-  await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/${id}/${slugFromName(body.name)}`)
+  await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/aoi/${id}/${slugFromName(body.name)}`)
 
   return {
     statusCode: 200,
