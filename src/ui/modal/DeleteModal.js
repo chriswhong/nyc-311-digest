@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 
-import { useDeleteAoiMutation } from '../../util/rtk-api'
+import { useGetAoisQuery, useDeleteAoiMutation } from '../../util/rtk-api'
 
 export default function DeleteModal ({ hideModal, modalProperties }) {
   const { id } = modalProperties
   const [deleteAoi, { data, error, isLoading }] = useDeleteAoiMutation()
+  const { refetch } = useGetAoisQuery()
 
   const navigate = useNavigate()
 
@@ -16,7 +17,8 @@ export default function DeleteModal ({ hideModal, modalProperties }) {
   useEffect(() => {
     if (data) {
       hideModal()
-      navigate('/', { state: { refresh: true } })
+      refetch()
+      navigate('/')
     }
   }, [data])
 
