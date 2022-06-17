@@ -45,7 +45,7 @@ const Draw = () => {
     if (!data) { return }
     setDrawnFeature(null)
     setDrawnFeatureName('')
-    navigate(`/report/${data.id}/${slugFromName(drawnFeatureName)}`, {
+    navigate(`/report/aoi/${data.id}/${slugFromName(drawnFeatureName)}`, {
       state: {
         refresh: true
       }

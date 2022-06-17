@@ -1,4 +1,5 @@
 const reportImagesHtmlSection = (date, id) => {
+  const type = id.length === 3 ? 'cd' : 'aoi'
   return `
     <tr>
         <td class="r2-c" align="center">
@@ -68,7 +69,7 @@ const reportImagesHtmlSection = (date, id) => {
                                                                         ­ </td>
                                                                     <td class="r17-i"
                                                                         style="font-size: 0px; line-height: 0px;">
-                                                                        <a href="https://nyc311.app/report/${id}/foo"
+                                                                        <a href="https://nyc311.app/report/${type}/${id}/foo"
                                                                             target="_blank"
                                                                             style="color: #0092ff; text-decoration: underline;">
                                                                             <img src="https://nyc-311-reports-images.nyc3.digitaloceanspaces.com/${date}/${id}.png"
@@ -126,7 +127,7 @@ const reportImagesHtmlSection = (date, id) => {
                                                                         <div>
                                                                             <p
                                                                                 style="margin: 0;">
-                                                                                <a href="https://nyc311.app/report/${id}/foo"
+                                                                                <a href="https://nyc311.app/report/${type}/${id}/foo"
                                                                                     target="_blank"
                                                                                     style="color: #0092ff; text-decoration: underline;"><span
                                                                                         style="color: #858588;">See
@@ -141,7 +142,7 @@ const reportImagesHtmlSection = (date, id) => {
                                                                             </p>
                                                                             <p
                                                                                 style="margin: 0;">
-                                                                                <a href="https://nyc311.app/report/${id}/foo"
+                                                                                <a href="https://nyc311.app/report/${type}/${id}/foo"
                                                                                     target="_blank"
                                                                                     style="color: #0092ff; text-decoration: underline;"><span
                                                                                         style="color: #858588; font-size: 14px;">Unfollow
