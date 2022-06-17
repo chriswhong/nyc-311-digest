@@ -47,7 +47,7 @@ const CommunityDistrictReport = ({ communityDistricts }) => {
   const borocode = borocodeFromBoroughname(boroughname)
   const boroCD = parseInt(`${borocode}${cdnumber.padStart(2, '0')}`)
 
-  const { data, error, isLoading, refetch } = useGetCommunityDistrictQuery(boroCD)
+  const { data, refetch } = useGetCommunityDistrictQuery(boroCD)
 
   const cdName = data?.properties.name
   return (

@@ -19,9 +19,9 @@ export default function CreateUsernameModal ({ hideModal }) {
 
   const debouncedUsername = useDebounce(username, 500)
 
-  const [checkUsername, { data: checkUsernameData, error: checkUsernameError, isLoading: checkUsernameLoading }] = useCheckUsernameMutation()
+  const [checkUsername, { data: checkUsernameData }] = useCheckUsernameMutation()
 
-  const [createUsername, { data: createUsernameData, error: createUsernameError, isLoading: createUsernameLoading }] = useCreateUsernameMutation()
+  const [createUsername, { data: createUsernameData, isLoading: createUsernameLoading }] = useCreateUsernameMutation()
 
   // create a placeholder username based on the user's nickname
   useEffect(() => {

@@ -42,9 +42,7 @@ const ReportSidebar = ({
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
-  const { user, isLoading: userIsLoading } = useContext(AuthContext)
-
-  const followers = areaOfInterest.properties.followers?.weekly
+  const { user } = useContext(AuthContext)
 
   let content = (
     <>

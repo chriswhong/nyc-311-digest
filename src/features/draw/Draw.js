@@ -20,7 +20,7 @@ const Draw = () => {
 
   const { user } = useContext(AuthContext)
 
-  const [createAoi, { data, error, isLoading }] = useCreateAoiMutation()
+  const [createAoi, { data, isLoading }] = useCreateAoiMutation()
 
   const validate = (feature, name) => {
     const nameIsValid = name && name.length > 3

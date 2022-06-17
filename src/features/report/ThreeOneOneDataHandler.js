@@ -42,7 +42,7 @@ const ThreeOneOneDataHandler = ({
 
   const bbox = areaOfInterest.properties.bbox
 
-  const { data, error, isLoading } = useGetServiceRequestsQuery({
+  const { data } = useGetServiceRequestsQuery({
     bbox,
     dateSelection,
     page

@@ -8,7 +8,7 @@ import { useGetAoisQuery, useDeleteAoiMutation } from '../../util/rtk-api'
 
 export default function DeleteModal ({ hideModal, modalProperties }) {
   const { id } = modalProperties
-  const [deleteAoi, { data, error, isLoading }] = useDeleteAoiMutation()
+  const [deleteAoi, { data, isLoading }] = useDeleteAoiMutation()
   const { refetch } = useGetAoisQuery()
 
   const navigate = useNavigate()

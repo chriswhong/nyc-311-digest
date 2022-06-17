@@ -20,7 +20,7 @@ const AOIReportImage = ({
     useGetAreaQuery = useGetCommunityDistrictQuery
   }
 
-  const { data, error, isLoading } = useGetAreaQuery(id)
+  const { data } = useGetAreaQuery(id)
 
   console.log(data)
 

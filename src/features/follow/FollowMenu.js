@@ -28,7 +28,7 @@ export default function FollowMenu ({
     userIsFollower = followers?.includes(user.sub)
   }
 
-  const [toggleFollow, { data, error, isLoading }] = useToggleFollowAoiMutation()
+  const [toggleFollow, { data, isLoading }] = useToggleFollowAoiMutation()
 
   const handleToggleFollow = () => {
     toggleFollow({

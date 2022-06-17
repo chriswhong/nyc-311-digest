@@ -8,9 +8,7 @@ import Head from '../../layout/Head'
 
 const CommunityDistrictsIndex = () => {
   const {
-    data: communityDistricts,
-    isLoading: communityDistrictsLoading,
-    error: communityDistrictsError
+    data: communityDistricts
   } = useGetCommunityDistrictsQuery()
 
   return (

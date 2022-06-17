@@ -16,7 +16,7 @@ const useModal = () => {
     setVisible(true)
     setLocked(true)
   }
-  return { hideModal, visible, showModal, type, modalProperties: properties }
+  return { hideModal, visible, showModal, type, modalProperties: properties, locked }
 }
 
 export default useModal

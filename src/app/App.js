@@ -4,6 +4,7 @@ import {
   Route,
   useLocation
 } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import MapWrapper from '../features/map/MapWrapper'
 import Header from '../layout/Header'
@@ -20,6 +21,8 @@ import CommunityDistrictsIndex from '../features/community-districts/CommunityDi
 import CommunityDistrictReport from '../features/community-districts/CommunityDistrictReport'
 import usePageTracking from '../util/usePageTracking'
 import ReportImage from '../features/aoi/ReportImage'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 export const ModalContext = createContext()
 export const MapContext = createContext()
@@ -135,6 +138,7 @@ function App () {
           <ModalWrapper {...modalProps} />
         </MapContext.Provider>
       </ModalContext.Provider>
+      <ToastContainer />
     </div>
   )
 }

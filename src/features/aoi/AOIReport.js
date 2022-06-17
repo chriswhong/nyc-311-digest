@@ -1,7 +1,6 @@
 // this component should filter for the selected geometry, and pass it down to threeoneoneprovider
 
 import React, { useEffect, useContext } from 'react'
-import PropTypes from 'prop-types'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AuthContext } from '../../app/AppContainer'
@@ -18,7 +17,7 @@ const AOIReport = () => {
   const { areaOfInterestId } = useParams()
   const { user } = useContext(AuthContext)
 
-  const { data, error, isLoading, refetch } = useGetAoiQuery(areaOfInterestId)
+  const { data, error, refetch } = useGetAoiQuery(areaOfInterestId)
 
   useEffect(() => {
     if (error?.status === 404) {

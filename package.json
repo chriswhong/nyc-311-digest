@@ -1,7 +1,7 @@
 {
   "name": "nyc-311-digest",
   "version": "0.1.0",
-  "private": true,
+  "license": "MIT",
   "dependencies": {
     "@auth0/auth0-react": "^1.10.1",
     "@headlessui/react": "^1.5.0",
@@ -38,6 +38,7 @@
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "react-toastify": "^9.0.4",
     "recharts": "^2.1.9",
     "shortid": "^2.2.16",
     "sib-api-v3-sdk": "^8.3.0",

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 
 import { sec } from './security'
@@ -13,7 +13,7 @@ export const useAuth = () => {
 
   const authItems = useAuth0()
   const { user, getAccessTokenSilently, getAccessTokenWithPopup, isLoading: auth0IsLoading } = authItems
-  const { data, error, isLoading: usernameIsLoading } = useGetUsernameQuery(user?.sub, {
+  const { data, error } = useGetUsernameQuery(user?.sub, {
     skip
   })
 
