@@ -42,9 +42,9 @@ const UserMenu = () => {
   }
 
   const handleLogout = () => {
-    const { origin, pathname, search, hash } = window.location
+    const { origin } = window.location
     logout({
-      returnTo: `${origin}${pathname}${search}${hash}`
+      returnTo: `${origin}`
     })
   }
 
