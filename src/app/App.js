@@ -15,12 +15,12 @@ import ModalWrapper from '../ui/modal/ModalWrapper'
 import useModal from '../util/useModal'
 import ProtectedRoute from '../features/auth/ProtectedRoute'
 import NotFound from '../layout/NotFound'
-
 import { AuthContext } from './AppContainer'
 import CommunityDistrictsIndex from '../features/community-districts/CommunityDistrictsIndex'
 import CommunityDistrictReport from '../features/community-districts/CommunityDistrictReport'
 import usePageTracking from '../util/usePageTracking'
 import ReportImage from '../features/aoi/ReportImage'
+import Login from './Login'
 
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -130,6 +130,12 @@ function App () {
                 element={
                   <AOIReport />
                   }
+              />
+              <Route
+                path='/login'
+                element={
+                  <Login />
+                }
               />
 
               <Route path='*' element={<NotFound />} />
