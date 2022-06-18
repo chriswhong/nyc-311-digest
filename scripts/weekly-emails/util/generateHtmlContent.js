@@ -1,16 +1,10 @@
-const reportImagesHtmlSection = (date, id) => {
-  const type = id.length === 3 ? 'cd' : 'aoi'
+const reportImagesHtmlSection = (date, type, id) => {
   return `
     <tr>
         <td class="r2-c" align="center">
             <table cellspacing="0" cellpadding="0" border="0" role="presentation"
                 width="100%" class="r3-o" style="table-layout: fixed; width: 100%;">
                 <!-- -->
-                <tr class="nl2go-responsive-hide">
-                    <td height="20"
-                        style="font-size: 20px; line-height: 20px; background-color: #ffffff;">
-                        ­</td>
-                </tr>
                 <tr>
                     <td class="r15-i" style="background-color: #ffffff;">
                         <table width="100%" cellspacing="0" cellpadding="0" border="0"
@@ -173,11 +167,6 @@ const reportImagesHtmlSection = (date, id) => {
                         </table>
                     </td>
                 </tr>
-                <tr class="nl2go-responsive-hide">
-                    <td height="20"
-                        style="font-size: 20px; line-height: 20px; background-color: #ffffff;">
-                        ­</td>
-                </tr>
             </table>
         </td>
     </tr>
@@ -185,8 +174,8 @@ const reportImagesHtmlSection = (date, id) => {
 }
 
 const generateHtmlContent = (date, name, email, follows) => {
-  const reportImagesHtml = follows.map((id) => {
-    return reportImagesHtmlSection(date, id)
+  const reportImagesHtml = follows.map(({ id, type }) => {
+    return reportImagesHtmlSection(date, type, id)
   }).join('')
 
   return `

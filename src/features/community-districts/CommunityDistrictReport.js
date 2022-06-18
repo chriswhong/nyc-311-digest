@@ -42,12 +42,9 @@ const borocodeFromBoroughname = (boroughname) => {
 // }
 
 const CommunityDistrictReport = ({ communityDistricts }) => {
-  const { boroughname, cdnumber } = useParams()
+  const { borocd } = useParams()
 
-  const borocode = borocodeFromBoroughname(boroughname)
-  const boroCD = parseInt(`${borocode}${cdnumber.padStart(2, '0')}`)
-
-  const { data, refetch } = useGetCommunityDistrictQuery(boroCD)
+  const { data, refetch } = useGetCommunityDistrictQuery(borocd)
 
   const cdName = data?.properties.name
   return (

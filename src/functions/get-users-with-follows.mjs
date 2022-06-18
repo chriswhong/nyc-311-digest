@@ -23,7 +23,8 @@ const queryDatabase = async (client) => {
             {
               $project: {
                 _id: 0,
-                id: '$id'
+                id: '$id',
+                type: '$type'
               }
             }
           ],
@@ -34,7 +35,7 @@ const queryDatabase = async (client) => {
       },
       {
         $addFields: {
-          follows: '$follows.id'
+          follows: '$follows'
         }
       }
     ])

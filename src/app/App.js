@@ -120,7 +120,7 @@ function App () {
                   }
               />
               <Route
-                path='/report/community-district/:boroughname/:cdnumber'
+                path='/report/cd/:borocd/:name'
                 element={
                   <CommunityDistrictReport />
                   }

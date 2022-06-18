@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import { MapContext } from '../../app/App'
 import dummyGeojson from '../../util/dummyGeojson'
+import { slugFromName } from '../../util/slugFromName'
 
 const parseBoroCD = (boroCD) => {
   const boroCode = Math.floor(boroCD / 100 % 10)
@@ -95,9 +96,8 @@ const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
       // make geometries clickable
       map.on('click', 'community-districts-fill', (e) => {
         const [feature] = map.queryRenderedFeatures(e.point)
-        const { BoroCD, cdNumber } = feature.properties
-        const { borough } = parseBoroCD(BoroCD)
-        navigate(`/report/community-district/${borough}/${cdNumber}`)
+        const { BoroCD, name } = feature.properties
+        navigate(`/report/cd/${BoroCD}/${slugFromName(name)}`)
       })
       // make the cursor a pointer when hovering all-geomtries-fill layer
       map.on('mouseenter', 'community-districts-fill', () => {
