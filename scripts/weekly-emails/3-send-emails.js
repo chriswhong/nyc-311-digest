@@ -1,6 +1,8 @@
 // `weekly-reports` rand prior to this script, creating screenshots for all areas of interest that have followers
 // next we will generate an email for each user who follows one or more area of interest, and embed the images in them
 
+const dryRun = process.argv[2] === 'dry-run'
+
 const fetch = (...args) =>
   import('node-fetch').then(({ default: fetch }) => fetch(...args))
 
@@ -25,7 +27,10 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const { username, email, follows } = usersWithFollowsPlusEmails[i]
 
     console.log(`sending a report remail to ${username} <${email}> for ${follows.length} area${follows.length !== 1 ? 's' : ''}...`)
-
-    sendReportEmail(username, email, follows)
+    if (dryRun) {
+      console.log('it\'s a dry run, pretending to send the email...')
+    } else {
+      sendReportEmail(username, email, follows)
+    }
   }
 })()

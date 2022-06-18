@@ -9,7 +9,7 @@ const apiKey = defaultClient.authentications['api-key']
 apiKey.apiKey =
   process.env.SENDINBLUE_API_KEY
 
-const sendReportEmail = (name, email, follows) => {
+const sendReportEmail = (name, email, follows, dryRun) => {
   try {
     const date = new Date().toISOString().split('T')[0]
 

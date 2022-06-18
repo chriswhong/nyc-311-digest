@@ -14,21 +14,25 @@ const getUserEmails = async (usersWithFollows) => {
     const subs = usersWithFollows.map(d => d.sub).join(' ')
     const auth0Users = await management.getUsers({
       search_engine: 'v3',
-      q: `user_id:(${subs})`,
-      per_page: 10,
-      page: 0
+      q: `user_id:(${subs})`
     })
 
+    console.log('here', auth0Users.length)
+
     const usersWithFollowsPlusEmails = usersWithFollows.map((user) => {
-      const { email } = auth0Users.find((d) => d.user_id === user.sub)
-      if (!email) {
-        throw new Error(`could not find auth0 email for ${user.username} - ${user.sub}`)
+      const match = auth0Users.find((d) => d.user_id === user.sub)
+      if (!match) {
+        console.log(`could not find auth0 email for ${user.username} - ${user.sub}`)
+        return null
       }
+      const { email } = match
+
       return {
         ...user,
         email
       }
     })
+      .filter(d => d !== null)
 
     return usersWithFollowsPlusEmails
   } catch (e) {
