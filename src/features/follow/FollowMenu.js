@@ -6,6 +6,7 @@ import {
 
 import DropdownMenu from '../../ui/DropdownMenu'
 import { useToggleFollowAoiMutation } from '../../util/rtk-api'
+import Badge from '../../ui/Badge'
 
 const Spinner = () => (
   <div className='flex flex-col items-center justify-center h-4'>
@@ -59,14 +60,6 @@ export default function FollowMenu ({
       onClick: handleToggleFollow
     }
   ]
-
-  const Badge = ({ children }) => (
-    <span style={{ fontSize: 11 }} className='inline-block px-1.5 py-0.5 font-semibold leading-none text-center text-gray-700 align-baseline bg-gray-200 rounded-full whitespace-nowrap'>{children}</span>
-  )
-
-  Badge.propTypes = {
-    children: PropTypes.number
-  }
 
   const selectedValue = userIsFollower ? 'followingweekly' : 'notfollowing'
   let displayValue = 'Follow'
