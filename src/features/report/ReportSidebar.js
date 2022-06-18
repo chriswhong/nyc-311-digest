@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -17,6 +17,7 @@ import AOIMenu from '../aoi/AOIMenu'
 import SidebarContainer from '../../layout/SidebarContainer'
 import FollowMenu from '../follow/FollowMenu'
 import { AuthContext } from '../../app/AppContainer'
+import ServiceRequestButtonTabs from '../../ui/ServiceRequestButtonTabs'
 
 const ReportSidebar = ({
   areaOfInterest,
@@ -35,6 +36,8 @@ const ReportSidebar = ({
     setPopupData
   } = useContext(ThreeOneOneDataContext)
   const navigate = useNavigate()
+
+  const [active, setActive] = useState('new')
 
   const handleBackClick = () => {
     navigate(backLink)
@@ -68,6 +71,7 @@ const ReportSidebar = ({
           )
         }
       </div>
+      <ServiceRequestButtonTabs active={active} />
       <div className='flex-grow px-4 overflow-y-scroll'>
         <div className='mb-2'>
           <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
