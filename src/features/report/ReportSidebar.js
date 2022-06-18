@@ -68,7 +68,7 @@ const ReportSidebar = ({
 
   let content = (
     <>
-      <div className='px-4 mb-3'>
+      <div className='px-4'>
         <div className='flex items-center mb-1 mt-0.5'>
           <div className='flex-grow'>
             <Link onClick={handleBackClick}>
@@ -80,30 +80,34 @@ const ReportSidebar = ({
           </div>
           {(isOwner || isAdmin) && <AOIMenu ownerId={areaOfInterest.properties.owner?.sub} />}
         </div>
-        <div className='mb-1 text-2xl font-semibold'>{areaTitle}</div>
-        {
+        <div className='mb-3'>
+          <div className='text-2xl font-semibold '>{areaTitle}</div>
+          {
           areaOfInterest.properties.owner && (
-            <div className='flex items-center justify-end text-gray-600'>
+            <div className='flex items-center justify-start text-gray-600'>
               <span className='text-xs font-light'>by</span> <UserCircleIcon className='h-4 w-4 ml-1 mr-0.5' />
-              <div className='text-sm'>{areaOfInterest.properties.owner?.username || 'Anonymous'}</div>
+              <div className='text-xs'>{areaOfInterest.properties.owner?.username || 'Anonymous'}</div>
             </div>
           )
         }
+        </div>
+        <div className='flex items-center justify-between mb-2'>
+          <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
+          <div className='mt-1 text-xs font-medium'>{dateFrom} - {dateTo}</div>
+        </div>
       </div>
+
       <ServiceRequestButtonTabs tabItems={serviceRequestTabItems} onClick={handleActiveGroupChange} />
       <div className='flex-grow px-4 overflow-y-scroll'>
-        <div className='mb-2'>
-          <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
-          <div className='mt-1 text-xs'>From {dateFrom} to {dateTo}</div>
-        </div>
+
         {!isLoading && (
           <>
             <div className='flex items-center'>
-              <div className='mr-2 text-2xl font-bold'>
+              <div className='mr-1 text-lg font-bold'>
                 {serviceRequests?.features.length}
               </div>
-              <div className='text-lg'>
-                New Service Requests
+              <div className='text-base'>
+                {activeGroup === 'new' ? 'new' : 'closed'} Service Requests
               </div>
             </div>
             <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/categoryColors.js'>

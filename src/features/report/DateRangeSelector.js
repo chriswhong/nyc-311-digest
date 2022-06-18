@@ -45,9 +45,11 @@ const DateRangeSelector = ({
       menuItems={dateSelectionItems}
       selectedValue={selection.value}
       onChange={onChange}
+      buttonClassNames='inline-flex items-center justify-center w-full px-2 py-0.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none '
+
     >
       <CalendarIcon className='w-4 h-4 mr-2 text-indigo-600' />
-      {selection.displayName}
+      <span className='text-xs'>{selection.displayName}</span>
     </DropdownMenu>
   )
 }
