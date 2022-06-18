@@ -51,8 +51,7 @@ fs.mkdirSync(dir);
     console.log(`loading ${url}`)
     await page.goto(url, { waitUntil: 'networkidle0' })
 
-    // wait until the chart is loaded
-    await page.waitForSelector('.recharts-text.recharts-label')
+    await page.waitForTimeout(10000)
 
     // create a png
     const filePath = path.join(__dirname, 'tmp', `${id}.png`)
