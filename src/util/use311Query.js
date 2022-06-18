@@ -7,7 +7,6 @@ import getRollupCategory from './categoryColors'
 // wraps rtk-queries for 311 requests, handling pagination and transformation of the results into geojson
 
 const use311Query = (serviceRequestsQuery, { areaOfInterest, dateSelection }) => {
-  console.log(areaOfInterest, dateSelection)
   const [skip, setSkip] = useState(true)
   // raw service requests, appended via pagination
   const [serviceRequests, setServiceRequests] = useState([])

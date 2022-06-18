@@ -8,6 +8,8 @@ import { useGetNewServiceRequestsQuery, useGetClosedServiceRequestsQuery } from 
 
 export const ThreeOneOneDataContext = createContext()
 
+const DEFAULT_ACTIVE_GROUP = 'new'
+
 // use query params
 function useQuery () {
   const { search } = useLocation()
@@ -22,15 +24,17 @@ const ThreeOneOneDataHandler = ({
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
-  // array of two moments
+  const [popupData, setPopupData] = useState()
+
+  // pull the date range from query params, or use the default ('last7days')
   const dateRangeSelectorFromQueryParams = dateSelectionItems.find((d) => {
     return d.value === query.get('dateSelection')
   }) || DEFAULT_DATE_RANGE_SELECTION
-
-  const [popupData, setPopupData] = useState()
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
-  // the active group of requests ('new', 'closed')
-  const [activeGroup, setActiveGroup] = useState('new')
+
+  // pull the active group from query params, or use the default ('new')
+  const activeGroupFromQueryParams = query.get('group') || DEFAULT_ACTIVE_GROUP
+  const [activeGroup, setActiveGroup] = useState(activeGroupFromQueryParams)
 
   // use use311Query multiple times for the various different cuts of data we need
   const {
@@ -49,22 +53,29 @@ const ThreeOneOneDataHandler = ({
     dateSelection
   })
 
-  // react to changes in query params
+  // react to changes in query params to update date range
   useEffect(() => {
     setDateSelection(dateRangeSelectorFromQueryParams)
   }, [dateRangeSelectorFromQueryParams])
 
   // when data selection changes, update the query params
   const handleDateSelectionChange = (d) => {
+    query.set('dateSelection', d.value)
     navigate({
       pathname,
-      search: `?dateSelection=${d.value}`,
+      search: query.toString(),
       hash: window.location.hash // get this value directly from window because mapboxgl is updating the hash
     })
   }
 
   const handleActiveGroupChange = (activeGroup) => {
+    query.set('group', activeGroup)
     setActiveGroup(activeGroup)
+    navigate({
+      pathname,
+      search: query.toString(),
+      hash: window.location.hash // get this value directly from window because mapboxgl is updating the hash
+    })
   }
 
   const isLoading = newIsLoading || closedIsLoading

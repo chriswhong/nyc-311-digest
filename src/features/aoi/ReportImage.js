@@ -12,7 +12,6 @@ const AOIReportImage = ({
   onLoad
 }) => {
   const { type, id } = useParams()
-  console.log(type)
 
   let useGetAreaQuery = useGetAoiQuery
 
@@ -21,8 +20,6 @@ const AOIReportImage = ({
   }
 
   const { data } = useGetAreaQuery(id)
-
-  console.log(data)
 
   return (
     <>
