@@ -9,9 +9,14 @@ const queryDatabase = async (body, client) => {
   const { name } = await collection.findOne({
     _id: body.id
   })
-  await
-  collection.deleteOne({
+  await collection.deleteOne({
     _id: body.id
+  })
+
+  // remove the follow record
+  await db.collection('follows').deleteOne({
+    type: 'aoi',
+    id: body.id
   })
 
   await fireSlackWebhook(`AOI ${name} was deleted`)

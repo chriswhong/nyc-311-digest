@@ -39,6 +39,15 @@ const queryDatabase = async (body, client) => {
       created_at: new Date()
     })
 
+  // create add the owner as a follower
+  await db.collection('follows').insertOne({
+    type: 'aoi',
+    id,
+    followers: {
+      weekly: [body.owner]
+    }
+  })
+
   console.log(`inserted AOI ${body.name} into database...`)
 
   await fireSlackWebhook(`${username} added a new area of interest named ${body.name}. https://nyc311.app/report/aoi/${id}/${slugFromName(body.name)}`)
