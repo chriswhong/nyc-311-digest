@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -29,15 +29,17 @@ const ReportSidebar = ({
   onRefetch
 }) => {
   const {
-    serviceRequestsFC,
+    serviceRequests,
+    groupCounts,
     dateSelection,
     handleDateSelectionChange,
     popupData,
-    setPopupData
+    setPopupData,
+    activeGroup,
+    handleActiveGroupChange,
+    isLoading
   } = useContext(ThreeOneOneDataContext)
   const navigate = useNavigate()
-
-  const [active, setActive] = useState('new')
 
   const handleBackClick = () => {
     navigate(backLink)
@@ -46,6 +48,23 @@ const ReportSidebar = ({
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
   const { user } = useContext(AuthContext)
+
+  const serviceRequestTabItems = [
+    {
+      id: 'new',
+      label: 'New',
+      count: groupCounts.new,
+      title: 'all requests created during this time period',
+      active: activeGroup === 'new'
+    },
+    {
+      id: 'closed',
+      label: 'Closed',
+      count: groupCounts.closed,
+      title: 'new and existing requests which were closed during this time period',
+      active: activeGroup === 'closed'
+    }
+  ]
 
   let content = (
     <>
@@ -71,18 +90,17 @@ const ReportSidebar = ({
           )
         }
       </div>
-      <ServiceRequestButtonTabs active={active} />
+      <ServiceRequestButtonTabs tabItems={serviceRequestTabItems} onClick={handleActiveGroupChange} />
       <div className='flex-grow px-4 overflow-y-scroll'>
         <div className='mb-2'>
           <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
           <div className='mt-1 text-xs'>From {dateFrom} to {dateTo}</div>
         </div>
-        {serviceRequestsFC?.features.length && (
+        {!isLoading && (
           <>
-
             <div className='flex items-center'>
               <div className='mr-2 text-2xl font-bold'>
-                {serviceRequestsFC.features.length}
+                {serviceRequests?.features.length}
               </div>
               <div className='text-lg'>
                 New Service Requests
@@ -95,13 +113,13 @@ const ReportSidebar = ({
               </div>
             </Link>
             <div className='h-64 mb-3'>
-              <RollupChart data={serviceRequestsFC.features} />
+              <RollupChart key={activeGroup} data={serviceRequests?.features} />
             </div>
             <div className='mb-3 text-xs'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
           </>
         )}
 
-        {!serviceRequestsFC?.features.length && (
+        {isLoading && (
           <Spinner>Loading 311 data...</Spinner>
         )}
       </div>

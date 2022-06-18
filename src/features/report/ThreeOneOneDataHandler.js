@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
-
 import use311Query from '../../util/use311Query'
+import { useGetNewServiceRequestsQuery, useGetClosedServiceRequestsQuery } from '../../util/service-requests-api'
 
 export const ThreeOneOneDataContext = createContext()
 
@@ -19,6 +19,8 @@ const ThreeOneOneDataHandler = ({
   children
 }) => {
   const query = useQuery()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   // array of two moments
   const dateRangeSelectorFromQueryParams = dateSelectionItems.find((d) => {
@@ -27,13 +29,22 @@ const ThreeOneOneDataHandler = ({
 
   const [popupData, setPopupData] = useState()
   const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
+  // the active group of requests ('new', 'closed')
+  const [activeGroup, setActiveGroup] = useState('new')
 
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
+  // use use311Query multiple times for the various different cuts of data we need
+  const {
+    data: newServiceRequests,
+    isLoading: newIsLoading
+  } = use311Query(useGetNewServiceRequestsQuery, {
+    areaOfInterest,
+    dateSelection
+  })
 
-  const bbox = areaOfInterest.properties.bbox
-
-  const { data: serviceRequestsFC } = use311Query('new', {
+  const {
+    data: closedServiceRequests,
+    isLoading: closedIsLoading
+  } = use311Query(useGetClosedServiceRequestsQuery, {
     areaOfInterest,
     dateSelection
   })
@@ -52,13 +63,36 @@ const ThreeOneOneDataHandler = ({
     })
   }
 
+  const handleActiveGroupChange = (activeGroup) => {
+    setActiveGroup(activeGroup)
+  }
+
+  const isLoading = newIsLoading || closedIsLoading
+
+  // cacluate counts for simple display in the UI (for tabs)
+  const groupCounts = {
+    new: newServiceRequests?.features.length,
+    closed: closedServiceRequests?.features.length
+  }
+
+  // export only one slice of the data at a time depending on activeGroup
+  let serviceRequests = newServiceRequests
+  if (activeGroup === 'closed') {
+    serviceRequests = closedServiceRequests
+  }
+
   return (
     <ThreeOneOneDataContext.Provider value={{
-      serviceRequestsFC,
+      serviceRequests,
+      groupCounts,
+      closedServiceRequests,
       dateSelection,
       handleDateSelectionChange,
       popupData,
-      setPopupData
+      setPopupData,
+      activeGroup,
+      handleActiveGroupChange,
+      isLoading
     }}
     >
       {children}

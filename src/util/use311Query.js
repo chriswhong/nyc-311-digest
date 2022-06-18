@@ -4,11 +4,9 @@ import pointsWithinPolygon from '@turf/points-within-polygon'
 
 import getRollupCategory from './categoryColors'
 
-import { useGetNewServiceRequestsQuery } from './service-requests-api'
-
 // wraps rtk-queries for 311 requests, handling pagination and transformation of the results into geojson
 
-const use311Query = ({ type }, { areaOfInterest, dateSelection }) => {
+const use311Query = (serviceRequestsQuery, { areaOfInterest, dateSelection }) => {
   console.log(areaOfInterest, dateSelection)
   const [skip, setSkip] = useState(true)
   // raw service requests, appended via pagination
@@ -19,7 +17,7 @@ const use311Query = ({ type }, { areaOfInterest, dateSelection }) => {
 
   const bbox = areaOfInterest.properties.bbox
 
-  const { data } = useGetNewServiceRequestsQuery({ bbox, dateSelection, page }, { skip })
+  const { data } = serviceRequestsQuery({ bbox, dateSelection, page }, { skip })
 
   // kicks off the querying when the date range changes
   useEffect(() => {
