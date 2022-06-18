@@ -145,9 +145,9 @@ const reportImagesHtmlSection = (date, id) => {
                                                                                 <a href="https://nyc311.app/report/${type}/${id}/foo"
                                                                                     target="_blank"
                                                                                     style="color: #0092ff; text-decoration: underline;"><span
-                                                                                        style="color: #858588; font-size: 14px;">Unfollow
+                                                                                        style="color: #858588; font-size: 14px;">You can Unfollow
                                                                                         this
-                                                                                        Area</span></a>
+                                                                                        Area in the App</span></a>
                                                                             </p>
                                                                         </div>
                                                                     </td>

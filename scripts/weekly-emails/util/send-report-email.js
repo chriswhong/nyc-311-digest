@@ -16,7 +16,10 @@ const sendReportEmail = (name, email, follows) => {
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
     let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail() // SendSmtpEmail | Values to send a transactional email
     sendSmtpEmail = {
-      sender: { email: 'notifications@nyc311.app' },
+      sender: {
+        email: 'notifications@nyc311.app',
+        name: 'NYC 311 Reports'
+      },
       to: [
         {
           email,
