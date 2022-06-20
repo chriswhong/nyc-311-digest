@@ -1,8 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import RollupChart from './RollupChart'
 import { ThreeOneOneDataContext } from './ThreeOneOneDataHandler'
+import { groupByRollupCategory } from './RollupChartContainer'
 
 const ReportImageSidebar = ({
   areaOfInterest
@@ -12,9 +13,17 @@ const ReportImageSidebar = ({
     dateSelection
   } = useContext(ThreeOneOneDataContext)
 
+  const [chartData, setChartData] = useState()
+
   const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
   const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
 
+  useEffect(() => {
+    if (!serviceRequests) return
+
+    const grouped = groupByRollupCategory(serviceRequests.features)
+    setChartData(grouped)
+  }, [serviceRequests])
   return (
     <div className='flex flex-col p-5 h-3/6'>
       <div>Weekly Report of 311 Activity for</div>
@@ -32,7 +41,7 @@ const ReportImageSidebar = ({
               </div>
             </div>
             <div className='flex-grow mb-3 '>
-              <RollupChart data={serviceRequests.features} isAnimationActive={false} />
+              <RollupChart data={chartData} isAnimationActive={false} topLevel />
             </div>
           </>
         )

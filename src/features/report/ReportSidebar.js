@@ -2,12 +2,12 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import {
+  ExternalLinkIcon,
   ChevronLeftIcon,
-  UserCircleIcon,
-  ExternalLinkIcon
+  UserCircleIcon
 } from '@heroicons/react/outline'
 
-import RollupChart from './RollupChart'
+import RollupChartContainer from './RollupChartContainer'
 import Link from '../../ui/Link'
 import PopupSidebar from './PopupSidebar'
 import Spinner from '../../ui/Spinner'
@@ -72,7 +72,10 @@ const ReportSidebar = ({
         <div className='flex items-center mb-1 mt-0.5'>
           <div className='flex-grow'>
             <Link onClick={handleBackClick}>
-              <div className='flex items-center'><ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' /><div className='inline text-sm'>{backText}</div></div>
+              <div className='flex items-center'>
+                <ChevronLeftIcon className='h-5 mr-0.5 -ml-1 inline' />
+                <div className='inline text-sm'>{backText}</div>
+              </div>
             </Link>
           </div>
           <div className='mr-2'>
@@ -102,24 +105,17 @@ const ReportSidebar = ({
 
         {!isLoading && (
           <>
-            <div className='flex items-center'>
-              <div className='mr-1 text-lg font-bold'>
-                {serviceRequests?.features.length}
-              </div>
-              <div className='text-base'>
-                {activeGroup === 'new' ? 'new' : 'closed'} Service Requests
-              </div>
+            <RollupChartContainer key={activeGroup} data={serviceRequests?.features} activeGroup={activeGroup} />
+            <div className='mb-3 text-xs'>
+              Hover over the markers for more info, <span className='italic'>click for full details</span>.
+              <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/categoryColors.js'>
+
+                <div className='flex items-center mb-2 text-xs'>
+                  About these Categories
+                  <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
+                </div>
+              </Link>
             </div>
-            <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/src/util/categoryColors.js'>
-              <div className='flex items-center mb-2 text-xs'>
-                About these Categories
-                <ExternalLinkIcon className='w-3 h-3 ml-1.5' />
-              </div>
-            </Link>
-            <div className='h-64 mb-3'>
-              <RollupChart key={activeGroup} data={serviceRequests?.features} />
-            </div>
-            <div className='mb-3 text-xs'>Hover over the markers for more info, <span className='italic'>click for full details</span>.</div>
           </>
         )}
 

@@ -36,6 +36,8 @@ const ThreeOneOneDataHandler = ({
   const activeGroupFromQueryParams = query.get('group') || DEFAULT_ACTIVE_GROUP
   const [activeGroup, setActiveGroup] = useState(activeGroupFromQueryParams)
 
+  const [categoryFilter, setCategoryFilter] = useState()
+
   // use use311Query multiple times for the various different cuts of data we need
   const {
     data: newServiceRequests,
@@ -92,6 +94,15 @@ const ThreeOneOneDataHandler = ({
     serviceRequests = closedServiceRequests
   }
 
+  // filter by rollupCategory
+  if (categoryFilter) {
+    const filteredServiceRequests = {
+      ...serviceRequests,
+      features: serviceRequests.features.filter(d => d.properties.rollupCategory === categoryFilter)
+    }
+    serviceRequests = filteredServiceRequests
+  }
+
   return (
     <ThreeOneOneDataContext.Provider value={{
       serviceRequests,
@@ -103,6 +114,8 @@ const ThreeOneOneDataHandler = ({
       setPopupData,
       activeGroup,
       handleActiveGroupChange,
+      categoryFilter,
+      setCategoryFilter,
       isLoading
     }}
     >
