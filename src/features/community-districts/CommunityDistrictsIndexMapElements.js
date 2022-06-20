@@ -5,32 +5,6 @@ import { MapContext } from '../../app/App'
 import dummyGeojson from '../../util/dummyGeojson'
 import { slugFromName } from '../../util/slugFromName'
 
-const parseBoroCD = (boroCD) => {
-  const boroCode = Math.floor(boroCD / 100 % 10)
-  let borough = ''
-  switch (boroCode) {
-    case 1:
-      borough = 'manhattan'
-      break
-    case 2:
-      borough = 'bronx'
-      break
-    case 3:
-      borough = 'brooklyn'
-      break
-    case 4:
-      borough = 'queens'
-      break
-    case 5:
-      borough = 'staten-island'
-      break
-  }
-
-  return {
-    borough
-  }
-}
-
 const CommunityDistrictsIndexMapElements = ({ communityDistricts }) => {
   const navigate = useNavigate()
   const map = useContext(MapContext)

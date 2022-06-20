@@ -10,37 +10,6 @@ import ReportMapElements from '../report/ReportMapElements'
 import Head from '../../layout/Head'
 import { useGetCommunityDistrictQuery } from '../../util/rtk-api'
 
-const borocodeFromBoroughname = (boroughname) => {
-  let boroCode
-  switch (boroughname) {
-    case 'manhattan' :
-      boroCode = 1
-      break
-    case 'bronx' :
-      boroCode = 2
-      break
-    case 'brooklyn' :
-      boroCode = 3
-      break
-    case 'queens' :
-      boroCode = 4
-      break
-    case 'staten-island' :
-      boroCode = 5
-      break
-  }
-
-  return boroCode
-}
-
-// const getCommunityDistrictFeature = (communityDistricts, boroughname, cdnumber) => {
-//   // find the corresponding district
-//   const borocode = borocodeFromBoroughname(boroughname)
-//   const boroCD = parseInt(`${borocode}${cdnumber.padStart(2, '0')}`)
-//   const match = communityDistricts.features.find((d) => d.properties.BoroCD === boroCD)
-//   return match
-// }
-
 const CommunityDistrictReport = ({ communityDistricts }) => {
   const { borocd } = useParams()
 

@@ -7,7 +7,7 @@ import Head from '../../layout/Head'
 import { useGetAoisQuery } from '../../util/rtk-api'
 
 const AOIIndex = ({ allGeometries }) => {
-  const { data, error, isLoading } = useGetAoisQuery()
+  const { data } = useGetAoisQuery()
 
   return (
     <>
