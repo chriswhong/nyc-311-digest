@@ -75,8 +75,11 @@ const use311Query = (serviceRequestsQuery, { areaOfInterest, dateSelection }) =>
     }
   }, [serviceRequests])
 
+  const isLoading = (skip === false) && (serviceRequestsFC === undefined)
+
   return {
-    data: serviceRequestsFC
+    data: serviceRequestsFC,
+    isLoading
   }
 }
 
