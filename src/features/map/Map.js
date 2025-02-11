@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiY3dob25nIiwiYSI6IjAyYzIwYTJjYTVhMzUxZTVkMzdmYTQ2YzBmMTM0ZDAyIn0.owNd_Qa7Sw2neNJbK6zc1A'
+mapboxgl.accessToken = 'pk.eyJ1IjoiY2hyaXN3aG9uZ21hcGJveCIsImEiOiJjbTcwejJpeHEwMWYzMmxvbWhvNGN6MnIyIn0.FRpsmQ9fnIu5c3lKe9LL6w'
 
 const Map = ({
   width = '100%',
