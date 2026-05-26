@@ -1,6 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 import {
   ExternalLinkIcon,
   ChevronLeftIcon,
@@ -41,11 +42,50 @@ const ReportSidebar = ({
   } = useContext(ThreeOneOneDataContext)
   const navigate = useNavigate()
 
+  const [showCustomInputs, setShowCustomInputs] = useState(dateSelection.value === 'custom')
+  const [customFrom, setCustomFrom] = useState(
+    dateSelection.dateRange?.[0].format('YYYY-MM-DD') ?? moment().subtract(7, 'd').format('YYYY-MM-DD')
+  )
+  const [customTo, setCustomTo] = useState(
+    dateSelection.dateRange?.[1].format('YYYY-MM-DD') ?? moment().format('YYYY-MM-DD')
+  )
+  const [customRangeError, setCustomRangeError] = useState(null)
+
   const handleBackClick = () => {
     navigate(backLink)
   }
-  const dateFrom = dateSelection.dateRange[0].format('DD MMM YYYY')
-  const dateTo = dateSelection.dateRange[1].format('DD MMM YYYY')
+
+  const handleDropdownChange = (d) => {
+    if (d.value === 'custom') {
+      setShowCustomInputs(true)
+    } else {
+      setShowCustomInputs(false)
+      setCustomRangeError(null)
+      handleDateSelectionChange(d)
+    }
+  }
+
+  const handleApplyCustomRange = () => {
+    const from = moment(customFrom).startOf('day')
+    const to = moment(customTo).endOf('day')
+    if (to.diff(from, 'days') > 30) {
+      setCustomRangeError('Date range cannot exceed 30 days.')
+      return
+    }
+    if (to.isBefore(from)) {
+      setCustomRangeError('End date must be after start date.')
+      return
+    }
+    setCustomRangeError(null)
+    handleDateSelectionChange({
+      value: 'custom',
+      displayName: 'Custom range',
+      dateRange: [from, to]
+    })
+  }
+
+  const dateFrom = dateSelection.dateRange?.[0].format('DD MMM YYYY')
+  const dateTo = dateSelection.dateRange?.[1].format('DD MMM YYYY')
 
   const { user } = useContext(AuthContext)
 
@@ -95,9 +135,41 @@ const ReportSidebar = ({
         }
         </div>
         <div className='flex items-center justify-between mb-2'>
-          <DateRangeSelector selection={dateSelection} onChange={handleDateSelectionChange} />
-          <div className='mt-1 text-xs font-medium'>{dateFrom} - {dateTo}</div>
+          <DateRangeSelector selection={dateSelection} onChange={handleDropdownChange} />
+          {!showCustomInputs && dateFrom && dateTo && (
+            <div className='mt-1 text-xs font-medium'>{dateFrom} - {dateTo}</div>
+          )}
         </div>
+        {showCustomInputs && (
+          <div className='mb-2 space-y-1'>
+            <div className='flex items-center gap-2'>
+              <input
+                type='date'
+                value={customFrom}
+                max={customTo}
+                onChange={(e) => { setCustomFrom(e.target.value); setCustomRangeError(null) }}
+                className='flex-1 text-xs border border-gray-300 rounded px-2 py-1'
+              />
+              <span className='text-xs text-gray-400'>to</span>
+              <input
+                type='date'
+                value={customTo}
+                min={customFrom}
+                onChange={(e) => { setCustomTo(e.target.value); setCustomRangeError(null) }}
+                className='flex-1 text-xs border border-gray-300 rounded px-2 py-1'
+              />
+            </div>
+            {customRangeError && (
+              <div className='text-xs text-red-500'>{customRangeError}</div>
+            )}
+            <button
+              onClick={handleApplyCustomRange}
+              className='w-full px-3 py-1 text-xs font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700'
+            >
+              Apply
+            </button>
+          </div>
+        )}
       </div>
 
       <ServiceRequestButtonTabs tabItems={serviceRequestTabItems} onClick={handleActiveGroupChange} />

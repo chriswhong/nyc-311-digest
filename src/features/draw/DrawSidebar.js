@@ -15,7 +15,9 @@ const DrawSidebar = ({
   drawnFeatureName,
   setDrawnFeatureName,
   onSave,
-  setCleared
+  setCleared,
+  drawnArea,
+  areaTooLarge
 }) => {
   return (
     <SidebarContainer>
@@ -39,12 +41,20 @@ const DrawSidebar = ({
         }
           {
           drawnFeature && (
-            <div className='mb-2'>
+            <div className='mb-2 space-y-1'>
               <button
                 type='button' className='inline-block px-4 py-1.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 hover:bg-gray-700 focus:outline-none focus:ring-0 active:bg-gray-700 active:shadow-lg transition duration-150 ease-in-out'
                 onClick={() => { setCleared(true) }}
               ><XCircleIcon className='inline w-4 h-4 mr-1' />Clear
               </button>
+              <div className='text-xs text-gray-500'>
+                Area: {(drawnArea / 1e6).toFixed(2)} km²
+              </div>
+              {areaTooLarge && (
+                <div className='text-xs text-red-600 font-medium'>
+                  Area is too large. Please draw a smaller polygon (max 10 km², roughly the size of an NYC community district).
+                </div>
+              )}
             </div>
           )
         }
@@ -86,7 +96,9 @@ DrawSidebar.propTypes = {
   drawnFeatureName: PropTypes.string,
   setDrawnFeatureName: PropTypes.func,
   onSave: PropTypes.func,
-  setCleared: PropTypes.func
+  setCleared: PropTypes.func,
+  drawnArea: PropTypes.number,
+  areaTooLarge: PropTypes.bool
 }
 
 export default DrawSidebar

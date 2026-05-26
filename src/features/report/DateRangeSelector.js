@@ -31,6 +31,10 @@ export const dateSelectionItems = [
       moment().subtract(30, 'd').startOf('day'),
       moment().startOf('day')
     ]
+  },
+  {
+    value: 'custom',
+    displayName: 'Custom range...'
   }
 ]
 

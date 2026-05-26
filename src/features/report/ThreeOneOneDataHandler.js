@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { DEFAULT_DATE_RANGE_SELECTION, dateSelectionItems } from './DateRangeSelector'
 import use311Query from '../../util/use311Query'
 import { useGetNewServiceRequestsQuery, useGetClosedServiceRequestsQuery } from '../../util/service-requests-api'
+import moment from 'moment'
 
 export const ThreeOneOneDataContext = createContext()
 
@@ -27,10 +28,22 @@ const ThreeOneOneDataHandler = ({
   const [popupData, setPopupData] = useState()
 
   // pull the date range from query params, or use the default ('last7days')
-  const dateRangeSelectorFromQueryParams = dateSelectionItems.find((d) => {
-    return d.value === query.get('dateSelection')
-  }) || DEFAULT_DATE_RANGE_SELECTION
-  const [dateSelection, setDateSelection] = useState(dateRangeSelectorFromQueryParams)
+  const buildDateSelection = () => {
+    const value = query.get('dateSelection')
+    if (value === 'custom') {
+      const dateFrom = query.get('dateFrom')
+      const dateTo = query.get('dateTo')
+      if (dateFrom && dateTo) {
+        return {
+          value: 'custom',
+          displayName: 'Custom range',
+          dateRange: [moment(dateFrom).startOf('day'), moment(dateTo).endOf('day')]
+        }
+      }
+    }
+    return dateSelectionItems.find((d) => d.value === value) || DEFAULT_DATE_RANGE_SELECTION
+  }
+  const [dateSelection, setDateSelection] = useState(buildDateSelection)
 
   // pull the active group from query params, or use the default ('new')
   const activeGroupFromQueryParams = query.get('group') || DEFAULT_ACTIVE_GROUP
@@ -57,12 +70,19 @@ const ThreeOneOneDataHandler = ({
 
   // react to changes in query params to update date range
   useEffect(() => {
-    setDateSelection(dateRangeSelectorFromQueryParams)
-  }, [dateRangeSelectorFromQueryParams])
+    setDateSelection(buildDateSelection())
+  }, [query.get('dateSelection'), query.get('dateFrom'), query.get('dateTo')])
 
   // when data selection changes, update the query params
   const handleDateSelectionChange = (d) => {
     query.set('dateSelection', d.value)
+    if (d.value === 'custom' && d.dateRange) {
+      query.set('dateFrom', d.dateRange[0].format('YYYY-MM-DD'))
+      query.set('dateTo', d.dateRange[1].format('YYYY-MM-DD'))
+    } else {
+      query.delete('dateFrom')
+      query.delete('dateTo')
+    }
     navigate({
       pathname,
       search: query.toString(),

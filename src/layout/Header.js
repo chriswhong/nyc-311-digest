@@ -40,6 +40,9 @@ export default function Header () {
           </div>
           <Popover.Group as='nav' className='hidden md:flex space-x-10' />
           <div className='hidden md:flex items-center justify-end md:flex-1 lg:w-0'>
+            <Link className='mr-6 text-base font-medium text-gray-500 hover:text-gray-900' to='/areas'>
+              All Areas
+            </Link>
             <Link className='text-base font-medium text-gray-500 hover:text-gray-900' to='https://github.com/chriswhong/nyc-311-digest/blob/master/README.md#why'>
               About
             </Link>
@@ -87,6 +90,9 @@ export default function Header () {
               </div>
               <div className='mt-6'>
                 <nav className='grid gap-y-8'>
+                  <Link to='/areas' className='flex text-base font-medium text-gray-500 hover:text-gray-900'>
+                    All Areas
+                  </Link>
                   <Link to='https://github.com/chriswhong/nyc-311-digest/blob/master/README.md#why' className='flex text-base font-medium text-gray-500 hover:text-gray-900'>
                     About
                   </Link>

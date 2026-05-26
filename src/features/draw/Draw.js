@@ -22,10 +22,15 @@ const Draw = () => {
 
   const [createAoi, { data, isLoading }] = useCreateAoiMutation()
 
+  const MAX_AOI_AREA_SQ_METERS = 10 * 1e6 // 10 km²
+
+  const drawnArea = drawnFeature ? area(drawnFeature.geometry) : null
+  const areaTooLarge = drawnArea !== null && drawnArea > MAX_AOI_AREA_SQ_METERS
+
   const validate = (feature, name) => {
     const nameIsValid = name && name.length > 3
     const featureIsValid = feature && gjv.valid(feature)
-    return !!nameIsValid && featureIsValid
+    return !!nameIsValid && featureIsValid && !areaTooLarge
   }
 
   const drawIsValid = validate(drawnFeature, drawnFeatureName)
@@ -69,6 +74,8 @@ const Draw = () => {
         setDrawnFeatureName={setDrawnFeatureName}
         onSave={handleSave}
         setCleared={setCleared}
+        drawnArea={drawnArea}
+        areaTooLarge={areaTooLarge}
       />
     </>
   )
