@@ -3,6 +3,11 @@
   functions = "/src/functions"
   publish = "build"
 [[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/"
   status = 200

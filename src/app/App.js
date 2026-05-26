@@ -20,6 +20,7 @@ import CommunityDistrictsIndex from '../features/community-districts/CommunityDi
 import CommunityDistrictReport from '../features/community-districts/CommunityDistrictReport'
 import usePageTracking from '../util/usePageTracking'
 import ReportImage from '../features/aoi/ReportImage'
+import AOIListPage from '../features/aoi/AOIListPage'
 import Login from './Login'
 
 import 'react-toastify/dist/ReactToastify.css'
@@ -112,6 +113,10 @@ function App () {
                     <Draw />
                   </ProtectedRoute>
                   }
+              />
+              <Route
+                path='/areas'
+                element={<AOIListPage />}
               />
               <Route
                 path='/community-districts'

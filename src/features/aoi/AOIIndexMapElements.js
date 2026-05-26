@@ -1,14 +1,22 @@
-import { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
+import { UserIcon, CalendarIcon } from '@heroicons/react/outline'
 
 import dummyGeojson from '../../util/dummyGeojson'
 import { slugFromName } from '../../util/slugFromName'
 import { MapContext } from '../../app/App'
 
+const createdAtFromObjectId = (id) => {
+  if (!/^[a-f\d]{24}$/i.test(id)) return null
+  const timestamp = parseInt(id.substring(0, 8), 16) * 1000
+  return new Date(timestamp).toLocaleDateString()
+}
+
 const AOIIndexMapElements = ({ allGeometries }) => {
   const navigate = useNavigate()
   const map = useContext(MapContext)
+  const [tooltip, setTooltip] = useState(null) // { x, y, name, ownerUsername }
 
   // on mount, add this component's sources and layers to the map
   // only if they haven't been added before
@@ -31,8 +39,8 @@ const AOIIndexMapElements = ({ allGeometries }) => {
           'fill-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
-            0.9,
-            0.6
+            0.4,
+            0
           ]
         }
       })
@@ -43,31 +51,13 @@ const AOIIndexMapElements = ({ allGeometries }) => {
         source: 'all-geometries',
         paint: {
           'line-color': '#4f46e5',
+          'line-width': 3,
           'line-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             1,
-            0
+            0.2
           ]
-        }
-      })
-
-      // add a symbol layer to label each polygon
-      map.addLayer({
-        id: 'all-geometries-symbol',
-        type: 'symbol',
-        source: 'all-geometries',
-        layout: {
-          'text-field': ['get', 'name'],
-          'text-variable-anchor': ['bottom'],
-          'text-radial-offset': 0.5,
-          'text-justify': 'auto',
-          'text-size': 10
-        },
-        paint: {
-          'text-halo-color': 'white',
-          'text-halo-width': 2,
-          'text-halo-blur': 1
         }
       })
 
@@ -101,6 +91,16 @@ const AOIIndexMapElements = ({ allGeometries }) => {
             { source: 'all-geometries', id: hoveredStateId },
             { hover: true }
           )
+
+          const { name, _id, owner } = e.features[0].properties
+          const parsedOwner = typeof owner === 'string' ? JSON.parse(owner) : owner
+          setTooltip({
+            x: e.point.x,
+            y: e.point.y,
+            name,
+            ownerUsername: parsedOwner?.username,
+            createdAt: createdAtFromObjectId(_id)
+          })
         }
       })
 
@@ -114,6 +114,7 @@ const AOIIndexMapElements = ({ allGeometries }) => {
           )
         }
         hoveredStateId = null
+        setTooltip(null)
       })
     }
 
@@ -131,7 +132,26 @@ const AOIIndexMapElements = ({ allGeometries }) => {
     }
   }, [map, allGeometries])
 
-  return null
+  if (!tooltip) return null
+
+  return (
+    <div
+      className='absolute z-10 pointer-events-none bg-white border border-gray-200 rounded shadow-md px-3 py-2 text-xs text-gray-700 space-y-1'
+      style={{ left: tooltip.x + 12, top: tooltip.y + 12 }}
+    >
+      <div className='font-semibold text-sm'>{tooltip.name}</div>
+      <div className='flex items-center gap-1 text-gray-500'>
+        <UserIcon className='w-3 h-3' />
+        {tooltip.ownerUsername}
+      </div>
+      {tooltip.createdAt && (
+        <div className='flex items-center gap-1 text-gray-500'>
+          <CalendarIcon className='w-3 h-3' />
+          {tooltip.createdAt}
+        </div>
+      )}
+    </div>
+  )
 }
 
 AOIIndexMapElements.propTypes = {
